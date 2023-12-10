@@ -73,7 +73,7 @@ class MainWindow(QtWidgetsX.QMainFramelessWindow):
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_style_sheet(
             '#QMainWindowCSD {'
-            '   background-color: rgba(59, 59, 59, 0.6);'
+            '   background-color: rgba(59, 59, 59, 0.8);'
             '   border-radius: 10px;'
             '   border: 1px solid #555;}'
             'QPushButton {'
