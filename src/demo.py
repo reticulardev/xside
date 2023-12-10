@@ -110,7 +110,7 @@ class Application(object):
         :param args: List of command line arguments
         """
         self.app = QtWidgets.QApplication(args)
-        self.window = MainWindow(decoration=False, platform=True)
+        self.window = MainWindow(is_decorated=False, platform=True)
 
     def main(self) -> None:
         """Start the app

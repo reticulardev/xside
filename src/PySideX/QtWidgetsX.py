@@ -8,7 +8,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from PySideX.attachment.window_integration import Platform
-from PySideX.attachment.window_style import DynamicStyle
+from PySideX.attachment.window_style import StyleBuilder
 
 
 class QMainFramelessWindow(QtWidgets.QMainWindow):
@@ -20,44 +20,30 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
     resize_event_signal = QtCore.Signal(object)
 
     def __init__(
-            self, decoration: bool = False, platform: bool = True,
+            self, is_decorated: bool = False, platform: bool = True,
             *args, **kwargs) -> None:
         """Class constructor
 
         Initialize class attributes
         """
         super().__init__(*args, **kwargs)
-        # args
-        self.__decoration = decoration
-        self.__platform = Platform(platform)
+        self.__is_decorated = is_decorated
+        self.__platform_settings = Platform(platform)
 
-        # Flags
-        self.__disable_shadow = self.__decoration
-        self.__shadow_size = 5
-        self.__edge_side = None
-        self.__resize_border = 5
+        self.__resize_corner_active = None
+        self.__resize_corner_size = 5
 
-        # Layout
-        self.__central_widget = QtWidgets.QWidget()
-        self.set_central_widget(self.__central_widget)
-        self.__central_widget.set_object_name('QMainWindowCSD')
-
-        # Style
-        self.__dynamic_style = DynamicStyle(self)
-        self.__style_sheet = self.__dynamic_style.build_style()
-        self.__style_sheet_max = (
-            self.__dynamic_style.adapt_style_to_max(self.__style_sheet))
-
-        # Decorations
-        self.__set_decoration()
         self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
-        self.__shadow_effect.set_blur_radius(self.__shadow_size)
-        self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
-        self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 180))
-        self.__central_widget.set_graphics_effect(self.__shadow_effect)
-        self.__set_visible_shadow(True)
+        self.__shadow_size = 5
+        self.__shadow_is_disabled = self.__is_decorated
 
-        self.install_event_filter(self)
+        self.__style_builder = StyleBuilder(self)
+        self.__style_sheet = self.__style_builder.build_style()
+        self.__style_sheet_fullscreen = (
+            self.__style_builder.adapt_to_fullscreen(self.__style_sheet))
+
+        self.__central_widget = QtWidgets.QWidget()
+        self.__configure_window()
 
     def central_widget(self) -> QtWidgets.QWidget:
         """Returns the central widget for the main window
@@ -66,21 +52,28 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
         """
         return self.__central_widget
 
-    def decoration(self) -> bool:
+    def is_decorated(self) -> bool:
         """..."""
-        return self.__decoration
+        return self.__is_decorated
 
-    def platform(self) -> Platform:
+    def platform_settings(self) -> Platform:
         """..."""
-        return self.__platform
+        return self.__platform_settings
 
-    def reset_style(self):
+    def style_sheet(self) -> str:
+        """The application style sheet
+
+        :return: string containing 'qss' style
+        """
+        return self.__style_sheet
+
+    def reset_style(self) -> None:
         """Reset the application style sheet to default"""
         self.__reset_style_properties()
 
         if self.is_maximized() or self.is_full_screen():
             self.__central_widget.set_style_sheet(
-                self.__style_sheet_max)
+                self.__style_sheet_fullscreen)
         else:
             self.__central_widget.set_style_sheet(self.__style_sheet)
 
@@ -99,40 +92,56 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
         self.__reset_style_properties()
         self.__style_sheet += style
 
-        self.__style_sheet_max = (
-            self.__dynamic_style.adapt_style_to_max(self.__style_sheet))
+        self.__style_sheet_fullscreen = (
+            self.__style_builder.adapt_to_fullscreen(self.__style_sheet))
 
-        if self.__decoration:
-            self.__style_sheet = self.__style_sheet_max
+        if self.__is_decorated:
+            self.__style_sheet = self.__style_sheet_fullscreen
 
         if self.is_maximized() or self.is_full_screen():
             self.__central_widget.set_style_sheet(
-                self.__style_sheet_max)
+                self.__style_sheet_fullscreen)
         else:
             self.__central_widget.set_style_sheet(
                 self.__style_sheet)
 
-    def style_sheet(self) -> str:
-        """The application style sheet
-
-        :return: string containing 'qss' style
-        """
-        return self.__style_sheet
-
     def __reset_style_properties(self):
         # ...
-        self.__style_sheet = self.__dynamic_style.build_style()
-        self.__style_sheet_max = (
-            self.__dynamic_style.adapt_style_to_max(self.__style_sheet))
+        self.__style_sheet = self.__style_builder.build_style()
+        self.__style_sheet_fullscreen = (
+            self.__style_builder.adapt_to_fullscreen(self.__style_sheet))
+
+    def __configure_window(self) -> None:
+        # Layout
+        self.set_central_widget(self.__central_widget)
+        self.__central_widget.set_object_name('QMainWindowCSD')
+
+        # Decorations
+        self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
+        if not self.__is_decorated:
+            self.set_window_flags(
+                QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window)
+        else:
+            self.__shadow_is_disabled = True
+
+        # Shadow
+        self.__shadow_effect.set_blur_radius(self.__shadow_size)
+        self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
+        self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 180))
+        self.__central_widget.set_graphics_effect(self.__shadow_effect)
+        self.__set_visible_shadow(True)
+
+        # Filter
+        self.install_event_filter(self)
 
     def __set_decoration(self):
         # ...
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
-        if not self.__decoration:
+        if not self.__is_decorated:
             self.set_window_flags(
                 QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window)
         else:
-            self.__disable_shadow = True
+            self.__shadow_is_disabled = True
 
     def __set_edge_position(self, event: QtCore.QEvent) -> None:
         # Saves the position of the window where the mouse cursor is
@@ -140,81 +149,81 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
         window_area = [
             self.__shadow_size < pos.x() < self.width() - self.__shadow_size,
             self.__shadow_size < pos.y() < self.height() - self.__shadow_size]
-        if self.__disable_shadow:
+        if self.__shadow_is_disabled:
             window_area = [pos.x() < self.width(), pos.y() < self.height()]
 
         if all(window_area):
             # top-right, top-left, bottom-right, bottom-left
-            if (pos.x() > (self.width() - self.__resize_border) and
-                    pos.y() < self.__resize_border):
-                self.__edge_side = (
+            if (pos.x() > (self.width() - self.__resize_corner_size) and
+                    pos.y() < self.__resize_corner_size):
+                self.__resize_corner_active = (
                         QtCore.Qt.Edge.RightEdge | QtCore.Qt.Edge.TopEdge)
-            elif (pos.x() < self.__resize_border and
-                  pos.y() < self.__resize_border):
-                self.__edge_side = (
+            elif (pos.x() < self.__resize_corner_size and
+                  pos.y() < self.__resize_corner_size):
+                self.__resize_corner_active = (
                         QtCore.Qt.Edge.LeftEdge | QtCore.Qt.Edge.TopEdge)
-            elif (pos.x() > (self.width() - self.__resize_border) and
-                  pos.y() > (self.height() - self.__resize_border)):
-                self.__edge_side = (
+            elif (pos.x() > (self.width() - self.__resize_corner_size) and
+                  pos.y() > (self.height() - self.__resize_corner_size)):
+                self.__resize_corner_active = (
                         QtCore.Qt.Edge.RightEdge | QtCore.Qt.Edge.BottomEdge)
-            elif (pos.x() < self.__resize_border and
-                  pos.y() > (self.height() - self.__resize_border)):
-                self.__edge_side = (
+            elif (pos.x() < self.__resize_corner_size and
+                  pos.y() > (self.height() - self.__resize_corner_size)):
+                self.__resize_corner_active = (
                         QtCore.Qt.Edge.LeftEdge | QtCore.Qt.Edge.BottomEdge)
 
             # left, right, top, bottom
-            elif pos.x() <= self.__resize_border:
-                self.__edge_side = QtCore.Qt.Edge.LeftEdge
-            elif pos.x() >= (self.width() - self.__resize_border):
-                self.__edge_side = QtCore.Qt.Edge.RightEdge
-            elif pos.y() <= self.__resize_border:
-                self.__edge_side = QtCore.Qt.Edge.TopEdge
-            elif pos.y() >= (self.height() - self.__resize_border):
-                self.__edge_side = QtCore.Qt.Edge.BottomEdge
+            elif pos.x() <= self.__resize_corner_size:
+                self.__resize_corner_active = QtCore.Qt.Edge.LeftEdge
+            elif pos.x() >= (self.width() - self.__resize_corner_size):
+                self.__resize_corner_active = QtCore.Qt.Edge.RightEdge
+            elif pos.y() <= self.__resize_corner_size:
+                self.__resize_corner_active = QtCore.Qt.Edge.TopEdge
+            elif pos.y() >= (self.height() - self.__resize_corner_size):
+                self.__resize_corner_active = QtCore.Qt.Edge.BottomEdge
             else:
-                self.__edge_side = None
+                self.__resize_corner_active = None
         else:
-            self.__edge_side = None
+            self.__resize_corner_active = None
 
     def __set_visible_shadow(self, visible: bool = True):
-        if not self.__disable_shadow:
+        if not self.__shadow_is_disabled:
             if visible:
                 self.set_contents_margins(5, 5, 5, 5)
-                self.__resize_border = 5 + self.__shadow_size
+                self.__resize_corner_size = 5 + self.__shadow_size
             else:
                 self.set_contents_margins(0, 0, 0, 0)
-                self.__resize_border = 5
+                self.__resize_corner_size = 5
         else:
-            self.__resize_border = 5
+            self.__resize_corner_size = 5
 
     def __update_cursor(self) -> None:
         # Updates the mouse cursor appearance
-        if not self.__edge_side:
+        if not self.__resize_corner_active:
             self.set_cursor(QtCore.Qt.CursorShape.ArrowCursor)
         else:
-            if (self.__edge_side == QtCore.Qt.Edge.LeftEdge or
-                    self.__edge_side == QtCore.Qt.Edge.RightEdge):
+            if (self.__resize_corner_active == QtCore.Qt.Edge.LeftEdge or
+                    self.__resize_corner_active == QtCore.Qt.Edge.RightEdge):
                 self.set_cursor(QtCore.Qt.CursorShape.SizeHorCursor)
 
-            elif (self.__edge_side == QtCore.Qt.Edge.TopEdge or
-                  self.__edge_side == QtCore.Qt.Edge.BottomEdge):
+            elif (self.__resize_corner_active == QtCore.Qt.Edge.TopEdge or
+                  self.__resize_corner_active == QtCore.Qt.Edge.BottomEdge):
                 self.set_cursor(QtCore.Qt.CursorShape.SizeVerCursor)
 
-            elif (self.__edge_side == QtCore.Qt.Edge.LeftEdge |
+            elif (self.__resize_corner_active == QtCore.Qt.Edge.LeftEdge |
                   QtCore.Qt.Edge.TopEdge or
-                  self.__edge_side == QtCore.Qt.Edge.RightEdge |
+                  self.__resize_corner_active == QtCore.Qt.Edge.RightEdge |
                   QtCore.Qt.Edge.BottomEdge):
                 self.set_cursor(QtCore.Qt.CursorShape.SizeFDiagCursor)
 
-            elif (self.__edge_side == QtCore.Qt.Edge.RightEdge |
+            elif (self.__resize_corner_active == QtCore.Qt.Edge.RightEdge |
                   QtCore.Qt.Edge.TopEdge or
-                  self.__edge_side == QtCore.Qt.Edge.LeftEdge |
+                  self.__resize_corner_active == QtCore.Qt.Edge.LeftEdge |
                   QtCore.Qt.Edge.BottomEdge):
                 self.set_cursor(QtCore.Qt.CursorShape.SizeBDiagCursor)
 
     def event_filter(
             self, watched: QtCore.QObject, event: QtCore.QEvent) -> bool:
-        if self.__decoration:
+        if self.__is_decorated:
             self.__central_widget.set_style_sheet(self.__style_sheet)
             if event.type() == QtCore.QEvent.Resize:
                 self.resize_event_signal.emit(0)
@@ -225,8 +234,9 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
 
             elif event.type() == QtCore.QEvent.MouseButtonPress:
                 self.__update_cursor()
-                if self.__edge_side:
-                    self.window_handle().start_system_resize(self.__edge_side)
+                if self.__resize_corner_active:
+                    self.window_handle().start_system_resize(
+                        self.__resize_corner_active)
 
             elif event.type() == QtCore.QEvent.MouseButtonRelease:
                 self.set_cursor(QtCore.Qt.CursorShape.ArrowCursor)
@@ -236,7 +246,7 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
 
                 if self.is_maximized() or self.is_full_screen():
                     self.__central_widget.set_style_sheet(
-                        self.__style_sheet_max)
+                        self.__style_sheet_fullscreen)
                     self.__set_visible_shadow(False)
                 else:
                     self.__central_widget.set_style_sheet(self.__style_sheet)
@@ -306,19 +316,19 @@ class QWindowControlButtons(QtWidgets.QFrame):
 
         self.__minimize_button = QControlButton()
         self.__minimize_style = (
-            self.__main_window.platform().window_control_button_style(
+            self.__main_window.platform_settings().window_control_button_style(
                 self.__is_dark(), 'minimize', 'normal'))
         self.__configure_minimize_button()
 
         self.__maximize_button = QControlButton()
         self.__maximize_style = (
-            self.__main_window.platform().window_control_button_style(
+            self.__main_window.platform_settings().window_control_button_style(
                 self.__is_dark(), 'maximize', 'normal'))
         self.__configure_maximize_button()
 
         self.__close_button = QControlButton()
         self.__close_style = (
-            self.__main_window.platform().window_control_button_style(
+            self.__main_window.platform_settings().window_control_button_style(
                 self.__is_dark(), 'close', 'normal'))
         self.__configure_close_button()
 
@@ -334,13 +344,13 @@ class QWindowControlButtons(QtWidgets.QFrame):
     def __buttons_enter_event(
             self, widget: QControlButton, button_name: str) -> None:
         widget.set_style_sheet(
-            self.__main_window.platform().window_control_button_style(
+            self.__main_window.platform_settings().window_control_button_style(
                 self.__is_dark(), button_name, 'hover'))
 
     def __buttons_leave_event(
             self, widget: QControlButton, button_name: str) -> None:
         widget.set_style_sheet(
-            self.__main_window.platform().window_control_button_style(
+            self.__main_window.platform_settings().window_control_button_style(
                 self.__is_dark(), button_name, 'normal'))
 
     def __set_buttons_order(self):
@@ -399,7 +409,7 @@ class QWindowControlButtons(QtWidgets.QFrame):
             maximize_restor = 'restore'
 
         maximize_style = (
-            self.__main_window.platform().window_control_button_style(
+            self.__main_window.platform_settings().window_control_button_style(
                 self.__is_dark(), maximize_restor, 'normal'))
 
         self.__maximize_button.set_style_sheet(maximize_style)
@@ -440,7 +450,7 @@ class QWindowMoveArea(QtWidgets.QFrame):
         """
         super().__init__(*args, **kwargs)
         self.__main_window = main_window
-        self.__dynamic_style = DynamicStyle(self.__main_window)
+        self.__default_style = StyleBuilder(self.__main_window)
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(0, 0, 0, 0)
@@ -454,7 +464,7 @@ class QWindowMoveArea(QtWidgets.QFrame):
             self.my_mouse_press_event_method)
         """
         self.mouse_press_event_signal.emit(event)
-        if not self.__main_window.decoration():
+        if not self.__main_window.is_decorated():
             if event.button() == QtCore.Qt.LeftButton and self.under_mouse():
                 self.__main_window.window_handle().start_system_move()
 
@@ -529,7 +539,8 @@ class QHeaderBar(QtWidgets.QFrame):
         self.__left_ctrl_buttons_visibility = True
         self.__right_ctrl_buttons_visibility = True
         self.__window_control_buttons_order = (
-            self.__main_window.platform().window_control_button_order())
+            self.__main_window.platform_settings()
+            .window_control_button_order())
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(4, 4, 4, 4)
@@ -589,7 +600,7 @@ class QHeaderBar(QtWidgets.QFrame):
 
         :param text: The text to be shown in the center of the QWindowMoveArea
         """
-        if not self.__main_window.decoration():
+        if not self.__main_window.is_decorated():
             self.__window_move_area_text.set_text(text)
 
     def lef_layout(self) -> QtWidgets.QHBoxLayout:
@@ -626,7 +637,7 @@ class QHeaderBar(QtWidgets.QFrame):
 
     def resize_event(self, event: QtGui.QResizeEvent) -> None:
         """..."""
-        if self.__main_window.decoration():
+        if self.__main_window.is_decorated():
             self.__left_ctrl_buttons.set_visible(False)
             self.__right_ctrl_buttons.set_visible(False)
             _50_percent_left = self.__50_percent_left_size(True)
@@ -634,7 +645,8 @@ class QHeaderBar(QtWidgets.QFrame):
             _50_percent_left = self.__50_percent_left_size(False)
 
             if self.__main_window.is_maximized():
-                if self.__main_window.platform().window_use_global_menu():
+                if (self.__main_window.platform_settings()
+                        .window_use_global_menu()):
                     self.__left_ctrl_buttons.set_visible(False)
                     self.__right_ctrl_buttons.set_visible(False)
                     _50_percent_left = self.__50_percent_left_size(True)

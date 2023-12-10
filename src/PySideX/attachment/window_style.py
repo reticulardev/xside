@@ -5,13 +5,14 @@ from PySide6 import QtGui, QtWidgets
 from __feature__ import snake_case
 
 
-class DynamicStyle(object):
+class StyleBuilder(object):
     """..."""
     def __init__(self, main_window: QtWidgets.QMainWindow) -> None:
         """..."""
         self.__main_window = main_window
         self.__src = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-        self.__bd_radius = self.__main_window.platform().window_border_radius()
+        self.__bd_radius = (
+            self.__main_window.platform_settings().window_border_radius())
         self.__bg_color = self.__main_window.palette().color(
             QtGui.QPalette.Window)
         self.__bd_color = self.__main_window.palette().color(
@@ -25,7 +26,7 @@ class DynamicStyle(object):
         if not self.__bd_radius:
             self.__bd_radius = 10, 10, 3, 3
 
-        if self.__main_window.decoration():
+        if self.__main_window.is_decorated():
             main_window_style = (
                 '#QMainWindowCSD {' +
                 'background-color: rgba({}, {}, {}, {});'.format(
@@ -55,7 +56,7 @@ class DynamicStyle(object):
         return main_window_style + style
 
     @staticmethod
-    def adapt_style_to_max(style: str) -> str:
+    def adapt_to_fullscreen(style: str) -> str:
         # ...
         central_widget = [
             x for x in style.split('}') if
