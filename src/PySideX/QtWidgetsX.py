@@ -31,7 +31,8 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
         self.__platform_settings = Platform(platform)
 
         self.__resize_corner_active = None
-        self.__resize_corner_size = 5
+        self.__resize_corner_size_default = 5
+        self.__resize_corner_size = self.__resize_corner_size_default
 
         self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
         self.__shadow_size = 5
@@ -105,7 +106,7 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
             self.__central_widget.set_style_sheet(
                 self.__style_sheet)
 
-    def __reset_style_properties(self):
+    def __reset_style_properties(self) -> None:
         # ...
         self.__style_sheet = self.__style_builder.build_style()
         self.__style_sheet_fullscreen = (
@@ -134,7 +135,7 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
         # Filter
         self.install_event_filter(self)
 
-    def __set_decoration(self):
+    def __set_decoration(self) -> None:
         # ...
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         if not self.__is_decorated:
@@ -185,16 +186,19 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
         else:
             self.__resize_corner_active = None
 
-    def __set_visible_shadow(self, visible: bool = True):
-        if not self.__shadow_is_disabled:
+    def __set_visible_shadow(self, visible: bool = True) -> None:
+        if self.__shadow_is_disabled:
+            self.__resize_corner_size = self.__resize_corner_size_default
+        else:
             if visible:
-                self.set_contents_margins(5, 5, 5, 5)
-                self.__resize_corner_size = 5 + self.__shadow_size
+                self.set_contents_margins(
+                    self.__shadow_size, self.__shadow_size,
+                    self.__shadow_size, self.__shadow_size)
+                self.__resize_corner_size = (
+                        self.__resize_corner_size_default + self.__shadow_size)
             else:
                 self.set_contents_margins(0, 0, 0, 0)
-                self.__resize_corner_size = 5
-        else:
-            self.__resize_corner_size = 5
+                self.__resize_corner_size = self.__resize_corner_size_default
 
     def __update_cursor(self) -> None:
         # Updates the mouse cursor appearance
@@ -353,7 +357,7 @@ class QWindowControlButtons(QtWidgets.QFrame):
             self.__main_window.platform_settings().window_control_button_style(
                 self.__is_dark(), button_name, 'normal'))
 
-    def __set_buttons_order(self):
+    def __set_buttons_order(self) -> None:
         # Add the buttons in the configured order
         buttons_dict = {
             0: self.__minimize_button,
@@ -364,7 +368,7 @@ class QWindowControlButtons(QtWidgets.QFrame):
             for index in self.__button_order:
                 self.__layout.add_widget(buttons_dict[index])
 
-    def __configure_minimize_button(self):
+    def __configure_minimize_button(self) -> None:
         self.__minimize_button.set_style_sheet(self.__minimize_style)
         if 'background: url' not in self.__minimize_style:
             self.__minimize_button.set_icon(QtGui.QIcon.from_theme('go-down'))
@@ -376,7 +380,7 @@ class QWindowControlButtons(QtWidgets.QFrame):
         self.__minimize_button.clicked.connect(
             lambda _: self.__main_window.show_minimized())
 
-    def __configure_maximize_button(self):
+    def __configure_maximize_button(self) -> None:
         self.__maximize_button.set_style_sheet(self.__maximize_style)
         if 'background: url' not in self.__maximize_style:
             self.__maximize_button.set_icon(QtGui.QIcon.from_theme('go-up'))
@@ -386,7 +390,7 @@ class QWindowControlButtons(QtWidgets.QFrame):
         self.__maximize_button.leave_event_signal.connect(
             lambda widget: self.__buttons_leave_event(widget, 'maximize'))
 
-    def __configure_close_button(self):
+    def __configure_close_button(self) -> None:
         self.__close_button.set_style_sheet(self.__close_style)
         if 'background: url' not in self.__close_style:
             self.__close_button.set_icon(
