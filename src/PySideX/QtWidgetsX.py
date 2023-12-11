@@ -490,36 +490,6 @@ class QWindowMoveArea(QtWidgets.QFrame):
                 self.native_parent_widget().show_maximized()
 
 
-class QElidedLabel(QtWidgets.QLabel):
-    """A label widget that can display only the necessary text
-
-    Hidden text is converted to an ellipsis
-    """
-    resize_event_signal = QtCore.Signal(object)
-
-    def paint_event(self, event: QtCore.QEvent) -> None:
-        """Event that draws the text
-
-        Calculate the size of the text that can be displayed and convert
-        the rest to an ellipsis
-
-        :param event: QEvent received by sent signal
-        """
-        painter = QtGui.QPainter(self)
-        metrics = QtGui.QFontMetrics(self.font())
-        elided = metrics.elided_text(
-            self.text(), QtCore.Qt.ElideRight, self.width())
-        painter.draw_text(self.rect(), self.alignment(), elided)
-        event.ignore()
-
-    def __str__(self) -> str:
-        # String for print() fn
-        return f'<ElidedLabel: {id(self)}>'
-
-    def resize_event(self, event: QtGui.QResizeEvent) -> None:
-        self.resize_event_signal.emit(event)
-
-
 class QHeaderBar(QtWidgets.QFrame):
     """Window header bar
 
