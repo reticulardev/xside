@@ -69,6 +69,10 @@ class MainWindow(QtWidgetsX.QMainFramelessWindow):
         self.reset_style_button.clicked.connect(self.on_reset_style)
         self.body_layout.add_widget(self.reset_style_button)
 
+        self.body_layout.add_widget(QtWidgetsX.QControlButton(self, 0))
+        self.body_layout.add_widget(QtWidgetsX.QControlButton(self, 1))
+        self.body_layout.add_widget(QtWidgetsX.QControlButton(self, 2))
+
     def on_set_style(self):
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_style_sheet(

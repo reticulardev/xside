@@ -267,18 +267,140 @@ class QControlButton(QtWidgets.QToolButton):
     enter_event_signal = QtCore.Signal(object)
     leave_event_signal = QtCore.Signal(object)
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(
+            self, main_window: QtWidgets, button_id: int,
+            *args, **kwargs) -> None:
         """Class constructor
 
         Initialize class attributes.
+
+        :param button_id:
+            0 is the minimize button
+            1 is the maximize button
+            2 is the close button
         """
         super().__init__(*args, **kwargs)
+        self.__main_window = main_window
+        self.__button_id = button_id
+        self.__buttons_schema = {0: 'minimize', 1: 'maximize', 2: 'close'}
+
+        self.__maximize_or_restore_icon = 'maximize'
+        self.__main_window.resize_event_signal.connect(
+            self.__check_maximize_and_restore_icon)
+
+        self.__configure_buttons()
+
+    def __configure_buttons(self) -> None:
+        if self.__button_id not in (0, 1, 2):
+            raise ValueError(
+                'The value must be 0, 1 or 2. The values represent "minimize",'
+                ' "maximize" and "close" buttons respectively.')
+
+        if self.__button_id == 0:
+            style = (
+                self.__main_window.platform_settings()
+                .window_control_button_style(
+                    self.__is_dark(), 'minimize', 'normal'))
+
+            self.set_style_sheet(style)
+            if 'background: url' not in style:
+                self.set_icon(QtGui.QIcon.from_theme('go-down'))
+
+            self.clicked.connect(
+                lambda _: self.__main_window.show_minimized())
+
+        elif self.__button_id == 1:
+            style = (
+                self.__main_window.platform_settings()
+                .window_control_button_style(
+                    self.__is_dark(), 'maximize', 'normal'))
+
+            self.set_style_sheet(style)
+            if 'background: url' not in style:
+                self.set_icon(QtGui.QIcon.from_theme('go-up'))
+        else:
+            style = (
+                self.__main_window.platform_settings()
+                .window_control_button_style(
+                    self.__is_dark(), 'close', 'normal'))
+
+            self.set_style_sheet(style)
+            if 'background: url' not in style:
+                self.set_icon(QtGui.QIcon.from_theme('edit-delete-remove'))
+
+            self.clicked.connect(
+                lambda _: self.__main_window.close())
+
+    def __is_dark(self) -> bool:
+        # ...
+        color = self.__main_window.palette().color(QtGui.QPalette.Window)
+        r, g, b = (color.red(), color.green(), color.blue())
+        hsp = math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
+        return False if hsp > 127.5 else True
+
+    def __check_maximize_and_restore_icon(
+            self, event: QtGui.QResizeEvent) -> None:
+        # Change maximize button depending on window state
+        logging.info(event)  # self.native_parent_widget()
+
+        if self.__button_id == 1:
+            self.__maximize_or_restore_icon = 'maximize'
+            if (self.__main_window.is_maximized() or
+                    self.__main_window.is_full_screen()):
+                self.__maximize_or_restore_icon = 'restore'
+
+            maximize_style = (
+                self.__main_window.platform_settings()
+                .window_control_button_style(
+                    self.__is_dark(),
+                    self.__maximize_or_restore_icon, 'normal'))
+
+            self.set_style_sheet(maximize_style)
+            if self.__maximize_or_restore_icon == 'restore':
+                if 'background: url' not in maximize_style:
+                    self.set_icon(QtGui.QIcon.from_theme('window-restore'))
+            else:
+                if 'background: url' not in maximize_style:
+                    self.set_icon(QtGui.QIcon.from_theme('go-up'))
+
+            if self.__maximize_or_restore_icon == 'restore':
+                self.clicked.connect(
+                    lambda _: self.native_parent_widget().show_normal())
+            else:
+                self.clicked.connect(
+                    lambda _: self.native_parent_widget().show_maximized())
 
     def enter_event(self, event: QtGui.QEnterEvent) -> None:
+        if self.__button_id == 1:
+            self.set_style_sheet(
+                self.__main_window.platform_settings()
+                .window_control_button_style(
+                    self.__is_dark(),
+                    self.__maximize_or_restore_icon, 'hover'))
+        else:
+            self.set_style_sheet(
+                self.__main_window.platform_settings()
+                .window_control_button_style(
+                    self.__is_dark(),
+                    self.__buttons_schema[self.__button_id], 'hover'))
+
         logging.info(event)
         self.enter_event_signal.emit(self)
 
     def leave_event(self, event: QtGui.QEnterEvent) -> None:
+        if self.__button_id == 1:
+            self.set_style_sheet(
+                self.__main_window.platform_settings()
+                .window_control_button_style(
+                    self.__is_dark(),
+                    self.__maximize_or_restore_icon, 'normal'))
+        else:
+            self.set_style_sheet(
+                self.__main_window.platform_settings()
+                .window_control_button_style(
+                    self.__is_dark(),
+                    self.__buttons_schema[self.__button_id], 'normal'))
+
         logging.info(event)
         self.leave_event_signal.emit(self)
 
@@ -296,10 +418,9 @@ class QWindowControlButtons(QtWidgets.QFrame):
 
         Initialize class attributes.
         In the button order parameter, each number represents a type of button:
-            0) the minimize button
-            1) the maximize button
-            2) the close button
-            3) window icon.
+            0 is the minimize button
+            1 is the maximize button
+            2 is the close button
 
         :param main_window: QMainWindowCSD app main window instance
         :param button_order:
@@ -308,7 +429,6 @@ class QWindowControlButtons(QtWidgets.QFrame):
         super().__init__(*args, **kwargs)
 
         self.__main_window = main_window
-        self.__main_window.resize_event_signal.connect(self.__window_resize)
         self.__button_order = button_order
 
         self.__window_icon = QtWidgets.QLabel()
@@ -318,44 +438,11 @@ class QWindowControlButtons(QtWidgets.QFrame):
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(2, 0, 2, 0)
 
-        self.__minimize_button = QControlButton()
-        self.__minimize_style = (
-            self.__main_window.platform_settings().window_control_button_style(
-                self.__is_dark(), 'minimize', 'normal'))
-        self.__configure_minimize_button()
-
-        self.__maximize_button = QControlButton()
-        self.__maximize_style = (
-            self.__main_window.platform_settings().window_control_button_style(
-                self.__is_dark(), 'maximize', 'normal'))
-        self.__configure_maximize_button()
-
-        self.__close_button = QControlButton()
-        self.__close_style = (
-            self.__main_window.platform_settings().window_control_button_style(
-                self.__is_dark(), 'close', 'normal'))
-        self.__configure_close_button()
+        self.__minimize_button = QControlButton(self.__main_window, 0)
+        self.__maximize_button = QControlButton(self.__main_window, 1)
+        self.__close_button = QControlButton(self.__main_window, 2)
 
         self.__set_buttons_order()
-
-    def __is_dark(self) -> bool:
-        # ...
-        color = self.__main_window.palette().color(QtGui.QPalette.Window)
-        r, g, b = (color.red(), color.green(), color.blue())
-        hsp = math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
-        return False if hsp > 127.5 else True
-
-    def __buttons_enter_event(
-            self, widget: QControlButton, button_name: str) -> None:
-        widget.set_style_sheet(
-            self.__main_window.platform_settings().window_control_button_style(
-                self.__is_dark(), button_name, 'hover'))
-
-    def __buttons_leave_event(
-            self, widget: QControlButton, button_name: str) -> None:
-        widget.set_style_sheet(
-            self.__main_window.platform_settings().window_control_button_style(
-                self.__is_dark(), button_name, 'normal'))
 
     def __set_buttons_order(self) -> None:
         # Add the buttons in the configured order
@@ -367,76 +454,6 @@ class QWindowControlButtons(QtWidgets.QFrame):
         if self.__button_order:
             for index in self.__button_order:
                 self.__layout.add_widget(buttons_dict[index])
-
-    def __configure_minimize_button(self) -> None:
-        self.__minimize_button.set_style_sheet(self.__minimize_style)
-        if 'background: url' not in self.__minimize_style:
-            self.__minimize_button.set_icon(QtGui.QIcon.from_theme('go-down'))
-
-        self.__minimize_button.enter_event_signal.connect(
-            lambda widget: self.__buttons_enter_event(widget, 'minimize'))
-        self.__minimize_button.leave_event_signal.connect(
-            lambda widget: self.__buttons_leave_event(widget, 'minimize'))
-        self.__minimize_button.clicked.connect(
-            lambda _: self.__main_window.show_minimized())
-
-    def __configure_maximize_button(self) -> None:
-        self.__maximize_button.set_style_sheet(self.__maximize_style)
-        if 'background: url' not in self.__maximize_style:
-            self.__maximize_button.set_icon(QtGui.QIcon.from_theme('go-up'))
-
-        self.__maximize_button.enter_event_signal.connect(
-            lambda widget: self.__buttons_enter_event(widget, 'maximize'))
-        self.__maximize_button.leave_event_signal.connect(
-            lambda widget: self.__buttons_leave_event(widget, 'maximize'))
-
-    def __configure_close_button(self) -> None:
-        self.__close_button.set_style_sheet(self.__close_style)
-        if 'background: url' not in self.__close_style:
-            self.__close_button.set_icon(
-                QtGui.QIcon.from_theme('edit-delete-remove'))
-
-        self.__close_button.enter_event_signal.connect(
-            lambda widget: self.__buttons_enter_event(widget, 'close'))
-        self.__close_button.leave_event_signal.connect(
-            lambda widget: self.__buttons_leave_event(widget, 'close'))
-        self.__close_button.clicked.connect(
-            lambda _: self.__main_window.close())
-
-    def __window_resize(self, event: QtGui.QResizeEvent) -> None:
-        # Change maximize button depending on window state
-        logging.info(event)  # self.native_parent_widget()
-
-        maximize_restor = 'maximize'
-        if (self.__main_window.is_maximized() or
-                self.__main_window.is_full_screen()):
-            maximize_restor = 'restore'
-
-        maximize_style = (
-            self.__main_window.platform_settings().window_control_button_style(
-                self.__is_dark(), maximize_restor, 'normal'))
-
-        self.__maximize_button.set_style_sheet(maximize_style)
-        if maximize_restor == 'restore':
-            if 'background: url' not in maximize_style:
-                self.__maximize_button.set_icon(
-                    QtGui.QIcon.from_theme('window-restore'))
-        else:
-            if 'background: url' not in maximize_style:
-                self.__maximize_button.set_icon(
-                    QtGui.QIcon.from_theme('go-up'))
-
-        if maximize_restor == 'restore':
-            self.__maximize_button.clicked.connect(
-                lambda _: self.native_parent_widget().show_normal())
-        else:
-            self.__maximize_button.clicked.connect(
-                lambda _: self.native_parent_widget().show_maximized())
-
-        self.__maximize_button.enter_event_signal.connect(
-            lambda widget: self.__buttons_enter_event(widget, maximize_restor))
-        self.__maximize_button.leave_event_signal.connect(
-            lambda widget: self.__buttons_leave_event(widget, maximize_restor))
 
 
 class QWindowMoveArea(QtWidgets.QFrame):
