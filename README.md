@@ -10,9 +10,13 @@ Extras:
 
   A CSD (client side decoration) window without server side decoration (SSD). It is resizable in all corners and has a shadow (optional).
 
+* QControlButton
+
+  A Window control button. It could be the "close", "minimize" or "maximize" button.
+
 * QWindowControlButtons
 
-  The buttons to close, maximize and minimize the window.
+  The buttons to "close", "maximize" and "minimize" the window.
 
 * QWindowMoveArea
 
