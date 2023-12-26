@@ -7,8 +7,7 @@ import sys
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.attachment.window_integration import Platform
-from PySideX.attachment.window_style import StyleBuilder
+import PySideX.platform.integration as integration
 
 
 class QMainFramelessWindow(QtWidgets.QMainWindow):
@@ -28,7 +27,7 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
         """
         super().__init__(*args, **kwargs)
         self.__is_decorated = is_decorated
-        self.__platform_settings = Platform(platform)
+        self.__platform_settings = integration.PlatformSettings(platform)
 
         self.__resize_corner_active = None
         self.__resize_corner_size_default = 5
@@ -38,7 +37,7 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
         self.__shadow_size = 5
         self.__shadow_is_disabled = self.__is_decorated
 
-        self.__style_builder = StyleBuilder(self)
+        self.__style_builder = integration.StyleBuilder(self)
         self.__style_sheet = self.__style_builder.build_style()
         self.__style_sheet_fullscreen = (
             self.__style_builder.adapt_to_fullscreen(self.__style_sheet))
@@ -57,7 +56,7 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
         """..."""
         return self.__is_decorated
 
-    def platform_settings(self) -> Platform:
+    def platform_settings(self) -> integration.PlatformSettings:
         """..."""
         return self.__platform_settings
 
@@ -421,8 +420,9 @@ class QWindowControlButtons(QtWidgets.QFrame):
             0 is the minimize button
             1 is the maximize button
             2 is the close button
+            3 is window icon
 
-        :param main_window: QMainWindowCSD app main window instance
+        :param main_window: Main window instance
         :param button_order:
             Tuple with the order of the buttons. Default is (0, 1, 2).
         """
@@ -471,7 +471,7 @@ class QWindowMoveArea(QtWidgets.QFrame):
         """
         super().__init__(*args, **kwargs)
         self.__main_window = main_window
-        self.__default_style = StyleBuilder(self.__main_window)
+        self.__default_style = integration.StyleBuilder(self.__main_window)
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(0, 0, 0, 0)
