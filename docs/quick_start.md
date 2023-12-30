@@ -28,14 +28,13 @@ python src/demo.py
 
 ## Imports
 
-The project uses the `snake_case` feature to obtain idiomatic 
-code, but does not use the `true_property` feature to avoid 
-conflicts, as it does not yet work 100%.
+The project uses the `snake_case` feature to obtain idiomatic code, but does 
+not use the `true_property` feature to avoid conflicts, as it does not yet work 
+100%.
 
-After downloading and configuring, import the `sys` lib, 
-import `PySide` to have access to all widgets, import 
-`PySideX` to build the CSD window and finally configure the 
-`snake_case` feature.
+After downloading and configuring, import the `sys` lib, import `PySide` to 
+have access to all widgets, import `PySideX` to build the CSD window and 
+finally configure the `snake_case` feature.
 
 ```python
 import sys
@@ -55,15 +54,14 @@ window.show()
 sys.exit(app.exec())
 ```
 
-This would give you a little window that can be resized in any 
-direction. However, there is no button to close the application 
-and, depending on your platform, it may be difficult to close 
-the application:
+This would give you a little window that can be resized in any direction. 
+However, there is no button to close the application and, depending on your 
+platform, it may be difficult to close the application:
 
 ![Image](img/min_window.png "screenshot")
 
-A better minimal example in this situation includes adding a 
-headerbar to access the window control buttons:
+A better minimal example in this situation includes adding a headerbar to 
+access the window control buttons:
 
 ```python
 class MainWindow(QtWidgetsX.QMainFramelessWindow):
@@ -86,15 +84,15 @@ window.show()
 sys.exit(app.exec())
 ```
 
-Note that a central widget with appropriate settings already exists. 
-As it is already accessed directly, there is no need to create one.
+Note that a central widget with appropriate settings already exists. As it is 
+already accessed directly, there is no need to create one.
 
 ```python
 self.central_widget().set_layout(self.main_layout)
 ```
 
-Also note that the headerbar widget is independent, meaning you can 
-place it wherever you want, which is why we aligned it at the top.
+Also note that the headerbar widget is independent, meaning you can place it 
+wherever you want, which is why we aligned it at the top.
 
 ```python
 self.main_layout.set_contents_margins(0, 0, 0, 0)
