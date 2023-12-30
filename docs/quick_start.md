@@ -116,6 +116,7 @@ displayed. In our case, if we want to see the window title, we need to manually
 redirect it to the header bar.
 
 ```python
+#!/usr/bin/env python3
 import os
 import sys
 
