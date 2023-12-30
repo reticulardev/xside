@@ -60,3 +60,9 @@ me, even those who don't have "OCD" start to acquire it after
 looking at it for a while. Therefore, as providing windows with 
 blurred backgrounds by default is not a priority, this has 
 temporarily fallen out of the plans.
+
+## Conclusion
+As Qt Company progresses with CSD support, this project will be 
+improved. And fortunately, it is now possible to obtain a usable 
+and satisfactory result. The Widgets that were created are very 
+flexible and easy to implement.

@@ -3,6 +3,7 @@ site_url: https://github.com/reticulardev/pysidex
 nav:
     - Home: index.md
     - Overview: overview.md
+    - Quick start: quick_start.md
     - Class Reference:
       - QMainFramelessWindow: reference_QMainFramelessWindow.md
       - QHeaderBar: reference_QHeaderBar.md
