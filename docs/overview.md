@@ -80,6 +80,9 @@ In our tests, the true_property feature didn't work well in every way, but the
 snake_case style was maintained. Anyone who has worked with PyGObject, the GTK 
 bind to Python, will feel right at home.
 
+This is a project based on QtWidgets and for now there are no plans to support 
+QML.
+
 ## Conclusion
 
 As Qt Company progresses with CSD support, this project will be improved. And 
