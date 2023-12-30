@@ -1,0 +1,14 @@
+site_name: PySideX
+site_url: https://github.com/reticulardev/pysidex
+nav:
+    - Home: index.md
+    - Overview: overview.md
+    - Class Reference:
+      - QMainFramelessWindow: reference_QMainFramelessWindow.md
+      - QHeaderBar: reference_QHeaderBar.md
+      - QControlButton: reference_QControlButton.md
+      - QWindowControlButtons: reference_QWindowControlButtons.md
+      - QWindowMoveArea: reference_QWindowMoveArea.md
+    - Tests: tests.md
+    - About: about.md
+theme: readthedocs
