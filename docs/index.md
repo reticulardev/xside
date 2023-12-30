@@ -4,7 +4,7 @@ PySide eXtras is a collection of extra resources for pyside with a focus on CSD 
 
 Conforms to the list of objectives specified in the "[Client-Side Decorations Initiative](https://wiki.gnome.org/Initiatives/CSD)" of the Gnome project.
 
-![Image](../data/screen.png "screenshot")
+![Image](img/screen.png "screenshot")
 
 Extra widgets:
 
