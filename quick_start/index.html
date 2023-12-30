@@ -50,6 +50,10 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="./">Quick start</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#imports">Imports</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#the-minimal-example">The minimal example</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -98,6 +102,76 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="quick-start">Quick start</h1>
+<p>Download and enter the project folder:</p>
+<pre><code class="language-commandline">git clone https://github.com/reticulardev/pysidex.git &amp;&amp; cd pysidex/
+</code></pre>
+<p>Configure your virtual environment:</p>
+<pre><code class="language-commandline">python3 -m venv venv &amp;&amp; . venv/bin/activate
+</code></pre>
+<p>Update pip and install dependencies:</p>
+<pre><code class="language-commandline">python -m pip install --upgrade pip &amp;&amp; python -m pip install -r requirements.txt
+</code></pre>
+<p>Run the example to see it working:</p>
+<pre><code class="language-commandline">python src/demo.py
+</code></pre>
+<p><img alt="Image" src="../img/demo.png" title="screenshot" /></p>
+<h2 id="imports">Imports</h2>
+<p>The project uses the <code>snake_case</code> feature to obtain idiomatic 
+code, but does not use the <code>true_property</code> feature to avoid 
+conflicts, as it does not yet work 100%.</p>
+<p>After downloading and configuring, import the <code>sys</code> lib, 
+import <code>PySide</code> to have access to all widgets, import 
+<code>PySideX</code> to build the CSD window and finally configure the 
+<code>snake_case</code> feature.</p>
+<pre><code class="language-python">import sys
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySideX import QtWidgetsX
+from __feature__ import snake_case
+</code></pre>
+<h2 id="the-minimal-example">The minimal example</h2>
+<p>A <strong>highly discouraged</strong> minimal example would be:</p>
+<pre><code class="language-python">app = QtWidgets.QApplication(sys.argv)
+window = QtWidgetsX.QMainFramelessWindow()
+window.show()
+sys.exit(app.exec())
+</code></pre>
+<p>This would give you a little window that can be resized in any 
+direction. However, there is no button to close the application 
+and, depending on your platform, it may be difficult to close 
+the application:</p>
+<p><img alt="Image" src="../img/min_window.png" title="screenshot" /></p>
+<p>A better minimal example in this situation includes adding a 
+headerbar to access the window control buttons:</p>
+<pre><code class="language-python">class MainWindow(QtWidgetsX.QMainFramelessWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.main_layout = QtWidgets.QVBoxLayout()
+        self.central_widget().set_layout(self.main_layout)
+
+        self.main_layout.set_contents_margins(0, 0, 0, 0)
+        self.main_layout.set_alignment(QtCore.Qt.AlignTop)
+
+        self.headerbar = QtWidgetsX.QHeaderBar(self)
+        self.main_layout.add_widget(self.headerbar)
+
+
+app = QtWidgets.QApplication(sys.argv)
+window = MainWindow()
+window.show()
+sys.exit(app.exec())
+</code></pre>
+<p>Note that a central widget with appropriate settings already exists. 
+As it is already accessed directly, there is no need to create one.</p>
+<pre><code class="language-python">self.central_widget().set_layout(self.main_layout)
+</code></pre>
+<p>Also note that the headerbar widget is independent, meaning you can 
+place it wherever you want, which is why we aligned it at the top.</p>
+<pre><code class="language-python">self.main_layout.set_contents_margins(0, 0, 0, 0)
+self.main_layout.set_alignment(QtCore.Qt.AlignTop)
+</code></pre>
+<p>This is the result:</p>
+<p><img alt="Image" src="../img/better_min_window_.png" title="screenshot" /></p>
               
             </div>
           </div><footer>
