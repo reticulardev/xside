@@ -56,6 +56,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#the-minimal-example">The minimal example</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#a-more-complete-minimal-example">A more complete minimal example</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -171,7 +173,58 @@ wherever you want, which is why we aligned it at the top.</p>
 self.main_layout.set_alignment(QtCore.Qt.AlignTop)
 </code></pre>
 <p>This is the result:</p>
-<p><img alt="Image" src="../img/better_min_window_.png" title="screenshot" /></p>
+<p><img alt="Image" src="../img/better_min_window.png" title="screenshot" /></p>
+<h2 id="a-more-complete-minimal-example">A more complete minimal example</h2>
+<p>In this example, we will add the 'os' library to add an icon with a dynamic 
+path. The icon, once configured in the window, will be automatically recognized 
+by the header bar.</p>
+<p>The title is not automatically recognized by the header bar as in the case of 
+the icon, because not in all use cases a window needs to have the title 
+displayed. In our case, if we want to see the window title, we need to manually 
+redirect it to the header bar.</p>
+<pre><code class="language-python">import os
+import sys
+
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySideX import QtWidgetsX
+from __feature__ import snake_case
+
+SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(SRC_DIR)
+
+class MainWindow(QtWidgetsX.QMainFramelessWindow):
+
+    def __init__(self, *args, **kwargs) -&gt; None:
+        super().__init__(*args, **kwargs)
+
+        # Window icon
+        icon_path = os.path.join(SRC_DIR, 'icon.svg')
+        window_icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
+        self.set_window_icon(window_icon)
+
+        # Layout
+        self.main_layout = QtWidgets.QVBoxLayout()
+        self.main_layout.set_contents_margins(0, 0, 0, 0)
+        self.main_layout.set_alignment(QtCore.Qt.AlignTop)
+        self.central_widget().set_layout(self.main_layout)
+
+        # Headerbar
+        self.headerbar = QtWidgetsX.QHeaderBar(self)
+        self.main_layout.add_widget(self.headerbar)
+
+        # Window title
+        self.set_window_title('App title')
+        self.headerbar.set_text(self.window_title())
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
+</code></pre>
+<p>This is the result:</p>
+<p><img alt="Image" src="../img/complete_min_window.png" title="screenshot" /></p>
               
             </div>
           </div><footer>
