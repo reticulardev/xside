@@ -68,6 +68,18 @@ the chance to keep it actively updated with the latest stable versions of
 Pyside. It also provides the security of being able to continue officially 
 using the robust original Qt.
 
+## Code style
+
+Qt originally uses the camelCase code style and this is reflected in PySide 
+which also uses it by default. In an effort to make Python code idiomatic, the 
+snake_case and true_property features were introduced.
+
+Find out more about the feature in the official [Pyside documentation](https://doc.qt.io/qtforpython-6/considerations.html#features)
+
+In our tests, the true_property feature didn't work well in every way, but the 
+snake_case style was maintained. Anyone who has worked with PyGObject, the GTK 
+bind to Python, will feel right at home.
+
 ## Conclusion
 
 As Qt Company progresses with CSD support, this project will be improved. And 

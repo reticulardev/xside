@@ -1,6 +1,10 @@
 # Quick start
 
-Download and enter the project folder:
+We will start by downloading the project and configuring the environment.
+
+## Download and configure
+
+Download and enter the project directory:
 
 ```commandline
 git clone https://github.com/reticulardev/pysidex.git && cd pysidex/
@@ -26,15 +30,12 @@ python src/demo.py
 
 ![Image](img/demo.png "screenshot")
 
-## Imports
+## The imports
 
-The project uses the `snake_case` feature to obtain idiomatic code, but does 
-not use the `true_property` feature to avoid conflicts, as it does not yet work 
-100%.
-
-After downloading and configuring, import the `sys` lib, import `PySide` to 
-have access to all widgets, import `PySideX` to build the CSD window and 
-finally configure the `snake_case` feature.
+In your code file, import the `sys` lib, import `PySide` to have access to all 
+widgets, import `PySideX` to build the CSD window and finally configure the 
+`snake_case` feature. As already mentioned, the project uses the `snake_case` 
+feature to obtain idiomatic code.
 
 ```python
 import sys
