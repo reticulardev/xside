@@ -50,7 +50,9 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="./">Quick start</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#imports">Imports</a>
+    <li class="toctree-l2"><a class="reference internal" href="#download-and-configure">Download and configure</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#the-imports">The imports</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#the-minimal-example">The minimal example</a>
     </li>
@@ -102,7 +104,9 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="quick-start">Quick start</h1>
-<p>Download and enter the project folder:</p>
+<p>We will start by downloading the project and configuring the environment.</p>
+<h2 id="download-and-configure">Download and configure</h2>
+<p>Download and enter the project directory:</p>
 <pre><code class="language-commandline">git clone https://github.com/reticulardev/pysidex.git &amp;&amp; cd pysidex/
 </code></pre>
 <p>Configure your virtual environment:</p>
@@ -115,13 +119,11 @@
 <pre><code class="language-commandline">python src/demo.py
 </code></pre>
 <p><img alt="Image" src="../img/demo.png" title="screenshot" /></p>
-<h2 id="imports">Imports</h2>
-<p>The project uses the <code>snake_case</code> feature to obtain idiomatic code, but does 
-not use the <code>true_property</code> feature to avoid conflicts, as it does not yet work 
-100%.</p>
-<p>After downloading and configuring, import the <code>sys</code> lib, import <code>PySide</code> to 
-have access to all widgets, import <code>PySideX</code> to build the CSD window and 
-finally configure the <code>snake_case</code> feature.</p>
+<h2 id="the-imports">The imports</h2>
+<p>In your code file, import the <code>sys</code> lib, import <code>PySide</code> to have access to all 
+widgets, import <code>PySideX</code> to build the CSD window and finally configure the 
+<code>snake_case</code> feature. As already mentioned, the project uses the <code>snake_case</code> 
+feature to obtain idiomatic code.</p>
 <pre><code class="language-python">import sys
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySideX import QtWidgetsX
