@@ -16,6 +16,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://github.com/reticulardev/pysidex/quick_start/</loc>
+         <lastmod>2023-12-30</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://github.com/reticulardev/pysidex/reference_QControlButton/</loc>
          <lastmod>2023-12-30</lastmod>
          <changefreq>daily</changefreq>
