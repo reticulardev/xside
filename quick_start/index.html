@@ -44,7 +44,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview</a>
+                <li class="toctree-l1"><a class="reference internal" href="../overview/">Project overview</a>
                 </li>
               </ul>
               <ul class="current">
@@ -57,7 +57,7 @@
     </ul>
                 </li>
               </ul>
-              <p class="caption"><span class="caption-text">Class Reference</span></p>
+              <p class="caption"><span class="caption-text">Extra widgets reference</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../reference_QMainFramelessWindow/">QMainFramelessWindow</a>
                   </li>
@@ -116,13 +116,12 @@
 </code></pre>
 <p><img alt="Image" src="../img/demo.png" title="screenshot" /></p>
 <h2 id="imports">Imports</h2>
-<p>The project uses the <code>snake_case</code> feature to obtain idiomatic 
-code, but does not use the <code>true_property</code> feature to avoid 
-conflicts, as it does not yet work 100%.</p>
-<p>After downloading and configuring, import the <code>sys</code> lib, 
-import <code>PySide</code> to have access to all widgets, import 
-<code>PySideX</code> to build the CSD window and finally configure the 
-<code>snake_case</code> feature.</p>
+<p>The project uses the <code>snake_case</code> feature to obtain idiomatic code, but does 
+not use the <code>true_property</code> feature to avoid conflicts, as it does not yet work 
+100%.</p>
+<p>After downloading and configuring, import the <code>sys</code> lib, import <code>PySide</code> to 
+have access to all widgets, import <code>PySideX</code> to build the CSD window and 
+finally configure the <code>snake_case</code> feature.</p>
 <pre><code class="language-python">import sys
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySideX import QtWidgetsX
@@ -135,13 +134,12 @@ window = QtWidgetsX.QMainFramelessWindow()
 window.show()
 sys.exit(app.exec())
 </code></pre>
-<p>This would give you a little window that can be resized in any 
-direction. However, there is no button to close the application 
-and, depending on your platform, it may be difficult to close 
-the application:</p>
+<p>This would give you a little window that can be resized in any direction. 
+However, there is no button to close the application and, depending on your 
+platform, it may be difficult to close the application:</p>
 <p><img alt="Image" src="../img/min_window.png" title="screenshot" /></p>
-<p>A better minimal example in this situation includes adding a 
-headerbar to access the window control buttons:</p>
+<p>A better minimal example in this situation includes adding a headerbar to 
+access the window control buttons:</p>
 <pre><code class="language-python">class MainWindow(QtWidgetsX.QMainFramelessWindow):
     def __init__(self):
         super().__init__()
@@ -161,12 +159,12 @@ window = MainWindow()
 window.show()
 sys.exit(app.exec())
 </code></pre>
-<p>Note that a central widget with appropriate settings already exists. 
-As it is already accessed directly, there is no need to create one.</p>
+<p>Note that a central widget with appropriate settings already exists. As it is 
+already accessed directly, there is no need to create one.</p>
 <pre><code class="language-python">self.central_widget().set_layout(self.main_layout)
 </code></pre>
-<p>Also note that the headerbar widget is independent, meaning you can 
-place it wherever you want, which is why we aligned it at the top.</p>
+<p>Also note that the headerbar widget is independent, meaning you can place it 
+wherever you want, which is why we aligned it at the top.</p>
 <pre><code class="language-python">self.main_layout.set_contents_margins(0, 0, 0, 0)
 self.main_layout.set_alignment(QtCore.Qt.AlignTop)
 </code></pre>
@@ -176,7 +174,7 @@ self.main_layout.set_alignment(QtCore.Qt.AlignTop)
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../overview/" class="btn btn-neutral float-left" title="Overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../overview/" class="btn btn-neutral float-left" title="Project overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../reference_QMainFramelessWindow/" class="btn btn-neutral float-right" title="QMainFramelessWindow">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
