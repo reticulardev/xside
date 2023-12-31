@@ -12,7 +12,7 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
 
 
-class MainWindow(QtWidgetsX.QMainFramelessWindow):
+class Window(QtWidgetsX.QApplicationWindow):
     """App window instance"""
 
     def __init__(self, *args, **kwargs) -> None:
@@ -71,7 +71,7 @@ class MainWindow(QtWidgetsX.QMainFramelessWindow):
     def on_set_style(self):
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_style_sheet(
-            '#QMainWindowCSD {'
+            'QApplicationWindow {'
             '   background-color: rgba(59, 59, 59, 0.8);'
             '   border-radius: 10px;'
             '   border: 1px solid #555;}'
@@ -108,8 +108,8 @@ class Application(object):
 
         :param args: List of command line arguments
         """
-        self.app = QtWidgets.QApplication(args)
-        self.window = MainWindow(is_decorated=False, platform=True)
+        self.application = QtWidgets.QApplication(args)
+        self.window = Window(is_decorated=False, platform=True)
 
     def main(self) -> None:
         """Start the app
@@ -117,7 +117,7 @@ class Application(object):
         Sets basic window details and starts the application.
         """
         self.window.show()
-        sys.exit(self.app.exec())
+        sys.exit(self.application.exec())
 
 
 if __name__ == '__main__':

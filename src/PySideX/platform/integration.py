@@ -262,14 +262,14 @@ class StyleBuilder(object):
 
         if self.__main_window.is_decorated():
             main_window_style = (
-                '#QMainWindowCSD {' +
+                '#QApplicationWindow {' +
                 'background-color: rgba({}, {}, {}, {});'.format(
                     self.__bg_color.red(), self.__bg_color.green(),
                     self.__bg_color.blue(), self.__bd_color.alpha_f()) +
                 '}')
         else:
             main_window_style = (
-                '#QMainWindowCSD {' +
+                '#QApplicationWindow {' +
                 'background-color: rgba({}, {}, {}, {});'.format(
                     self.__bg_color.red(), self.__bg_color.green(),
                     self.__bg_color.blue(), self.__bd_color.alpha_f()) +
@@ -293,7 +293,7 @@ class StyleBuilder(object):
         # ...
         central_widget = [
             x for x in style.split('}') if
-            x.strip().startswith(f'#QMainWindowCSD')][-1]
+            x.strip().startswith(f'#QApplicationWindow')][-1]
 
         return style.replace(
             central_widget, central_widget + 'border-radius: 0px; border: 0px')

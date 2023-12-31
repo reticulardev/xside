@@ -10,7 +10,7 @@ from __feature__ import snake_case
 import PySideX.platform.integration as integration
 
 
-class QMainFramelessWindow(QtWidgets.QMainWindow):
+class QApplicationWindow(QtWidgets.QMainWindow):
     """Application main window prepared to use CSD
 
     The edges are rounded and there is no title bar. A custom header bar can
@@ -85,10 +85,11 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
 
         :param style: string containing 'qss' style
         """
+        if 'QApplicationWindow' in style:
+            if '#QApplicationWindow' not in style:
+                style = style.replace(
+                    'QApplicationWindow', '#QApplicationWindow')
 
-        if '#QMainWindowCSD' not in style:
-            raise LookupError(
-                "The QMainWindowCSD style needs to be named: #QMainWindowCSD")
         self.__reset_style_properties()
         self.__style_sheet += style
 
@@ -114,7 +115,7 @@ class QMainFramelessWindow(QtWidgets.QMainWindow):
     def __configure_window(self) -> None:
         # Layout
         self.set_central_widget(self.__central_widget)
-        self.__central_widget.set_object_name('QMainWindowCSD')
+        self.__central_widget.set_object_name('QApplicationWindow')
 
         # Decorations
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
@@ -467,7 +468,7 @@ class QWindowMoveArea(QtWidgets.QFrame):
 
         Initialize class attributes
 
-        :param main_window: QMainWindowCSD app main window instance
+        :param main_window: QApplicationWindow app main window instance
         """
         super().__init__(*args, **kwargs)
         self.__main_window = main_window
@@ -518,7 +519,7 @@ class QHeaderBar(QtWidgets.QFrame):
 
         Initialize class attributes
 
-        :param main_window: QMainWindowCSD app main window instance
+        :param main_window: QApplicationWindow app main window instance
         :param window_control_buttons_on_left:
             window control buttons (minimize, maximize and close) on left
         :param window_control_buttons_order:

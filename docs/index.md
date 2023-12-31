@@ -10,7 +10,7 @@ of the Gnome project.
 
 ![Image](img/screen.png "screenshot")
 
-* **QMainFramelessWindow**: A CSD (Client-side decoration) window without server-side decoration (SSD). It 
+* **QApplicationWindow**: A CSD (Client-side decoration) window without server-side decoration (SSD). It 
 is resizable in all corners and has a shadow (optional).
 
 

@@ -50,7 +50,7 @@ A **highly discouraged** minimal example would be:
 
 ```python
 app = QtWidgets.QApplication(sys.argv)
-window = QtWidgetsX.QMainFramelessWindow()
+window = QtWidgetsX.QApplicationWindow()
 window.show()
 sys.exit(app.exec())
 ```
@@ -65,22 +65,22 @@ A better minimal example in this situation includes adding a headerbar to
 access the window control buttons:
 
 ```python
-class MainWindow(QtWidgetsX.QMainFramelessWindow):
+class Window(QtWidgetsX.QApplicationWindow):
     def __init__(self):
         super().__init__()
-        
+
         self.main_layout = QtWidgets.QVBoxLayout()
         self.central_widget().set_layout(self.main_layout)
-        
+
         self.main_layout.set_contents_margins(0, 0, 0, 0)
         self.main_layout.set_alignment(QtCore.Qt.AlignTop)
 
         self.headerbar = QtWidgetsX.QHeaderBar(self)
         self.main_layout.add_widget(self.headerbar)
-        
+
 
 app = QtWidgets.QApplication(sys.argv)
-window = MainWindow()
+window = Window()
 window.show()
 sys.exit(app.exec())
 ```
@@ -127,11 +127,12 @@ from __feature__ import snake_case
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
 
-class MainWindow(QtWidgetsX.QMainFramelessWindow):
+
+class Window(QtWidgetsX.QApplicationWindow):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        
+
         # Window icon
         icon_path = os.path.join(SRC_DIR, 'icon.svg')
         window_icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
@@ -154,7 +155,7 @@ class MainWindow(QtWidgetsX.QMainFramelessWindow):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    window = MainWindow()
+    window = Window()
     window.show()
     sys.exit(app.exec())
 ```

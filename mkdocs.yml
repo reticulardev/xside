@@ -5,7 +5,7 @@ nav:
   - Project overview: overview.md
   - Quick start: quick_start.md
   - Extra widgets reference:
-    - QMainFramelessWindow: reference_QMainFramelessWindow.md
+    - QApplicationWindow: reference_QApplicationWindow.md
     - QHeaderBar: reference_QHeaderBar.md
     - QControlButton: reference_QControlButton.md
     - QWindowControlButtons: reference_QWindowControlButtons.md
