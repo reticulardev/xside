@@ -63,7 +63,7 @@
               </ul>
               <p class="caption"><span class="caption-text">Extra widgets reference</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../reference_QMainFramelessWindow/">QMainFramelessWindow</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../reference_QApplicationWindow/">QApplicationWindow</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../reference_QHeaderBar/">QHeaderBar</a>
                   </li>
@@ -134,7 +134,7 @@ from __feature__ import snake_case
 <h2 id="the-minimal-example">The minimal example</h2>
 <p>A <strong>highly discouraged</strong> minimal example would be:</p>
 <pre><code class="language-python">app = QtWidgets.QApplication(sys.argv)
-window = QtWidgetsX.QMainFramelessWindow()
+window = QtWidgetsX.QApplicationWindow()
 window.show()
 sys.exit(app.exec())
 </code></pre>
@@ -144,7 +144,7 @@ platform, it may be difficult to close the application:</p>
 <p><img alt="Image" src="../img/min_window.png" title="screenshot" /></p>
 <p>A better minimal example in this situation includes adding a headerbar to 
 access the window control buttons:</p>
-<pre><code class="language-python">class MainWindow(QtWidgetsX.QMainFramelessWindow):
+<pre><code class="language-python">class Window(QtWidgetsX.QApplicationWindow):
     def __init__(self):
         super().__init__()
 
@@ -159,7 +159,7 @@ access the window control buttons:</p>
 
 
 app = QtWidgets.QApplication(sys.argv)
-window = MainWindow()
+window = Window()
 window.show()
 sys.exit(app.exec())
 </code></pre>
@@ -193,7 +193,8 @@ from __feature__ import snake_case
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
 
-class MainWindow(QtWidgetsX.QMainFramelessWindow):
+
+class Window(QtWidgetsX.QApplicationWindow):
 
     def __init__(self, *args, **kwargs) -&gt; None:
         super().__init__(*args, **kwargs)
@@ -220,7 +221,7 @@ class MainWindow(QtWidgetsX.QMainFramelessWindow):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    window = MainWindow()
+    window = Window()
     window.show()
     sys.exit(app.exec())
 </code></pre>
@@ -231,7 +232,7 @@ if __name__ == '__main__':
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../overview/" class="btn btn-neutral float-left" title="Project overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../reference_QMainFramelessWindow/" class="btn btn-neutral float-right" title="QMainFramelessWindow">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../reference_QApplicationWindow/" class="btn btn-neutral float-right" title="QApplicationWindow">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -257,7 +258,7 @@ if __name__ == '__main__':
       <span><a href="../overview/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../reference_QMainFramelessWindow/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../reference_QApplicationWindow/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
