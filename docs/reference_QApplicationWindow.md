@@ -2,6 +2,8 @@
 
 Inherits from [QMainWindow](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html)
 
+![Image](img/min_window.png "screenshot")
+
 ## Overview
 
 This widget is the main window of the application, and the main widget of this 
