@@ -27,12 +27,17 @@ for its *central widget*. To change the [**QSS** style](https://reticulardev.git
 you need to use the base name "QApplicationWindow{...}".
 
 ## Methods
+
 Only new ones. See the 
 [**QMainWindow** documentation](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html) 
 for more.
+
 - [central_widget](#central_widget)
+
 - [is_decorated](#is_decorated)
+
 - [platform_settings](#is_decorated)
+
 - [reset_style](#reset_style)
 
 ### central_widget

@@ -1,12 +1,12 @@
 # Overview
 
 This is a work that uses Qt's Python bind to build a window with its own 
-decoration (CSD), which eliminates the decoration of the operating system's 
-window server (SSD).
+decoration ([CSD](https://en.wikipedia.org/wiki/Client-side_decoration)), which eliminates the decoration of the operating system's 
+window server ([SSD](https://en.wikipedia.org/wiki/Window_(computing)#Window_decoration)).
 
 Qt is an old and mature lib, but it was not originally designed to provide CSD 
 support. Although it has added initial native support to CSD in recent years, 
-it is still an incomplete work. Therefore, the PySideX and MPX projects are CSD 
+it is still an incomplete work. Therefore, the **PySideX** and [MPX](https://github.com/reticulardev/mpx) projects are CSD 
 implementations usable within the limits of Qt. So some hacks were made so that 
 it was possible to have a usable window with desirable features such as a 
 headerbar, customization of window borders, window control buttons with native 
