@@ -10,6 +10,9 @@ nav:
     - QControlButton: reference_QControlButton.md
     - QWindowControlButtons: reference_QWindowControlButtons.md
     - QWindowMoveArea: reference_QWindowMoveArea.md
+  - Tools Reference:
+    - PlatformSettings: reference_PlatformSettings.md
+    - Styling: styling.md
   - Tests: tests.md
   - About: about.md
 theme: readthedocs
