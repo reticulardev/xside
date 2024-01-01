@@ -58,6 +58,18 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">QWindowControlButtons</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#class-signature">Class signature</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#parameters">Parameters</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#class-methods">Class methods</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#example">Example</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../reference_QWindowMoveArea/">QWindowMoveArea</a>
@@ -102,6 +114,38 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="qwindowcontrolbuttons">QWindowControlButtons</h1>
+<p>Inherits from <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QFrame.html">QFrame</a></p>
+<p><img alt="Image" src="../img/window_control_buttons.png" title="screenshot" /></p>
+<h2 id="overview">Overview</h2>
+<p>Widget with window control buttons, to close, maximize and minimize.</p>
+<h2 id="class-signature">Class signature</h2>
+<pre>
+QWindowControlButtons(
+    main_window: QApplicationWindow[QtWidgets, QMainWindow],
+    button_order: tuple = (0, 1, 2),
+) -> None
+</pre>
+
+<h3 id="parameters">Parameters</h3>
+<ul>
+<li>
+<p><strong>main_window</strong>: Type <code>QApplicationWindow</code> (QtWidgets.QMainWindow)</p>
+<p>Just pass <code>self</code> which indicates the top-level window instance:</p>
+<p>self.control_buttons = QWindowControlButtons(self)</p>
+</li>
+<li>
+<p><strong>button_order</strong>: Type <code>tuple</code>. Default is <code>(0, 1, 2)</code>
+    In the button order parameter, each number represents a type of button: <code>0</code> 
+    is the <strong>minimize</strong> button, <code>1</code> is the <strong>maximize</strong> button, <code>2</code> is the 
+    <strong>close</strong> button and <code>3</code> is <strong>window icon</strong>.</p>
+</li>
+</ul>
+<h2 id="class-methods">Class methods</h2>
+<p>There are no methods!</p>
+<h2 id="example">Example</h2>
+<pre><code class="language-python">self.control_buttons = QWindowControlButtons(self, (0, 1, 2))
+self.layout.add_widget(self.control_buttons)
+</code></pre>
               
             </div>
           </div><footer>
