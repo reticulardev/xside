@@ -63,8 +63,26 @@
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#class-methods">Class methods</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#add_widget_to_left">add_widget_to_left</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#modified">Modified</a>
+    <li class="toctree-l3"><a class="reference internal" href="#add_widget_to_right">add_widget_to_right</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#lef_layout">lef_layout</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#right_layout">right_layout</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#set_left_control_buttons_visible">set_left_control_buttons_visible</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#set_right_control_buttons_visible">set_right_control_buttons_visible</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#set_text">set_text</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#text">text</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#changes">Changes</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
     </li>
@@ -119,15 +137,88 @@
 <p>Inherits from <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QFrame.html">QFrame</a></p>
 <p><img alt="Image" src="../img/headerbar.png" title="screenshot" /></p>
 <h2 id="overview">Overview</h2>
-<p>...</p>
+<p>The main control area of an application window, where there are close, maximize 
+and minimize buttons, along with a movement area and the application icon.</p>
+<p>It's a regular widget and can be aligned wherever you want, not just at the top 
+of the window, but also in other places like the middle or bottom if you're a 
+psychopath.</p>
 <h2 id="class-signature">Class signature</h2>
-<p>...</p>
+<p>QHeaderBar(main_window: QApplicationWindow[QtWidgets, QMainWindow])</p>
 <h3 id="parameters">Parameters</h3>
-<p>...</p>
+<ul>
+<li>
+<p><strong>main_window</strong>: Type = <code>QApplicationWindow</code>[QtWidgets, QMainWindow]</p>
+<p>Just pass <code>self</code> which indicates the top-level window instance.
+<code>python
+self.headerbar = QHeaderBar(self)</code></p>
+</li>
+</ul>
 <h2 id="class-methods">Class methods</h2>
+<p>Only new ones. See the
+<a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QFrame.html"><strong>QFrame</strong> documentation</a> 
+for more.</p>
+<ul>
+<li>
+<p><a href="#add_widget_to_left">add_widget_to_left</a></p>
+</li>
+<li>
+<p><a href="#add_widget_to_right">add_widget_to_right</a></p>
+</li>
+<li>
+<p><a href="#lef_layout">lef_layout</a></p>
+</li>
+<li>
+<p><a href="#right_layout">right_layout</a></p>
+</li>
+<li>
+<p><a href="#set_left_control_buttons_visible">set_left_control_buttons_visible</a></p>
+</li>
+<li>
+<p><a href="#set_right_control_buttons_visible">set_right_control_buttons_visible</a></p>
+</li>
+<li>
+<p><a href="#set_text">set_text</a></p>
+</li>
+<li>
+<p><a href="#text">text</a></p>
+</li>
+</ul>
+<h3 id="add_widget_to_left">add_widget_to_left</h3>
+<p>Signature: <code>add_widget_to_left(widget: QtWidgets.QWidget) -&gt; None</code></p>
 <p>...</p>
-<h2 id="modified">Modified</h2>
+<hr />
+<h3 id="add_widget_to_right">add_widget_to_right</h3>
+<p>Signature: <code>add_widget_to_right(widget: QtWidgets.QWidget) -&gt; None</code></p>
 <p>...</p>
+<hr />
+<h3 id="lef_layout">lef_layout</h3>
+<p>Signature: <code>lef_layout() -&gt; QtWidgets.QHBoxLayout</code></p>
+<p>...</p>
+<hr />
+<h3 id="right_layout">right_layout</h3>
+<p>Signature: <code>right_layout() -&gt; QtWidgets.QHBoxLayout</code></p>
+<p>...</p>
+<hr />
+<h3 id="set_left_control_buttons_visible">set_left_control_buttons_visible</h3>
+<p>Signature: <code>set_left_control_buttons_visible(visible: bool) -&gt; None</code></p>
+<p>...</p>
+<hr />
+<h3 id="set_right_control_buttons_visible">set_right_control_buttons_visible</h3>
+<p>Signature: <code>set_right_control_buttons_visible(visible: bool) -&gt; None</code></p>
+<p>...</p>
+<hr />
+<h3 id="set_text">set_text</h3>
+<p>Signature: <code>set_text(text: str) -&gt; None</code></p>
+<p>...</p>
+<hr />
+<h3 id="text">text</h3>
+<p>Signature: <code>text() -&gt; str</code></p>
+<p>...</p>
+<hr />
+<h2 id="changes">Changes</h2>
+<p>The <code>resize_event</code> method needed, at least temporarily, to be 
+rewritten and is therefore not currently accessible. So consider using specific 
+event methods like <code>event_filter</code>.</p>
 <h2 id="examples">Examples</h2>
 <p>...</p>
               

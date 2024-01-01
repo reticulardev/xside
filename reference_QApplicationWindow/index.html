@@ -72,7 +72,7 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#modified">Modified</a>
+    <li class="toctree-l2"><a class="reference internal" href="#changes">Changes</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
         <ul>
@@ -135,26 +135,9 @@
 <p>Inherits from <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html">QMainWindow</a></p>
 <p><img alt="Image" src="../img/min_window.png" title="screenshot" /></p>
 <h2 id="overview">Overview</h2>
-<p>This widget is the main window of the application, and the main widget of this 
-project. It was built under <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html">QMainWindow</a> and some modifications were made to 
-achieve the CSD feature.</p>
-<p>Although much can be changed in the future, some particularities need to be 
-highlighted: 
-- The <code>event_filter</code> method needed, at least temporarily, to be 
-rewritten and is therefore not currently accessible. So consider using specific 
-event methods like <code>enter_event</code> and <code>leave_vent</code>.</p>
-<ul>
-<li>
-<p>A pre-configured <em>central widget</em> already exists and is a central part of the 
-<strong>QApplicationWindow</strong>. You will get it for use through the <code>central_widget</code> 
-method.</p>
-</li>
-<li>
-<p>The <code>set_object_name</code> method does not work for the <strong>QApplicationWindow</strong> nor 
-for its <em>central widget</em>. To change the <a href="https://reticulardev.github.io/pysidex/styling/"><strong>QSS</strong> style</a> 
-you need to use the base name "QApplicationWindow{...}".</p>
-</li>
-</ul>
+<p>The main window of an application.</p>
+<p>It was built under <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html">QMainWindow</a> 
+and some modifications were made to achieve the CSD feature. </p>
 <h2 id="class-signature">Class signature</h2>
 <p>QApplicationWindow(is_decorated: bool = False, platform: bool = True)</p>
 <h3 id="parameters">Parameters</h3>
@@ -190,7 +173,7 @@ for more.</p>
 </li>
 </ul>
 <h3 id="central_widget">central_widget</h3>
-<p>Signature: <code>central_widget(self) -&gt; QtWidgets.QWidget:</code></p>
+<p>Signature: <code>central_widget() -&gt; QtWidgets.QWidget</code></p>
 <p>A pre-configured <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QWidget.html">QWidget</a>. 
 Is a central part of the <strong>QApplicationWindow</strong>. The main 
 layout of your application must be added to it.</p>
@@ -199,30 +182,29 @@ self.central_widget().set_layout(self.layout)
 </code></pre>
 <hr />
 <h3 id="is_decorated">is_decorated</h3>
-<p>Signature: <code>is_decorated(self) -&gt; bool:</code></p>
+<p>Signature: <code>is_decorated() -&gt; bool</code></p>
 <p>Returns <code>False</code> if it is an undecorated <strong>CSD</strong> window and <code>True</code> if it is 
 server-side decorated.</p>
 <hr />
 <h3 id="platform_settings">platform_settings</h3>
-<p>Signature: <code>platform_settings(self) -&gt; PlatformSettings</code></p>
+<p>Signature: <code>platform_settings() -&gt; PlatformSettings</code></p>
 <p>A <a href="https://reticulardev.github.io/pysidex/reference_PlatformSettings/">PlatformSettings</a> 
 object that brings information from the user's platform that is relevant to the 
 composition of the window.</p>
 <hr />
 <h3 id="reset_style">reset_style</h3>
-<p>Signature: <code>reset_style(self) -&gt; None:</code></p>
+<p>Signature: <code>reset_style() -&gt; None</code></p>
 <p>Changes the window style back to the default.</p>
-<h2 id="modified">Modified</h2>
-<p>As already discussed, the modified methods cannot be used for this widget. The 
-alternative approach specified in the <a href="#overview">overview</a> must be used.</p>
-<ul>
-<li>
-<p><strong>event_filter</strong></p>
-</li>
-<li>
-<p><strong>set_object_name</strong></p>
-</li>
-</ul>
+<h2 id="changes">Changes</h2>
+<p>A pre-configured <em>central widget</em> already exists and is a central part of the 
+<strong>QApplicationWindow</strong>. You will get it for use through the <code>central_widget</code> 
+method.</p>
+<p>The <code>set_object_name</code> method does not work for the <strong>QApplicationWindow</strong> nor 
+for its <em>central widget</em>. To change the <a href="https://reticulardev.github.io/pysidex/styling/"><strong>QSS</strong> style</a> 
+you need to use the base name "QApplicationWindow{...}".</p>
+<p>The <code>event_filter</code> method needed, at least temporarily, to be 
+rewritten and is therefore not currently accessible. So consider using specific 
+event methods like <code>enter_event</code> and <code>leave_vent</code>.</p>
 <h2 id="examples">Examples</h2>
 <p>A <strong>highly discouraged</strong> minimal example would be:</p>
 <pre><code class="language-python">app = QtWidgets.QApplication(sys.argv)
