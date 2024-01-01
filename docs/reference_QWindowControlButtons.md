@@ -10,12 +10,10 @@ Widget with window control buttons, to close, maximize and minimize.
 
 ## Class signature
 
-<pre>
-QWindowControlButtons(
+<pre><small>QWindowControlButtons(
     main_window: QApplicationWindow[QtWidgets, QMainWindow],
     button_order: tuple = (0, 1, 2),
-) -> None
-</pre>
+) -> None</small></pre>
 
 ### Parameters
 
@@ -24,7 +22,7 @@ QWindowControlButtons(
     Just pass `self` which indicates the top-level window instance:
 
     
-    self.control_buttons = QWindowControlButtons(self)
+    self.control_buttons = QWindowControlButtons(self, (0, 1, 2))
     
   - **button_order**: Type `tuple`. Default is `(0, 1, 2)`
     In the button order parameter, each number represents a type of button: `0` 

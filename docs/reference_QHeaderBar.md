@@ -15,9 +15,7 @@ psychopath.
 
 ## Class signature
 
-<pre>
-QHeaderBar(main_window: QApplicationWindow[QtWidgets, QMainWindow])
-</pre>
+<pre><small>QHeaderBar(main_window: QApplicationWindow[QtWidgets, QMainWindow])</small></pre>
 
 ### Parameters
 
