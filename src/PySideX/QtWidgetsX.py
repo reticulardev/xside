@@ -580,37 +580,6 @@ class QHeaderBar(QtWidgets.QFrame):
             self.__window_control_buttons_order[1])
         self.__bar_item_layout_right.add_widget(self.__right_ctrl_buttons)
 
-    def text(self) -> str:
-        """Get the QWindowMoveArea's text
-
-        The text shown in the center of the QWindowMoveArea
-        """
-        return self.__window_move_area.text()
-
-    def set_text(self, text: str) -> None:
-        """Sets a text in the center
-
-        :param text: The text to be shown in the center of the QWindowMoveArea
-        """
-        if not self.__main_window.is_decorated():
-            self.__window_move_area_text.set_text(text)
-
-    def lef_layout(self) -> QtWidgets.QHBoxLayout:
-        """QHBoxLayout on left
-
-        Gets the QHBoxLayout of the widgets that are on the left of the
-        QHeaderBar
-        """
-        return self.__left_layout
-
-    def right_layout(self) -> QtWidgets.QHBoxLayout:
-        """QHBoxLayout on right
-
-        Gets the QHBoxLayout of the widgets that are on the right of the
-        QHeaderBar
-        """
-        return self.__right_layout
-
     def add_widget_to_left(self, widget: QtWidgets.QWidget) -> None:
         """..."""
         self.__left_layout.add_widget(widget)
@@ -619,13 +588,13 @@ class QHeaderBar(QtWidgets.QFrame):
         """..."""
         self.__right_layout.add_widget(widget)
 
-    def set_left_control_buttons_visible(self, visible: bool) -> None:
-        self.__left_ctrl_buttons_visibility = visible
-        self.__left_ctrl_buttons.set_visible(visible)
+    def lef_layout(self) -> QtWidgets.QHBoxLayout:
+        """QHBoxLayout on left
 
-    def set_right_control_buttons_visible(self, visible: bool) -> None:
-        self.__right_ctrl_buttons_visibility = visible
-        self.__right_ctrl_buttons.set_visible(visible)
+        Gets the QHBoxLayout of the widgets that are on the left of the
+        QHeaderBar
+        """
+        return self.__left_layout
 
     def resize_event(self, event: QtGui.QResizeEvent) -> None:
         """..."""
@@ -674,6 +643,37 @@ class QHeaderBar(QtWidgets.QFrame):
                     f'margin-left: 0px;')
 
         logging.info(event)
+
+    def right_layout(self) -> QtWidgets.QHBoxLayout:
+        """QHBoxLayout on right
+
+        Gets the QHBoxLayout of the widgets that are on the right of the
+        QHeaderBar
+        """
+        return self.__right_layout
+
+    def set_left_control_buttons_visible(self, visible: bool) -> None:
+        self.__left_ctrl_buttons_visibility = visible
+        self.__left_ctrl_buttons.set_visible(visible)
+
+    def set_right_control_buttons_visible(self, visible: bool) -> None:
+        self.__right_ctrl_buttons_visibility = visible
+        self.__right_ctrl_buttons.set_visible(visible)
+
+    def set_text(self, text: str) -> None:
+        """Sets a text in the center
+
+        :param text: The text to be shown in the center of the QWindowMoveArea
+        """
+        if not self.__main_window.is_decorated():
+            self.__window_move_area_text.set_text(text)
+
+    def text(self) -> str:
+        """Get the QWindowMoveArea's text
+
+        The text shown in the center of the QWindowMoveArea
+        """
+        return self.__window_move_area.text()
 
     def __50_percent_left_size(self, hidden_sides: bool) -> int:
         # ...

@@ -5,26 +5,10 @@ Inherits from [QMainWindow](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QM
 ![Image](img/min_window.png "screenshot")
 
 ## Overview
+The main window of an application.
 
-This widget is the main window of the application, and the main widget of this 
-project. It was built under [QMainWindow](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html) and some modifications were made to 
-achieve the CSD feature.
-
-Although much can be changed in the future, some particularities need to be 
-highlighted: 
-- The `event_filter` method needed, at least temporarily, to be 
-rewritten and is therefore not currently accessible. So consider using specific 
-event methods like `enter_event` and `leave_vent`.
-
-
-- A pre-configured *central widget* already exists and is a central part of the 
-**QApplicationWindow**. You will get it for use through the `central_widget` 
-method.
-
-
-- The `set_object_name` method does not work for the **QApplicationWindow** nor 
-for its *central widget*. To change the [**QSS** style](https://reticulardev.github.io/pysidex/styling/) 
-you need to use the base name "QApplicationWindow{...}".
+It was built under [QMainWindow](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html) 
+and some modifications were made to achieve the CSD feature. 
 
 ## Class signature
 
@@ -59,7 +43,7 @@ for more.
 
 ### central_widget
 
-Signature: `central_widget(self) -> QtWidgets.QWidget:`
+Signature: `central_widget() -> QtWidgets.QWidget`
 
 A pre-configured [QWidget](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QWidget.html). 
 Is a central part of the **QApplicationWindow**. The main 
@@ -73,7 +57,7 @@ self.central_widget().set_layout(self.layout)
 ---
 
 ### is_decorated
-Signature: `is_decorated(self) -> bool:`
+Signature: `is_decorated() -> bool`
 
 Returns `False` if it is an undecorated **CSD** window and `True` if it is 
 server-side decorated.
@@ -82,7 +66,7 @@ server-side decorated.
 
 ### platform_settings
 
-Signature: `platform_settings(self) -> PlatformSettings`
+Signature: `platform_settings() -> PlatformSettings`
 
 A [PlatformSettings](https://reticulardev.github.io/pysidex/reference_PlatformSettings/) 
 object that brings information from the user's platform that is relevant to the 
@@ -92,19 +76,24 @@ composition of the window.
 
 ### reset_style
 
-Signature: `reset_style(self) -> None:`
+Signature: `reset_style() -> None`
 
 Changes the window style back to the default.
 
 
-## Modified
+## Changes
 
-As already discussed, the modified methods cannot be used for this widget. The 
-alternative approach specified in the [overview](#overview) must be used.
+A pre-configured *central widget* already exists and is a central part of the 
+**QApplicationWindow**. You will get it for use through the `central_widget` 
+method.
 
-- **event_filter**
+The `set_object_name` method does not work for the **QApplicationWindow** nor 
+for its *central widget*. To change the [**QSS** style](https://reticulardev.github.io/pysidex/styling/) 
+you need to use the base name "QApplicationWindow{...}".
 
-- **set_object_name**
+The `event_filter` method needed, at least temporarily, to be 
+rewritten and is therefore not currently accessible. So consider using specific 
+event methods like `enter_event` and `leave_vent`.
 
 ## Examples
 

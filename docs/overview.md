@@ -77,8 +77,9 @@ snake_case and true_property features were introduced.
 Find out more about the feature in the official [Pyside documentation](https://doc.qt.io/qtforpython-6/considerations.html#features)
 
 In our tests, the true_property feature didn't work well in every way, but the 
-snake_case style was maintained. Anyone who has worked with PyGObject, the GTK 
-bind to Python, will feel right at home.
+snake_case style was maintained. So consider all properties as hidden and 
+access any information through **getters** and **setters** methods. Anyone who 
+has worked with PyGObject, the GTK bind to Python, will feel right at home.
 
 This is a project based on QtWidgets and for now there are no plans to support 
 QML.
