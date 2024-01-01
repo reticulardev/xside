@@ -54,7 +54,13 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a>
+    <li class="toctree-l2"><a class="reference internal" href="#class-signature">Class signature</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#parameters">Parameters</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#class-methods">Class methods</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#central_widget">central_widget</a>
     </li>
@@ -66,7 +72,7 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#modified-methods">Modified methods</a>
+    <li class="toctree-l2"><a class="reference internal" href="#modified">Modified</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
         <ul>
@@ -149,7 +155,21 @@ for its <em>central widget</em>. To change the <a href="https://reticulardev.git
 you need to use the base name "QApplicationWindow{...}".</p>
 </li>
 </ul>
-<h2 id="methods">Methods</h2>
+<h2 id="class-signature">Class signature</h2>
+<p>QApplicationWindow(is_decorated: bool = False, platform: bool = True)</p>
+<h3 id="parameters">Parameters</h3>
+<ul>
+<li><strong>is_decorated</strong>: Type = <code>bool</code> (Default is <code>False</code>)</li>
+</ul>
+<p>Use <code>False</code> if it is an undecorated <strong>CSD</strong> window and <code>True</code> if it is 
+server-side decorated.</p>
+<ul>
+<li><strong>platform</strong>: Type = <code>bool</code> (Default is <code>True</code>)</li>
+</ul>
+<p>The default is <code>True</code>, which is used to follow the user's platform style. 
+These are the control button styles, color and shape of the window borders. 
+Setting <code>False</code> will make the window use an alternative default style.</p>
+<h2 id="class-methods">Class methods</h2>
 <p>Only new ones. See the 
 <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html"><strong>QMainWindow</strong> documentation</a> 
 for more.</p>
@@ -190,7 +210,7 @@ composition of the window.</p>
 <h3 id="reset_style">reset_style</h3>
 <p>Signature: <code>reset_style(self) -&gt; None:</code></p>
 <p>Changes the window style back to the default.</p>
-<h2 id="modified-methods">Modified methods</h2>
+<h2 id="modified">Modified</h2>
 <p>As already discussed, the modified methods cannot be used for this widget. The 
 alternative approach specified in the <a href="#overview">overview</a> must be used.</p>
 <ul>
