@@ -15,13 +15,13 @@ and some modifications were made to achieve the CSD feature.
 QApplicationWindow(is_decorated: bool = False, platform: bool = True)
 
 ### Parameters
-  - **is_decorated**: Type = `bool` (Default is `False`)
+  - **is_decorated**: Type `bool`, default is `False`
 
     Use `False` if it is an undecorated **CSD** window and `True` if it is 
 server-side decorated.
 
 
-  - **platform**: Type = `bool` (Default is `True`)
+  - **platform**: Type `bool`, default is `True`
 
     The default is `True`, which is used to follow the user's platform style. 
 These are the control button styles, color and shape of the window borders. 
@@ -43,7 +43,7 @@ for more.
 
 ### central_widget
 
-Signature: `central_widget() -> QtWidgets.QWidget`
+Signature: `central_widget() -> QWidget`
 
 A pre-configured [QWidget](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QWidget.html). 
 Is a central part of the **QApplicationWindow**. The main 
