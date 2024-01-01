@@ -55,6 +55,48 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">QApplicationWindow</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_1"></a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#central_widget">central_widget</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_2"></a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#is_decorated">is_decorated</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_3"></a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#platform_settings">platform_settings</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_4"></a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#reset_style">reset_style</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_5"></a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#modified-methods">Modified methods</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#example">Example</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#a-more-complete-minimal-example">A more complete minimal example</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#using-all-concepts">Using all concepts</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../reference_QHeaderBar/">QHeaderBar</a>
@@ -64,6 +106,13 @@
                   <li class="toctree-l1"><a class="reference internal" href="../reference_QWindowControlButtons/">QWindowControlButtons</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../reference_QWindowMoveArea/">QWindowMoveArea</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Tools Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../reference_PlatformSettings/">PlatformSettings</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../styling/">Styling</a>
                   </li>
               </ul>
               <ul>
@@ -99,6 +148,231 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="qapplicationwindow">QApplicationWindow</h1>
+<p>Inherits from <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html">QMainWindow</a></p>
+<h2 id="overview">Overview</h2>
+<p>This widget is the main window of the application, and the main widget of this 
+project. It was built under <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html">QMainWindow</a> and some modifications were made to 
+achieve the CSD feature.</p>
+<p>Although much can be changed in the future, some particularities need to be 
+highlighted: 
+- The <code>event_filter</code> method needed, at least temporarily, to be 
+rewritten and is therefore not currently accessible. So consider using specific 
+event methods like <code>enter_event</code> and <code>leave_vent</code>.</p>
+<ul>
+<li>
+<p>A pre-configured <em>central widget</em> already exists and is a central part of the 
+<a href="#QApplicationWindow">QApplicationWindow</a>. You will get it for use through the <code>central_widget</code> 
+method.</p>
+</li>
+<li>
+<p>The <code>set_object_name</code> method does not work for the <a href="#QApplicationWindow">QApplicationWindow</a> nor for 
+its <em>central widget</em>. To change the <strong>QSS</strong> style you need to use the base name 
+"QApplicationWindow{...}".</p>
+</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<p>Only new ones. See the 
+<a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html"><strong>QMainWindow</strong> documentation</a> 
+for more.
+- <a href="#central_widget">central_widget</a>
+- <a href="#is_decorated">is_decorated</a>
+- <a href="#is_decorated">platform_settings</a>
+- <a href="#reset_style">reset_style</a></p>
+<h3 id="_1"></h3>
+<h4 id="central_widget">central_widget</h4>
+<p>Signature: <code>central_widget(self) -&gt; QtWidgets.QWidget:</code></p>
+<p>A pre-configured <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QWidget.html">QWidget</a>. 
+Is a central part of the <a href="#QApplicationWindow">QApplicationWindow</a>. The main 
+layout of your application must be added to it.</p>
+<pre><code class="language-python">self.layout = QtWidgets.QVBoxLayout()
+self.central_widget().set_layout(self.layout)
+</code></pre>
+<hr />
+<h3 id="_2"></h3>
+<h4 id="is_decorated">is_decorated</h4>
+<p>Signature: <code>is_decorated(self) -&gt; bool:</code></p>
+<p>Returns <code>False</code> if it is an undecorated <strong>CSD</strong> window and <code>True</code> if it is 
+server-side decorated.</p>
+<hr />
+<h3 id="_3"></h3>
+<h4 id="platform_settings">platform_settings</h4>
+<p>Signature: <code>platform_settings(self) -&gt; PlatformSettings</code></p>
+<p>A <a href="https://reticulardev.github.io/pysidex/reference_PlatformSettings/">PlatformSettings</a> 
+object that brings information from the user's platform that is relevant to the 
+composition of the window.</p>
+<hr />
+<h3 id="_4"></h3>
+<h4 id="reset_style">reset_style</h4>
+<p>Signature: <code>reset_style(self) -&gt; None:</code></p>
+<p>Changes the window style back to the default.</p>
+<h2 id="_5"></h2>
+<h2 id="modified-methods">Modified methods</h2>
+<p>As already discussed, the modified methods cannot be used for this widget. The 
+alternative approach specified in the <a href="#overview">overview</a> must be used.</p>
+<ul>
+<li>
+<p><strong>event_filter</strong></p>
+</li>
+<li>
+<p><strong>set_object_name</strong></p>
+</li>
+</ul>
+<h2 id="example">Example</h2>
+<p>A <strong>highly discouraged</strong> minimal example would be:</p>
+<pre><code class="language-python">app = QtWidgets.QApplication(sys.argv)
+window = QtWidgetsX.QApplicationWindow()
+window.show()
+sys.exit(app.exec())
+</code></pre>
+<p>This would give you a little window that can be resized in any direction. 
+However, there is no button to close the application and, depending on your 
+platform, it may be difficult to close the application:</p>
+<p><img alt="Image" src="../img/min_window.png" title="screenshot" /></p>
+<p>A better minimal example in this situation includes adding a headerbar to 
+access the window control buttons:</p>
+<pre><code class="language-python">class Window(QtWidgetsX.QApplicationWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.main_layout = QtWidgets.QVBoxLayout()
+        self.central_widget().set_layout(self.main_layout)
+
+        self.main_layout.set_contents_margins(0, 0, 0, 0)
+        self.main_layout.set_alignment(QtCore.Qt.AlignTop)
+
+        self.headerbar = QtWidgetsX.QHeaderBar(self)
+        self.main_layout.add_widget(self.headerbar)
+
+
+app = QtWidgets.QApplication(sys.argv)
+window = Window()
+window.show()
+sys.exit(app.exec())
+</code></pre>
+<p>Note that a central widget with appropriate settings already exists. As it is 
+already accessed directly, there is no need to create one.</p>
+<pre><code class="language-python">self.central_widget().set_layout(self.main_layout)
+</code></pre>
+<p>Also note that the headerbar widget is independent, meaning you can place it 
+wherever you want, which is why we aligned it at the top.</p>
+<pre><code class="language-python">self.main_layout.set_contents_margins(0, 0, 0, 0)
+self.main_layout.set_alignment(QtCore.Qt.AlignTop)
+</code></pre>
+<p>This is the result:</p>
+<p><img alt="Image" src="../img/better_min_window.png" title="screenshot" /></p>
+<h4 id="a-more-complete-minimal-example">A more complete minimal example</h4>
+<p>In this example, we will add the <code>os</code> library to add an icon with a dynamic 
+path. The icon, once configured in the window, will be automatically recognized 
+by the header bar.</p>
+<p>The title is not automatically recognized by the header bar as in the case of 
+the icon, because not in all use cases a window needs to have the title 
+displayed. In our case, if we want to see the window title, we need to manually 
+redirect it to the header bar.</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+import os
+import sys
+
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySideX import QtWidgetsX
+from __feature__ import snake_case
+
+SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(SRC_DIR)
+
+
+class Window(QtWidgetsX.QApplicationWindow):
+
+    def __init__(self, *args, **kwargs) -&gt; None:
+        super().__init__(*args, **kwargs)
+
+        # Window icon
+        icon_path = os.path.join(SRC_DIR, 'icon.svg')
+        window_icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
+        self.set_window_icon(window_icon)
+
+        # Layout
+        self.main_layout = QtWidgets.QVBoxLayout()
+        self.main_layout.set_contents_margins(0, 0, 0, 0)
+        self.main_layout.set_alignment(QtCore.Qt.AlignTop)
+        self.central_widget().set_layout(self.main_layout)
+
+        # Headerbar
+        self.headerbar = QtWidgetsX.QHeaderBar(self)
+        self.main_layout.add_widget(self.headerbar)
+
+        # Window title
+        self.set_window_title('App title')
+        self.headerbar.set_text(self.window_title())
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    window = Window()
+    window.show()
+    sys.exit(app.exec())
+</code></pre>
+<p>This is the result:</p>
+<p><img alt="Image" src="../img/complete_min_window.png" title="screenshot" /></p>
+<h4 id="using-all-concepts">Using all concepts</h4>
+<p>We created the following example to use all the practical concepts in this 
+window, such as using specific event methods instead of <code>event_filter</code>, and 
+also using the "QApplicationWindow" <strong>id</strong> for <a href="https://doc.qt.io/qtforpython-6/tutorials/basictutorial/widgetstyling.html"><strong>QSS</strong> style</a>.</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+import os
+import sys
+
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySideX import QtWidgetsX
+from __feature__ import snake_case
+
+SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(SRC_DIR)
+
+
+class Window(QtWidgetsX.QApplicationWindow):
+
+    def __init__(self, *args, **kwargs) -&gt; None:
+        super().__init__(*args, **kwargs)
+
+        # Window icon
+        icon_path = os.path.join(SRC_DIR, 'icon.svg')
+        window_icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
+        self.set_window_icon(window_icon)
+
+        # Layout
+        self.main_layout = QtWidgets.QVBoxLayout()
+        self.main_layout.set_contents_margins(0, 0, 0, 0)
+        self.main_layout.set_alignment(QtCore.Qt.AlignTop)
+        self.central_widget().set_layout(self.main_layout)
+
+        # Headerbar
+        self.headerbar = QtWidgetsX.QHeaderBar(self)
+        self.main_layout.add_widget(self.headerbar)
+
+        # Window title
+        self.set_window_title('App title')
+        self.headerbar.set_text(self.window_title())
+
+    def enter_event(self, event: QtGui.QEnterEvent) -&gt; None:
+        self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
+        self.set_style_sheet(
+            'QApplicationWindow {'
+            '   background-color: rgba(65, 50, 75, 0.8);'
+            '   border-radius: 10px;'
+            '   border: 1px solid #555;}')
+
+    def leave_event(self, event: QtGui.QEnterEvent) -&gt; None:
+        self.reset_style()
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    window = Window()
+    window.show()
+    sys.exit(app.exec())
+</code></pre>
+<p>This is the result:</p>
+<p><img alt="Image" src="../img/ref_window_enter_and_leav_event.png" title="screenshot" /></p>
               
             </div>
           </div><footer>
