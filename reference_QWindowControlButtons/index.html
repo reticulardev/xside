@@ -119,19 +119,17 @@
 <h2 id="overview">Overview</h2>
 <p>Widget with window control buttons, to close, maximize and minimize.</p>
 <h2 id="class-signature">Class signature</h2>
-<pre>
-QWindowControlButtons(
+<pre><small>QWindowControlButtons(
     main_window: QApplicationWindow[QtWidgets, QMainWindow],
     button_order: tuple = (0, 1, 2),
-) -> None
-</pre>
+) -> None</small></pre>
 
 <h3 id="parameters">Parameters</h3>
 <ul>
 <li>
 <p><strong>main_window</strong>: Type <code>QApplicationWindow</code> (QtWidgets.QMainWindow)</p>
 <p>Just pass <code>self</code> which indicates the top-level window instance:</p>
-<p>self.control_buttons = QWindowControlButtons(self)</p>
+<p>self.control_buttons = QWindowControlButtons(self, (0, 1, 2))</p>
 </li>
 <li>
 <p><strong>button_order</strong>: Type <code>tuple</code>. Default is <code>(0, 1, 2)</code>
