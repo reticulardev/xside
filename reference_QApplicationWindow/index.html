@@ -143,12 +143,12 @@ and some modifications were made to achieve the CSD feature. </p>
 <h3 id="parameters">Parameters</h3>
 <ul>
 <li>
-<p><strong>is_decorated</strong>: Type = <code>bool</code> (Default is <code>False</code>)</p>
+<p><strong>is_decorated</strong>: Type <code>bool</code>, default is <code>False</code></p>
 <p>Use <code>False</code> if it is an undecorated <strong>CSD</strong> window and <code>True</code> if it is 
 server-side decorated.</p>
 </li>
 <li>
-<p><strong>platform</strong>: Type = <code>bool</code> (Default is <code>True</code>)</p>
+<p><strong>platform</strong>: Type <code>bool</code>, default is <code>True</code></p>
 <p>The default is <code>True</code>, which is used to follow the user's platform style. 
 These are the control button styles, color and shape of the window borders. 
 Setting <code>False</code> will make the window use an alternative default style.</p>
@@ -173,7 +173,7 @@ for more.</p>
 </li>
 </ul>
 <h3 id="central_widget">central_widget</h3>
-<p>Signature: <code>central_widget() -&gt; QtWidgets.QWidget</code></p>
+<p>Signature: <code>central_widget() -&gt; QWidget</code></p>
 <p>A pre-configured <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QWidget.html">QWidget</a>. 
 Is a central part of the <strong>QApplicationWindow</strong>. The main 
 layout of your application must be added to it.</p>

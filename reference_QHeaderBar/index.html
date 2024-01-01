@@ -85,6 +85,10 @@
     <li class="toctree-l2"><a class="reference internal" href="#changes">Changes</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#a-more-complete-minimal-example">A more complete minimal example</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -147,8 +151,8 @@ psychopath.</p>
 <h3 id="parameters">Parameters</h3>
 <ul>
 <li>
-<p><strong>main_window</strong>: Type = <code>QApplicationWindow</code>[QtWidgets, QMainWindow]</p>
-<p>Just pass <code>self</code> which indicates the top-level window instance.</p>
+<p><strong>main_window</strong>: Type <code>QApplicationWindow</code> (QtWidgets.QMainWindow)</p>
+<p>Just pass <code>self</code> which indicates the top-level window instance:</p>
 <p>self.headerbar = QHeaderBar(self)</p>
 </li>
 </ul>
@@ -183,43 +187,173 @@ for more.</p>
 </li>
 </ul>
 <h3 id="add_widget_to_left">add_widget_to_left</h3>
-<p>Signature: <code>add_widget_to_left(widget: QtWidgets.QWidget) -&gt; None</code></p>
-<p>...</p>
+<p>Signature: <code>add_widget_to_left(widget: QWidget) -&gt; None</code></p>
+<p>Parameter <code>widget</code>: <code>QWidget</code></p>
+<p>Adds a widget to the left side of the header bar (after the control buttons or 
+window icon).</p>
 <hr />
 <h3 id="add_widget_to_right">add_widget_to_right</h3>
-<p>Signature: <code>add_widget_to_right(widget: QtWidgets.QWidget) -&gt; None</code></p>
-<p>...</p>
+<p>Signature: <code>add_widget_to_right(widget: QWidget) -&gt; None</code></p>
+<p>Parameter <code>widget</code>: <code>QWidget</code></p>
+<p>Adds a widget to the right side of the header bar (before the control buttons 
+or window icon).</p>
 <hr />
 <h3 id="lef_layout">lef_layout</h3>
-<p>Signature: <code>lef_layout() -&gt; QtWidgets.QHBoxLayout</code></p>
-<p>...</p>
+<p>Signature: <code>lef_layout() -&gt; QHBoxLayout</code></p>
+<p>Gets the left layout of the header bar. It is the layout where widgets are 
+added when using the <code>add_widget_to_left</code> method.</p>
 <hr />
 <h3 id="right_layout">right_layout</h3>
-<p>Signature: <code>right_layout() -&gt; QtWidgets.QHBoxLayout</code></p>
-<p>...</p>
+<p>Signature: <code>right_layout() -&gt; QHBoxLayout</code></p>
+<p>Gets the right layout of the header bar. It is the layout where widgets are 
+added when using the <code>add_widget_to_right</code> method.</p>
 <hr />
 <h3 id="set_left_control_buttons_visible">set_left_control_buttons_visible</h3>
 <p>Signature: <code>set_left_control_buttons_visible(visible: bool) -&gt; None</code></p>
-<p>...</p>
+<p>Parameter <code>visible</code>: <code>bool</code></p>
+<p>Controls the visibility of the control buttons on the left side of the window. 
+Setting this to <code>False</code> will hide them, and <code>True</code> will show them.</p>
 <hr />
 <h3 id="set_right_control_buttons_visible">set_right_control_buttons_visible</h3>
 <p>Signature: <code>set_right_control_buttons_visible(visible: bool) -&gt; None</code></p>
-<p>...</p>
+<p>Parameter <code>visible</code>: <code>bool</code></p>
+<p>Controls the visibility of the control buttons on the right side of the window. 
+Setting this to <code>False</code> will hide them, and <code>True</code> will show them.</p>
 <hr />
 <h3 id="set_text">set_text</h3>
 <p>Signature: <code>set_text(text: str) -&gt; None</code></p>
-<p>...</p>
+<p>Parameter <code>text</code>: <code>str</code></p>
+<p>Add text in the middle of the header bar. This is typically the text used as 
+the window title.</p>
 <hr />
 <h3 id="text">text</h3>
 <p>Signature: <code>text() -&gt; str</code></p>
-<p>...</p>
-<hr />
+<p>Gets the text of the header bar. This is the text in the middle, normally used 
+as the window title.</p>
 <h2 id="changes">Changes</h2>
 <p>The <code>resize_event</code> method needed, at least temporarily, to be 
 rewritten and is therefore not currently accessible. So consider using specific 
 event methods like <code>event_filter</code>.</p>
 <h2 id="examples">Examples</h2>
-<p>...</p>
+<p>Note that a central widget with appropriate settings already exists. As it is 
+already accessed directly, there is no need to create one.</p>
+<pre><code class="language-python">self.central_widget().set_layout(self.main_layout)
+</code></pre>
+<p>Also note that the headerbar widget is independent, meaning you can place it 
+wherever you want, which is why we aligned it at the top.</p>
+<pre><code class="language-python">self.main_layout.set_contents_margins(0, 0, 0, 0)
+self.main_layout.set_alignment(QtCore.Qt.AlignTop)
+</code></pre>
+<p>This is the result:</p>
+<pre><code class="language-python">class Window(QtWidgetsX.QApplicationWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.main_layout = QtWidgets.QVBoxLayout()
+        self.central_widget().set_layout(self.main_layout)
+
+        self.main_layout.set_contents_margins(0, 0, 0, 0)
+        self.main_layout.set_alignment(QtCore.Qt.AlignTop)
+
+        self.headerbar = QtWidgetsX.QHeaderBar(self)
+        self.main_layout.add_widget(self.headerbar)
+
+
+app = QtWidgets.QApplication(sys.argv)
+window = Window()
+window.show()
+sys.exit(app.exec())
+</code></pre>
+<p><img alt="Image" src="../img/better_min_window.png" title="screenshot" /></p>
+<h3 id="a-more-complete-minimal-example">A more complete minimal example</h3>
+<p>In this example, we will add the <code>os</code> library to add an icon with a dynamic 
+path. The icon, once configured in the window, will be automatically recognized 
+by the header bar.</p>
+<pre><code class="language-python">SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+...
+
+icon_path = os.path.join(SRC_DIR, 'icon.svg')
+window_icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
+self.set_window_icon(window_icon)
+</code></pre>
+<p>The title is not automatically recognized by the header bar as in the case of 
+the icon, because not in all use cases a window needs to have the title 
+displayed. In our case, if we want to see the window title, we need to manually 
+redirect it to the header bar.</p>
+<pre><code class="language-python">self.set_window_title('App title')
+self.headerbar.set_text(self.window_title())
+</code></pre>
+<p>We also added a search button on the left side and a menu button on the right 
+side of the header bar</p>
+<pre><code class="language-python"># Search button
+self.search_button = QtWidgets.QToolButton()
+self.search_button.set_icon(QtGui.QIcon.from_theme('search'))
+self.headerbar.add_widget_to_left(self.search_button)
+
+# Menu button
+self.menu_button = QtWidgets.QToolButton()
+self.menu_button.set_icon(QtGui.QIcon.from_theme('application-menu'))
+self.headerbar.add_widget_to_right(self.menu_button)
+</code></pre>
+<p>This is the result:</p>
+<pre><code class="language-python"># !/usr/bin/env python3
+import os
+import sys
+
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySideX import QtWidgetsX
+from __feature__ import snake_case
+
+SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(SRC_DIR)
+
+
+class Window(QtWidgetsX.QApplicationWindow):
+
+    def __init__(self, *args, **kwargs) -&gt; None:
+        super().__init__(*args, **kwargs)
+
+        # Window icon
+        icon_path = os.path.join(SRC_DIR, 'icon.svg')
+        window_icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
+        self.set_window_icon(window_icon)
+
+        # Layout
+        self.main_layout = QtWidgets.QVBoxLayout()
+        self.main_layout.set_contents_margins(0, 0, 0, 0)
+        self.main_layout.set_alignment(QtCore.Qt.AlignTop)
+        self.central_widget().set_layout(self.main_layout)
+
+        # Headerbar
+        self.headerbar = QtWidgetsX.QHeaderBar(self)
+        self.main_layout.add_widget(self.headerbar)
+
+        # Window title
+        self.set_window_title('App title')
+        self.headerbar.set_text(self.window_title())
+
+        # Search button
+        self.search_button = QtWidgets.QToolButton()
+        self.search_button.set_icon(QtGui.QIcon.from_theme('search'))
+        self.headerbar.add_widget_to_left(self.search_button)
+
+        # Menu button
+        self.menu_button = QtWidgets.QToolButton()
+        self.menu_button.set_icon(QtGui.QIcon.from_theme('application-menu'))
+        self.headerbar.add_widget_to_right(self.menu_button)
+
+        # Window size
+        self.set_minimum_width(300)
+        self.set_minimum_height(200)
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    window = Window()
+    window.show()
+    sys.exit(app.exec())
+</code></pre>
+<p><img alt="Image" src="../img/headerbar_ex.png" title="screenshot" /></p>
               
             </div>
           </div><footer>
