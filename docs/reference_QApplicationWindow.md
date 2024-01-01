@@ -26,7 +26,24 @@ method.
 for its *central widget*. To change the [**QSS** style](https://reticulardev.github.io/pysidex/styling/) 
 you need to use the base name "QApplicationWindow{...}".
 
-## Methods
+## Class signature
+
+QApplicationWindow(is_decorated: bool = False, platform: bool = True)
+
+### Parameters
+- **is_decorated**: Type = `bool` (Default is `False`)
+
+  Use `False` if it is an undecorated **CSD** window and `True` if it is 
+server-side decorated.
+
+
+- **platform**: Type = `bool` (Default is `True`)
+
+  The default is `True`, which is used to follow the user's platform style. 
+These are the control button styles, color and shape of the window borders. 
+Setting `False` will make the window use an alternative default style.
+
+## Class methods
 
 Only new ones. See the 
 [**QMainWindow** documentation](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html) 
@@ -80,7 +97,7 @@ Signature: `reset_style(self) -> None:`
 Changes the window style back to the default.
 
 
-## Modified methods
+## Modified
 
 As already discussed, the modified methods cannot be used for this widget. The 
 alternative approach specified in the [overview](#overview) must be used.
