@@ -16,13 +16,13 @@ event methods like `enter_event` and `leave_vent`.
 
 
 - A pre-configured *central widget* already exists and is a central part of the 
-[QApplicationWindow](#QApplicationWindow). You will get it for use through the `central_widget` 
+**QApplicationWindow**. You will get it for use through the `central_widget` 
 method.
 
 
-- The `set_object_name` method does not work for the [QApplicationWindow](#QApplicationWindow) nor for 
-its *central widget*. To change the **QSS** style you need to use the base name 
-"QApplicationWindow{...}".
+- The `set_object_name` method does not work for the **QApplicationWindow** nor 
+for its *central widget*. To change the [**QSS** style](https://reticulardev.github.io/pysidex/styling/) 
+you need to use the base name "QApplicationWindow{...}".
 
 ## Methods
 Only new ones. See the 
@@ -33,14 +33,12 @@ for more.
 - [platform_settings](#is_decorated)
 - [reset_style](#reset_style)
 
-###
-
-#### central_widget
+### central_widget
 
 Signature: `central_widget(self) -> QtWidgets.QWidget:`
 
 A pre-configured [QWidget](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QWidget.html). 
-Is a central part of the [QApplicationWindow](#QApplicationWindow). The main 
+Is a central part of the **QApplicationWindow**. The main 
 layout of your application must be added to it.
 
 ```python
@@ -50,9 +48,7 @@ self.central_widget().set_layout(self.layout)
 
 ---
 
-###
-
-#### is_decorated
+### is_decorated
 Signature: `is_decorated(self) -> bool:`
 
 Returns `False` if it is an undecorated **CSD** window and `True` if it is 
@@ -60,9 +56,7 @@ server-side decorated.
 
 ---
 
-###
-
-#### platform_settings
+### platform_settings
 
 Signature: `platform_settings(self) -> PlatformSettings`
 
@@ -72,15 +66,12 @@ composition of the window.
 
 ---
 
-###
-
-#### reset_style
+### reset_style
 
 Signature: `reset_style(self) -> None:`
 
 Changes the window style back to the default.
 
-##
 
 ## Modified methods
 
@@ -151,7 +142,7 @@ This is the result:
 
 ![Image](img/better_min_window.png "screenshot")
 
-#### A more complete minimal example
+### A more complete minimal example
 
 In this example, we will add the `os` library to add an icon with a dynamic 
 path. The icon, once configured in the window, will be automatically recognized 
@@ -215,7 +206,7 @@ This is the result:
 
 We created the following example to use all the practical concepts in this 
 window, such as using specific event methods instead of `event_filter`, and 
-also using the "QApplicationWindow" **id** for [**QSS** style](https://doc.qt.io/qtforpython-6/tutorials/basictutorial/widgetstyling.html).
+also using the "QApplicationWindow" **id** for [**QSS** style](https://reticulardev.github.io/pysidex/styling/).
 
 ```python
 #!/usr/bin/env python3
