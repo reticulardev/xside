@@ -202,7 +202,7 @@ This is the result:
 
 ![Image](img/complete_min_window.png "screenshot")
 
-#### Using all concepts
+### Using all concepts
 
 We created the following example to use all the practical concepts in this 
 window, such as using specific event methods instead of `event_filter`, and 
