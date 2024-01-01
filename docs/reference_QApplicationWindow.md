@@ -12,7 +12,9 @@ and some modifications were made to achieve the CSD feature.
 
 ## Class signature
 
+<pre>
 QApplicationWindow(is_decorated: bool = False, platform: bool = True)
+</pre>
 
 ### Parameters
   - **is_decorated**: Type `bool`, default is `False`
