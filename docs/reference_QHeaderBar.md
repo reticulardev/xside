@@ -22,6 +22,7 @@ QHeaderBar(main_window: QApplicationWindow[QtWidgets, QMainWindow])
   - **main_window**: Type = `QApplicationWindow`[QtWidgets, QMainWindow]
 
     Just pass `self` which indicates the top-level window instance.
+
     ```python
     self.headerbar = QHeaderBar(self)
     ```
