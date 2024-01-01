@@ -31,15 +31,15 @@ you need to use the base name "QApplicationWindow{...}".
 QApplicationWindow(is_decorated: bool = False, platform: bool = True)
 
 ### Parameters
-- **is_decorated**: Type = `bool` (Default is `False`)
+  - **is_decorated**: Type = `bool` (Default is `False`)
 
-  Use `False` if it is an undecorated **CSD** window and `True` if it is 
+    Use `False` if it is an undecorated **CSD** window and `True` if it is 
 server-side decorated.
 
 
-- **platform**: Type = `bool` (Default is `True`)
+  - **platform**: Type = `bool` (Default is `True`)
 
-  The default is `True`, which is used to follow the user's platform style. 
+    The default is `True`, which is used to follow the user's platform style. 
 These are the control button styles, color and shape of the window borders. 
 Setting `False` will make the window use an alternative default style.
 
