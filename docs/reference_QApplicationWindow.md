@@ -36,7 +36,7 @@ for more.
 
 - [is_decorated](#is_decorated)
 
-- [platform_settings](#is_decorated)
+- [platform_settings](#platform_settings)
 
 - [reset_style](#reset_style)
 
@@ -89,7 +89,7 @@ alternative approach specified in the [overview](#overview) must be used.
 
 - **set_object_name**
 
-## Example
+## Examples
 
 A **highly discouraged** minimal example would be:
 
