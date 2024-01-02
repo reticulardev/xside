@@ -72,6 +72,8 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#signals">Signals</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#changes">Changes</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
@@ -196,6 +198,8 @@ composition of the window.</p>
 <h3 id="reset_style">reset_style</h3>
 <p>Signature: <code>reset_style() -&gt; None</code></p>
 <p>Changes the window style back to the default.</p>
+<h2 id="signals">Signals</h2>
+<p><strong>resize_event_signal</strong> = QtCore.Signal(object)</p>
 <h2 id="changes">Changes</h2>
 <p>A pre-configured <em>central widget</em> already exists and is a central part of the 
 <strong>QApplicationWindow</strong>. You will get it for use through the <code>central_widget</code> 
@@ -203,9 +207,9 @@ method.</p>
 <p>The <code>set_object_name</code> method does not work for the <strong>QApplicationWindow</strong> nor 
 for its <em>central widget</em>. To change the <a href="https://reticulardev.github.io/pysidex/styling/"><strong>QSS</strong> style</a> 
 you need to use the base name "QApplicationWindow{...}".</p>
-<p>The <code>event_filter</code> method needed, at least temporarily, to be 
-rewritten and is therefore not currently accessible. So consider using specific 
-event methods like <code>enter_event</code> and <code>leave_vent</code>.</p>
+<p>The <code>event_filter</code> method has been rewritten, so it is not currently 
+accessible. So consider using specific event methods like <code>enter_event</code> and 
+<code>leave_vent</code>.</p>
 <h2 id="examples">Examples</h2>
 <p>A <strong>highly discouraged</strong> minimal example would be:</p>
 <pre><code class="language-python">app = QtWidgets.QApplication(sys.argv)
