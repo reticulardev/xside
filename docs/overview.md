@@ -70,18 +70,36 @@ using the robust original Qt.
 
 ## Code style
 
-Qt originally uses the camelCase code style and this is reflected in PySide 
+Qt originally uses the `camelCase` code style and this is reflected in PySide 
 which also uses it by default. In an effort to make Python code idiomatic, the 
-snake_case and true_property features were introduced.
+`snake_case` and `true_property` **feature** were introduced.
 
 Find out more about the feature in the official [Pyside documentation](https://doc.qt.io/qtforpython-6/considerations.html#features)
 
-In our tests, the true_property feature didn't work well in every way, but the 
-snake_case style was maintained. So consider all properties as hidden and 
+It really makes you want to tear your eyes out when you see a method written in 
+`camelCase`. That's why we decided to use the `snake_case` **feature** so that 
+the code would be more beautiful and easier to read in a **Pythonic** style, as 
+it should be!
+
+```python
+from __feature__ import snake_case
+```
+
+The true_property feature is different. There is a lot of Python code that uses 
+conventional getters and setters methods, as in the case of the GTK bind to 
+Python, PyGObject, making it clear that this is not a widespread desire.
+
+Also, Qt doesn't make it very easy to distinguish by name whether the method is 
+a function or a property. There are many methods that start with the word "set" 
+that are not for accessing a property, and this causes a bit of confusion.
+
+Since Python was designed to be simple with the goal of writing code faster, 
+and true_property is not generally used or very intuitive in Qt, we chose not 
+to use this feature. So consider all properties as hidden and 
 access any information through **getters** and **setters** methods. Anyone who 
 has worked with PyGObject, the GTK bind to Python, will feel right at home.
 
-This is a project based on QtWidgets and for now there are no plans to support 
+*This is a project based on QtWidgets and for now there are no plans to support 
 QML.
 
 ## Conclusion
