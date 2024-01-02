@@ -120,7 +120,9 @@ class EnvSettingsPlasma(EnvSettings):
             if x == 'X' or x == 'A' or x == 'I' or x == 'M')
 
     def control_button_style(
-            self, window_is_dark: bool, button_name: str, button_state) -> str:
+            self, window_is_dark: bool,
+            button_name: str,
+            button_state: str) -> str:
         """..."""
         # window_is_dark: True or False
         # button_name: 'minimize', 'maximize', 'restore' or 'close'
@@ -176,20 +178,12 @@ class PlatformSettings(object):
         self.__platform_integration = platform_integration
         self.__desktop_environment = self.__get_desktop_environment()
         self.__operational_system = self.__get_operational_system()
-        self.__env_settings = self.env_settings()
+        self.__env_settings = self.__get_env_settings()
 
     @property
     def desktop_environment(self) -> DesktopEnvironment:
         """..."""
         return self.__desktop_environment
-
-    def env_settings(self) -> EnvSettings | None:
-        """..."""
-        if self.__platform_integration:
-            if self.__operational_system == self.OperationalSystem.LINUX:
-                if self.__desktop_environment == self.DesktopEnvironment.KDE:
-                    return EnvSettingsPlasma()
-        return EnvSettings()
 
     @property
     def operational_system(self) -> OperationalSystem:
@@ -198,7 +192,8 @@ class PlatformSettings(object):
 
     def window_control_button_style(
             self, window_is_dark: bool,
-            button_name: str, button_state) -> str | None:
+            button_name: str,
+            button_state: str) -> str | None:
         """Control button style
 
         :param window_is_dark: True or False
@@ -229,6 +224,14 @@ class PlatformSettings(object):
             return self.DesktopEnvironment.KDE
 
         return self.DesktopEnvironment.UNKNOWN
+
+    def __get_env_settings(self) -> EnvSettings | None:
+        """..."""
+        if self.__platform_integration:
+            if self.__operational_system == self.OperationalSystem.LINUX:
+                if self.__desktop_environment == self.DesktopEnvironment.KDE:
+                    return EnvSettingsPlasma()
+        return EnvSettings()
 
     def __get_operational_system(self) -> OperationalSystem:
         # ...

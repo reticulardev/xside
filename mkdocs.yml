@@ -2,7 +2,7 @@ site_name: PySideX
 site_url: https://github.com/reticulardev/pysidex
 nav:
   - Home:
-    - Introduction: index.md
+    - PySideX: index.md
     - Overview: overview.md
     - Quick start: quick_start.md
   - Widgets:
@@ -11,7 +11,7 @@ nav:
     - QControlButton: reference_QControlButton.md
     - QWindowControlButtons: reference_QWindowControlButtons.md
     - QWindowMoveArea: reference_QWindowMoveArea.md
-  - Extras:
+  - Styles:
     - PlatformSettings: reference_PlatformSettings.md
     - Styling: styling.md
   - Besides:
