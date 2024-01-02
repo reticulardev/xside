@@ -27,7 +27,7 @@ psychopath.
     self.headerbar = QHeaderBar(self)
     
 
-## Class methods
+## Methods
 
 Only new ones. See the
 [**QFrame** documentation](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QFrame.html) 

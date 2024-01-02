@@ -27,7 +27,7 @@ server-side decorated.
 These are the control button styles, color and shape of the window borders. 
 Setting `False` will make the window use an alternative default style.
 
-## Class methods
+## Methods
 
 Only new ones. See the 
 [**QMainWindow** documentation](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html) 
@@ -83,6 +83,7 @@ Changes the window style back to the default.
 ## Signals
 
 **event_filter_signal** = QtCore.Signal(object)
+
 **resize_event_signal** = QtCore.Signal(object)
 
 ## Changes
