@@ -16,6 +16,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
     The edges are rounded and there is no title bar. A custom header bar can
     be added
     """
+    event_filter_signal = QtCore.Signal(object)
     resize_event_signal = QtCore.Signal(object)
 
     def __init__(
@@ -227,6 +228,8 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
     def event_filter(
             self, watched: QtCore.QObject, event: QtCore.QEvent) -> bool:
+        self.event_filter_signal.emit(event)
+
         if self.__is_decorated:
             self.__central_widget.set_style_sheet(self.__style_sheet)
             if event.type() == QtCore.QEvent.Resize:
@@ -513,6 +516,7 @@ class QHeaderBar(QtWidgets.QFrame):
 
     Replaces traditional title bar and allows adding and editing widgets
     """
+    resize_event_signal = QtCore.Signal(object)
 
     def __init__(self, main_window: QtWidgets, *args, **kwargs) -> None:
         """Class constructor
@@ -598,6 +602,8 @@ class QHeaderBar(QtWidgets.QFrame):
 
     def resize_event(self, event: QtGui.QResizeEvent) -> None:
         """..."""
+        self.resize_event_signal.emit(event)
+
         if self.__main_window.is_decorated():
             self.__left_ctrl_buttons.set_visible(False)
             self.__right_ctrl_buttons.set_visible(False)

@@ -75,4 +75,4 @@ if __name__ == '__main__':
 
 This is the result:
 
-![Image](img/ref_window_enter_and_leav_event.png "screenshot")
+![Image](img/styling_enter_and_leav_event.png "screenshot")

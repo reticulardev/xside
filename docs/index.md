@@ -8,7 +8,7 @@ Conforms to the list of objectives specified in the
 "[Client-Side Decorations Initiative](https://wiki.gnome.org/Initiatives/CSD)" 
 of the Gnome project.
 
-![Image](img/screen.png "screenshot")
+![Image](img/index.png "screenshot")
 
 * **QApplicationWindow**: A CSD (Client-side decoration) window without 
 server-side decoration (SSD). It is resizable in all corners and has a shadow 

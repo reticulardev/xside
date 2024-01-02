@@ -129,10 +129,14 @@ Signature: `text() -> str`
 Gets the text of the header bar. This is the text in the middle, normally used 
 as the window title.
 
+## Signals
+
+**resize_event_signal** = QtCore.Signal(object)
+
 ## Changes
 
-The `resize_event` method has been rewritten, so it is not currently 
-accessible. So consider using specific event methods like `event_filter`.
+The `resize_event` method has been rewritten, so use the `resize_event_signal` 
+signal, or consider using event-specific methods such as `event_filter`.
 
 ## Examples
 
@@ -174,7 +178,7 @@ window.show()
 sys.exit(app.exec())
 ```
 
-![Image](img/better_min_window.png "screenshot")
+![Image](img/headerbar_min.png "screenshot")
 
 ### A more complete minimal example
 
@@ -277,4 +281,4 @@ if __name__ == '__main__':
     sys.exit(app.exec())
 ```
 
-![Image](img/headerbar_ex.png "screenshot")
+![Image](img/headerbar_complete.png "screenshot")

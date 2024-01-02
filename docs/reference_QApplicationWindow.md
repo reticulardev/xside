@@ -2,7 +2,7 @@
 
 Inherits from [QMainWindow](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html)
 
-![Image](img/min_window.png "screenshot")
+![Image](img/applicationwindow.png "screenshot")
 
 ## Overview
 The main window of an application.
@@ -82,6 +82,7 @@ Changes the window style back to the default.
 
 ## Signals
 
+**event_filter_signal** = QtCore.Signal(object)
 **resize_event_signal** = QtCore.Signal(object)
 
 ## Changes
@@ -94,8 +95,8 @@ The `set_object_name` method does not work for the **QApplicationWindow** nor
 for its *central widget*. To change the [**QSS** style](https://reticulardev.github.io/pysidex/styling/) 
 you need to use the base name "QApplicationWindow{...}".
 
-The `event_filter` method has been rewritten, so it is not currently 
-accessible. So consider using specific event methods like `enter_event` and 
+The `event_filter` method has been rewritten, so use the `event_filter_signal` 
+signal, or consider using event-specific methods such as `enter_event` and 
 `leave_vent`.
 
 ## Examples
@@ -113,7 +114,7 @@ This would give you a little window that can be resized in any direction.
 However, there is no button to close the application and, depending on your 
 platform, it may be difficult to close the application:
 
-![Image](img/min_window.png "screenshot")
+![Image](img/applicationwindow_min.png "screenshot")
 
 A better minimal example in this situation includes adding a headerbar to 
 access the window control buttons:
@@ -156,7 +157,7 @@ self.main_layout.set_alignment(QtCore.Qt.AlignTop)
 
 This is the result:
 
-![Image](img/better_min_window.png "screenshot")
+![Image](img/applicationwindow_better_min.png "screenshot")
 
 ### A more complete minimal example
 
@@ -216,7 +217,7 @@ if __name__ == '__main__':
 
 This is the result:
 
-![Image](img/complete_min_window.png "screenshot")
+![Image](img/applicationwindow_complete_min.png "screenshot")
 
 ### Using all concepts
 
@@ -282,4 +283,4 @@ if __name__ == '__main__':
 
 This is the result:
 
-![Image](img/ref_window_enter_and_leav_event.png "screenshot")
+![Image](img/applicationwindow_enter_and_leav_event.png "screenshot")

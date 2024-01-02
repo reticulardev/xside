@@ -28,7 +28,7 @@ Run the example to see it working:
 python src/demo.py
 ```
 
-![Image](img/demo.png "screenshot")
+![Image](img/quick_start_demo.png "screenshot")
 
 ## The imports
 
@@ -59,7 +59,7 @@ This would give you a little window that can be resized in any direction.
 However, there is no button to close the application and, depending on your 
 platform, it may be difficult to close the application:
 
-![Image](img/min_window.png "screenshot")
+![Image](img/quick_start_min_window.png "screenshot")
 
 A better minimal example in this situation includes adding a headerbar to 
 access the window control buttons:
@@ -102,7 +102,7 @@ self.main_layout.set_alignment(QtCore.Qt.AlignTop)
 
 This is the result:
 
-![Image](img/better_min_window.png "screenshot")
+![Image](img/quick_start_better_min_window.png "screenshot")
 
 ## A more complete minimal example
 
@@ -162,4 +162,4 @@ if __name__ == '__main__':
 
 This is the result:
 
-![Image](img/complete_min_window.png "screenshot")
+![Image](img/quick_start_complete_min_window.png "screenshot")

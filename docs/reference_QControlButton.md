@@ -2,7 +2,7 @@
 
 Inherits from [QToolButton](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QToolButton.html)
 
-![Image](img/window_control_button.png "screenshot")
+![Image](img/controlbutton.png "screenshot")
 
 ## Overview
 
@@ -38,9 +38,10 @@ A window control button. It could be the close, maximize or minimize button.
 
 ## Changes
 
-Methods `enter_event` and `leave_vent` have been rewritten, so they are not 
-currently accessible. So consider using specific event methods like 
-`event_filter`.
+Methods `enter_event` and `leave_vent` have been rewritten, 
+so use the `enter_event_signal` and 
+`leave_event_signal` signals, or consider using event-specific 
+methods such as `event_filter`.
 
 ## Example
 
