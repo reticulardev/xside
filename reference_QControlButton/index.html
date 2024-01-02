@@ -121,7 +121,9 @@
 <h2 id="overview">Overview</h2>
 <p>A window control button. It could be the close, maximize or minimize button.</p>
 <h2 id="class-signature">Class signature</h2>
-<pre><small>QControlButton(main_window: QtWidgets, button_id: int) -> None
+<pre><small>QControlButton(
+    main_window: QApplicationWindow[QtWidgets, QMainWindow],
+    button_id: int)
 </small></pre>
 
 <h3 id="parameters">Parameters</h3>
