@@ -131,9 +131,8 @@ as the window title.
 
 ## Changes
 
-The `resize_event` method needed, at least temporarily, to be 
-rewritten and is therefore not currently accessible. So consider using specific 
-event methods like `event_filter`.
+The `resize_event` method has been rewritten, so it is not currently 
+accessible. So consider using specific event methods like `event_filter`.
 
 ## Examples
 

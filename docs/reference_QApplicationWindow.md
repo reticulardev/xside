@@ -80,6 +80,9 @@ Signature: `reset_style() -> None`
 
 Changes the window style back to the default.
 
+## Signals
+
+**resize_event_signal** = QtCore.Signal(object)
 
 ## Changes
 
@@ -91,9 +94,9 @@ The `set_object_name` method does not work for the **QApplicationWindow** nor
 for its *central widget*. To change the [**QSS** style](https://reticulardev.github.io/pysidex/styling/) 
 you need to use the base name "QApplicationWindow{...}".
 
-The `event_filter` method needed, at least temporarily, to be 
-rewritten and is therefore not currently accessible. So consider using specific 
-event methods like `enter_event` and `leave_vent`.
+The `event_filter` method has been rewritten, so it is not currently 
+accessible. So consider using specific event methods like `enter_event` and 
+`leave_vent`.
 
 ## Examples
 
