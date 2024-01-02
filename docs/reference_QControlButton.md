@@ -10,7 +10,9 @@ A window control button. It could be the close, maximize or minimize button.
 
 ## Class signature
 
-<pre><small>QControlButton(main_window: QtWidgets, button_id: int) -> None
+<pre><small>QControlButton(
+    main_window: QApplicationWindow[QtWidgets, QMainWindow],
+    button_id: int)
 </small></pre>
 
 ### Parameters

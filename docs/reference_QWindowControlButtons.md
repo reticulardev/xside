@@ -12,8 +12,7 @@ Widget with window control buttons, to close, maximize and minimize.
 
 <pre><small>QWindowControlButtons(
     main_window: QApplicationWindow[QtWidgets, QMainWindow],
-    button_order: tuple = (0, 1, 2),
-) -> None</small></pre>
+    button_order: tuple = (0, 1, 2))</small></pre>
 
 ### Parameters
 
