@@ -135,7 +135,7 @@
               
                 <h1 id="qapplicationwindow">QApplicationWindow</h1>
 <p>Inherits from <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html">QMainWindow</a></p>
-<p><img alt="Image" src="../img/min_window.png" title="screenshot" /></p>
+<p><img alt="Image" src="../img/applicationwindow.png" title="screenshot" /></p>
 <h2 id="overview">Overview</h2>
 <p>The main window of an application.</p>
 <p>It was built under <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QMainWindow.html">QMainWindow</a> 
@@ -199,7 +199,8 @@ composition of the window.</p>
 <p>Signature: <code>reset_style() -&gt; None</code></p>
 <p>Changes the window style back to the default.</p>
 <h2 id="signals">Signals</h2>
-<p><strong>resize_event_signal</strong> = QtCore.Signal(object)</p>
+<p><strong>event_filter_signal</strong> = QtCore.Signal(object)
+<strong>resize_event_signal</strong> = QtCore.Signal(object)</p>
 <h2 id="changes">Changes</h2>
 <p>A pre-configured <em>central widget</em> already exists and is a central part of the 
 <strong>QApplicationWindow</strong>. You will get it for use through the <code>central_widget</code> 
@@ -207,8 +208,8 @@ method.</p>
 <p>The <code>set_object_name</code> method does not work for the <strong>QApplicationWindow</strong> nor 
 for its <em>central widget</em>. To change the <a href="https://reticulardev.github.io/pysidex/styling/"><strong>QSS</strong> style</a> 
 you need to use the base name "QApplicationWindow{...}".</p>
-<p>The <code>event_filter</code> method has been rewritten, so it is not currently 
-accessible. So consider using specific event methods like <code>enter_event</code> and 
+<p>The <code>event_filter</code> method has been rewritten, so use the <code>event_filter_signal</code> 
+signal, or consider using event-specific methods such as <code>enter_event</code> and 
 <code>leave_vent</code>.</p>
 <h2 id="examples">Examples</h2>
 <p>A <strong>highly discouraged</strong> minimal example would be:</p>
@@ -220,7 +221,7 @@ sys.exit(app.exec())
 <p>This would give you a little window that can be resized in any direction. 
 However, there is no button to close the application and, depending on your 
 platform, it may be difficult to close the application:</p>
-<p><img alt="Image" src="../img/min_window.png" title="screenshot" /></p>
+<p><img alt="Image" src="../img/applicationwindow_min.png" title="screenshot" /></p>
 <p>A better minimal example in this situation includes adding a headerbar to 
 access the window control buttons:</p>
 <pre><code class="language-python">class Window(QtWidgetsX.QApplicationWindow):
@@ -252,7 +253,7 @@ wherever you want, which is why we aligned it at the top.</p>
 self.main_layout.set_alignment(QtCore.Qt.AlignTop)
 </code></pre>
 <p>This is the result:</p>
-<p><img alt="Image" src="../img/better_min_window.png" title="screenshot" /></p>
+<p><img alt="Image" src="../img/applicationwindow_better_min.png" title="screenshot" /></p>
 <h3 id="a-more-complete-minimal-example">A more complete minimal example</h3>
 <p>In this example, we will add the <code>os</code> library to add an icon with a dynamic 
 path. The icon, once configured in the window, will be automatically recognized 
@@ -305,7 +306,7 @@ if __name__ == '__main__':
     sys.exit(app.exec())
 </code></pre>
 <p>This is the result:</p>
-<p><img alt="Image" src="../img/complete_min_window.png" title="screenshot" /></p>
+<p><img alt="Image" src="../img/applicationwindow_complete_min.png" title="screenshot" /></p>
 <h3 id="using-all-concepts">Using all concepts</h3>
 <p>We created the following example to use all the practical concepts in this 
 window, such as using specific event methods instead of <code>event_filter</code>, and 
@@ -365,7 +366,7 @@ if __name__ == '__main__':
     sys.exit(app.exec())
 </code></pre>
 <p>This is the result:</p>
-<p><img alt="Image" src="../img/ref_window_enter_and_leav_event.png" title="screenshot" /></p>
+<p><img alt="Image" src="../img/applicationwindow_enter_and_leav_event.png" title="screenshot" /></p>
               
             </div>
           </div><footer>

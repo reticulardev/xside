@@ -117,7 +117,7 @@
               
                 <h1 id="qcontrolbutton">QControlButton</h1>
 <p>Inherits from <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QToolButton.html">QToolButton</a></p>
-<p><img alt="Image" src="../img/window_control_button.png" title="screenshot" /></p>
+<p><img alt="Image" src="../img/controlbutton.png" title="screenshot" /></p>
 <h2 id="overview">Overview</h2>
 <p>A window control button. It could be the close, maximize or minimize button.</p>
 <h2 id="class-signature">Class signature</h2>
@@ -144,9 +144,10 @@
 <p><strong>enter_event_signal</strong> = QtCore.Signal(object)</p>
 <p><strong>leave_event_signal</strong> = QtCore.Signal(object)</p>
 <h2 id="changes">Changes</h2>
-<p>Methods <code>enter_event</code> and <code>leave_vent</code> have been rewritten, so they are not 
-currently accessible. So consider using specific event methods like 
-<code>event_filter</code>.</p>
+<p>Methods <code>enter_event</code> and <code>leave_vent</code> have been rewritten, 
+so use the <code>enter_event_signal</code> and 
+<code>leave_event_signal</code> signals, or consider using event-specific 
+methods such as <code>event_filter</code>.</p>
 <h2 id="example">Example</h2>
 <pre><code class="language-python">self.control_button = QControlButton(self, 2)
 self.layout.add_widget(self.control_button)

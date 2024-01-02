@@ -82,6 +82,8 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#signals">Signals</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#changes">Changes</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
@@ -231,9 +233,11 @@ the window title.</p>
 <p>Signature: <code>text() -&gt; str</code></p>
 <p>Gets the text of the header bar. This is the text in the middle, normally used 
 as the window title.</p>
+<h2 id="signals">Signals</h2>
+<p><strong>resize_event_signal</strong> = QtCore.Signal(object)</p>
 <h2 id="changes">Changes</h2>
-<p>The <code>resize_event</code> method has been rewritten, so it is not currently 
-accessible. So consider using specific event methods like <code>event_filter</code>.</p>
+<p>The <code>resize_event</code> method has been rewritten, so use the <code>resize_event_signal</code> 
+signal, or consider using event-specific methods such as <code>event_filter</code>.</p>
 <h2 id="examples">Examples</h2>
 <p>Note that a central widget with appropriate settings already exists. As it is 
 already accessed directly, there is no need to create one.</p>
@@ -264,7 +268,7 @@ window = Window()
 window.show()
 sys.exit(app.exec())
 </code></pre>
-<p><img alt="Image" src="../img/better_min_window.png" title="screenshot" /></p>
+<p><img alt="Image" src="../img/headerbar_min.png" title="screenshot" /></p>
 <h3 id="a-more-complete-minimal-example">A more complete minimal example</h3>
 <p>In this example, we will add the <code>os</code> library to add an icon with a dynamic 
 path. The icon, once configured in the window, will be automatically recognized 
@@ -353,7 +357,7 @@ if __name__ == '__main__':
     window.show()
     sys.exit(app.exec())
 </code></pre>
-<p><img alt="Image" src="../img/headerbar_ex.png" title="screenshot" /></p>
+<p><img alt="Image" src="../img/headerbar_complete.png" title="screenshot" /></p>
               
             </div>
           </div><footer>
