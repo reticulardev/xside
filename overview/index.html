@@ -41,7 +41,7 @@
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Home</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="..">Introduction</a>
+                  <li class="toctree-l1"><a class="reference internal" href="..">PySideX</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Overview</a>
     <ul class="current">
@@ -73,7 +73,7 @@
                   <li class="toctree-l1"><a class="reference internal" href="../reference_QWindowMoveArea/">QWindowMoveArea</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Extras</span></p>
+              <p class="caption"><span class="caption-text">Styles</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../reference_PlatformSettings/">PlatformSettings</a>
                   </li>
@@ -171,15 +171,28 @@ the chance to keep it actively updated with the latest stable versions of
 Pyside. It also provides the security of being able to continue officially 
 using the robust original Qt.</p>
 <h2 id="code-style">Code style</h2>
-<p>Qt originally uses the camelCase code style and this is reflected in PySide 
+<p>Qt originally uses the <code>camelCase</code> code style and this is reflected in PySide 
 which also uses it by default. In an effort to make Python code idiomatic, the 
-snake_case and true_property features were introduced.</p>
+<code>snake_case</code> and <code>true_property</code> <strong>feature</strong> were introduced.</p>
 <p>Find out more about the feature in the official <a href="https://doc.qt.io/qtforpython-6/considerations.html#features">Pyside documentation</a></p>
-<p>In our tests, the true_property feature didn't work well in every way, but the 
-snake_case style was maintained. So consider all properties as hidden and 
+<p>It really makes you want to tear your eyes out when you see a method written in 
+<code>camelCase</code>. That's why we decided to use the <code>snake_case</code> <strong>feature</strong> so that 
+the code would be more beautiful and easier to read in a <strong>Pythonic</strong> style, as 
+it should be!</p>
+<pre><code class="language-python">from __feature__ import snake_case
+</code></pre>
+<p>The true_property feature is different. There is a lot of Python code that uses 
+conventional getters and setters methods, as in the case of the GTK bind to 
+Python, PyGObject, making it clear that this is not a widespread desire.</p>
+<p>Also, Qt doesn't make it very easy to distinguish by name whether the method is 
+a function or a property. There are many methods that start with the word "set" 
+that are not for accessing a property, and this causes a bit of confusion.</p>
+<p>Since Python was designed to be simple with the goal of writing code faster, 
+and true_property is not generally used or very intuitive in Qt, we chose not 
+to use this feature. So consider all properties as hidden and 
 access any information through <strong>getters</strong> and <strong>setters</strong> methods. Anyone who 
 has worked with PyGObject, the GTK bind to Python, will feel right at home.</p>
-<p>This is a project based on QtWidgets and for now there are no plans to support 
+<p>*This is a project based on QtWidgets and for now there are no plans to support 
 QML.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>As Qt Company progresses with CSD support, this project will be improved. And 
@@ -189,7 +202,7 @@ The Widgets that were created are very flexible and easy to implement.</p>
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href=".." class="btn btn-neutral float-left" title="Introduction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href=".." class="btn btn-neutral float-left" title="PySideX"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../quick_start/" class="btn btn-neutral float-right" title="Quick start">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
