@@ -47,6 +47,8 @@ for more.
 
 - [set_text](#set_text)
 
+- [set_window_icon](#set_window_icon)
+
 - [text](#text)
 
 ### add_widget_to_left
@@ -119,6 +121,15 @@ Parameter `text`: `str`
 
 Add text in the middle of the header bar. This is typically the text used as 
 the window title.
+
+---
+### set_window_icon
+
+Signature: `set_window_icon(icon: QIcon) -> None`
+
+Parameter `icon`: `QtGui.QIcon`
+
+A new icon to update the application icon
 
 ---
 

@@ -29,6 +29,20 @@ Widget with window control buttons, to close, maximize and minimize.
     is the **minimize** button, `1` is the **maximize** button, `2` is the 
     **close** button and `3` is **window icon**.
 
+## Methods
+
+Only new ones. See the
+[**QFrame** documentation](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QFrame.html) 
+for more.
+
+### update_window_icon
+
+Signature: `update_window_icon(icon: QIcon) -> None`
+
+Parameter `icon`: `QtGui.QIcon`
+
+A new icon to update the application icon
+
 ## Example
 
 ```python

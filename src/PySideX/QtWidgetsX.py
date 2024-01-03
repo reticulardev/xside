@@ -588,11 +588,6 @@ class QHeaderBar(QtWidgets.QFrame):
             self.__window_control_buttons_order[1])
         self.__bar_item_layout_right.add_widget(self.__right_ctrl_buttons)
 
-    def set_window_icon(self, icon: QtGui.QIcon) -> None:
-        """..."""
-        self.__right_ctrl_buttons.update_window_icon(icon)
-        self.__left_ctrl_buttons.update_window_icon(icon)
-
     def add_widget_to_left(self, widget: QtWidgets.QWidget) -> None:
         """..."""
         self.__left_layout.add_widget(widget)
@@ -682,6 +677,11 @@ class QHeaderBar(QtWidgets.QFrame):
         """
         if not self.__main_window.is_decorated():
             self.__window_move_area_text.set_text(text)
+
+    def set_window_icon(self, icon: QtGui.QIcon) -> None:
+        """..."""
+        self.__right_ctrl_buttons.update_window_icon(icon)
+        self.__left_ctrl_buttons.update_window_icon(icon)
 
     def text(self) -> str:
         """Get the QWindowMoveArea's text
