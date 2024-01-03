@@ -448,6 +448,10 @@ class QWindowControlButtons(QtWidgets.QFrame):
 
         self.__set_buttons_order()
 
+    def update_window_icon(self, icon: QtGui.QIcon) -> None:
+        """..."""
+        self.__window_icon.set_pixmap(icon.pixmap(20))
+
     def __set_buttons_order(self) -> None:
         # Add the buttons in the configured order
         buttons_dict = {
@@ -583,6 +587,11 @@ class QHeaderBar(QtWidgets.QFrame):
             self.__main_window,
             self.__window_control_buttons_order[1])
         self.__bar_item_layout_right.add_widget(self.__right_ctrl_buttons)
+
+    def set_window_icon(self, icon: QtGui.QIcon) -> None:
+        """..."""
+        self.__right_ctrl_buttons.update_window_icon(icon)
+        self.__left_ctrl_buttons.update_window_icon(icon)
 
     def add_widget_to_left(self, widget: QtWidgets.QWidget) -> None:
         """..."""
