@@ -35,6 +35,20 @@ Only new ones. See the
 [**QFrame** documentation](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QFrame.html) 
 for more.
 
+- [button_order](#button_order)
+
+- [update_window_icon](#update_window_icon)
+
+### button_order
+
+Signature: `button_order() -> tuple`
+
+Tuple with the order of the buttons. `0` is the **minimize** button, `1` is the 
+**maximize** button, `2` is the **close** button and `3` is **window icon**. 
+Like: (0, 1, 2,)
+
+---
+
 ### update_window_icon
 
 Signature: `update_window_icon(icon: QIcon) -> None`

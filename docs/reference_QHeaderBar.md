@@ -37,6 +37,8 @@ for more.
 
 - [add_widget_to_right](#add_widget_to_right)
 
+- [control_buttons_side](#control_buttons_side)
+
 - [lef_layout](#lef_layout)
 
 - [right_layout](#right_layout)
@@ -70,6 +72,14 @@ Parameter `widget`: `QWidget`
 
 Adds a widget to the right side of the header bar (before the control buttons 
 or window icon).
+
+---
+
+### control_buttons_side
+
+Signature: `control_buttons_side(self) -> str`
+
+Window control buttons side. Return 'left' or 'right' string.
 
 ---
 

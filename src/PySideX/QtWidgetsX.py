@@ -448,6 +448,14 @@ class QWindowControlButtons(QtWidgets.QFrame):
 
         self.__set_buttons_order()
 
+    def button_order(self) -> tuple:
+        """Tuple with the order of the buttons
+
+        0 is the minimize button, 1 is the maximize button, 2 is the close
+        button and 3 is window icon. Like: (0, 1, 2,)
+        """
+        return self.__button_order
+
     def update_window_icon(self, icon: QtGui.QIcon) -> None:
         """..."""
         self.__window_icon.set_pixmap(icon.pixmap(20))
@@ -550,10 +558,6 @@ class QHeaderBar(QtWidgets.QFrame):
         self.__bar_item_layout_left.set_contents_margins(0, 0, 0, 0)
         self.__layout.add_layout(self.__bar_item_layout_left)
 
-        self.__window_icon = QtWidgets.QLabel()
-        self.__window_icon.set_pixmap(
-            self.__main_window.window_icon().pixmap(20))
-
         self.__left_layout = QtWidgets.QHBoxLayout()
         self.__left_layout.set_contents_margins(0, 0, 0, 0)
         self.__layout.add_layout(self.__left_layout)
@@ -589,12 +593,27 @@ class QHeaderBar(QtWidgets.QFrame):
         self.__bar_item_layout_right.add_widget(self.__right_ctrl_buttons)
 
     def add_widget_to_left(self, widget: QtWidgets.QWidget) -> None:
-        """..."""
+        """Adds a widget to the left side of the header bar
+
+        After the control buttons or window icon.
+        """
         self.__left_layout.add_widget(widget)
 
     def add_widget_to_right(self, widget: QtWidgets.QWidget) -> None:
-        """..."""
+        """Adds a widget to the right side of the header bar
+
+        Before the control buttons or window icon.
+        """
         self.__right_layout.add_widget(widget)
+
+    def control_buttons_side(self) -> str:
+        """Window control buttons side
+
+        Return 'left' or 'right' string
+        """
+        if 2 in self.__right_ctrl_buttons.button_order():
+            return 'right'
+        return 'left'
 
     def lef_layout(self) -> QtWidgets.QHBoxLayout:
         """QHBoxLayout on left
@@ -605,7 +624,11 @@ class QHeaderBar(QtWidgets.QFrame):
         return self.__left_layout
 
     def resize_event(self, event: QtGui.QResizeEvent) -> None:
-        """..."""
+        """The resize_event method has been rewritten
+
+        Use the resize_event_signal signal, or consider using event-specific
+        methods such as event_filter
+        """
         self.resize_event_signal.emit(event)
 
         if self.__main_window.is_decorated():
@@ -663,10 +686,18 @@ class QHeaderBar(QtWidgets.QFrame):
         return self.__right_layout
 
     def set_left_control_buttons_visible(self, visible: bool) -> None:
+        """Visibility of the control buttons on the left side of the window
+
+        Setting this to False will hide them, and True will show them
+        """
         self.__left_ctrl_buttons_visibility = visible
         self.__left_ctrl_buttons.set_visible(visible)
 
     def set_right_control_buttons_visible(self, visible: bool) -> None:
+        """Visibility of the control buttons on the right side of the window
+
+        Setting this to False will hide them, and True will show them
+        """
         self.__right_ctrl_buttons_visibility = visible
         self.__right_ctrl_buttons.set_visible(visible)
 
@@ -679,7 +710,10 @@ class QHeaderBar(QtWidgets.QFrame):
             self.__window_move_area_text.set_text(text)
 
     def set_window_icon(self, icon: QtGui.QIcon) -> None:
-        """..."""
+        """Window icon
+
+        A new icon to update the application icon
+        """
         self.__right_ctrl_buttons.update_window_icon(icon)
         self.__left_ctrl_buttons.update_window_icon(icon)
 
