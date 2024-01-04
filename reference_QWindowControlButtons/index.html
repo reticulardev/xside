@@ -68,6 +68,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a>
         <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#button_order">button_order</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#update_window_icon">update_window_icon</a>
     </li>
         </ul>
@@ -145,6 +147,20 @@ is the <strong>minimize</strong> button, <code>1</code> is the <strong>maximize<
 <p>Only new ones. See the
 <a href="https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QFrame.html"><strong>QFrame</strong> documentation</a> 
 for more.</p>
+<ul>
+<li>
+<p><a href="#button_order">button_order</a></p>
+</li>
+<li>
+<p><a href="#update_window_icon">update_window_icon</a></p>
+</li>
+</ul>
+<h3 id="button_order">button_order</h3>
+<p>Signature: <code>button_order() -&gt; tuple</code></p>
+<p>Tuple with the order of the buttons. <code>0</code> is the <strong>minimize</strong> button, <code>1</code> is the 
+<strong>maximize</strong> button, <code>2</code> is the <strong>close</strong> button and <code>3</code> is <strong>window icon</strong>. 
+Like: (0, 1, 2,)</p>
+<hr />
 <h3 id="update_window_icon">update_window_icon</h3>
 <p>Signature: <code>update_window_icon(icon: QIcon) -&gt; None</code></p>
 <p>Parameter <code>icon</code>: <code>QtGui.QIcon</code></p>
