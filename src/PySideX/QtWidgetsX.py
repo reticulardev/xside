@@ -18,6 +18,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
     """
     event_filter_signal = QtCore.Signal(object)
     resize_event_signal = QtCore.Signal(object)
+    _resize_event_signal = QtCore.Signal(object)
 
     def __init__(
             self, is_decorated: bool = False, platform: bool = True,
@@ -234,6 +235,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__central_widget.set_style_sheet(self.__style_sheet)
             if event.type() == QtCore.QEvent.Resize:
                 self.resize_event_signal.emit(0)
+                self._resize_event_signal.emit(0)
         else:
             if event.type() == QtCore.QEvent.HoverMove:
                 self.__set_edge_position(event)
@@ -250,6 +252,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
             elif event.type() == QtCore.QEvent.Resize:
                 self.resize_event_signal.emit(0)
+                self._resize_event_signal.emit(0)
 
                 if self.is_maximized() or self.is_full_screen():
                     self.__central_widget.set_style_sheet(
