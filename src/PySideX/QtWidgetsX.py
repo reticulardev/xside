@@ -512,10 +512,12 @@ class QWindowMoveArea(QtWidgets.QFrame):
         self.my_window.mouse_press_event_signal.connect(
             self.my_mouse_press_event_method)
         """
-        self.mouse_press_event_signal.emit(event)
-        if not self.__main_window.is_decorated():
-            if event.button() == QtCore.Qt.LeftButton and self.under_mouse():
-                self.__main_window.window_handle().start_system_move()
+        if self.__enable:
+            self.mouse_press_event_signal.emit(event)
+            if not self.__main_window.is_decorated():
+                if (event.button() == QtCore.Qt.LeftButton and
+                        self.under_mouse()):
+                    self.__main_window.window_handle().start_system_move()
 
     def mouse_double_click_event(self, event: QtGui.QMouseEvent) -> None:
         """This method has changed.
@@ -525,14 +527,15 @@ class QWindowMoveArea(QtWidgets.QFrame):
         self.my_window.mouse_double_click_event_signal.connect(
             self.my_mouse_double_click_event_method)
         """
-        self.mouse_double_click_event_signal.emit(event)
-        if event.button() == QtCore.Qt.LeftButton:
-            if self.__main_window.is_maximized():
-                self.native_parent_widget().show_normal()
-            elif self.__main_window.is_full_screen():
-                self.native_parent_widget().show_maximized()
-            else:
-                self.native_parent_widget().show_maximized()
+        if self.__enable:
+            self.mouse_double_click_event_signal.emit(event)
+            if event.button() == QtCore.Qt.LeftButton:
+                if self.__main_window.is_maximized():
+                    self.native_parent_widget().show_normal()
+                elif self.__main_window.is_full_screen():
+                    self.native_parent_widget().show_maximized()
+                else:
+                    self.native_parent_widget().show_maximized()
 
 
 class QHeaderBar(QtWidgets.QFrame):
