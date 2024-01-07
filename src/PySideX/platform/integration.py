@@ -61,10 +61,10 @@ class EnvSettings(object):
             'QControlButton {'
             'border-radius: 10px;'
             'padding: 1px;'
-            'background-color: rgba(127, 127, 127, 0.5);'
+            'background-color: rgba(127, 127, 127, 0.2);'
             '}'
             'QControlButton:hover {'
-            'background-color: rgba(200, 200, 200, 0.5);'
+            'background-color: rgba(200, 200, 200, 0.2);'
             '}')
 
     @property
@@ -171,7 +171,8 @@ class PlatformSettings(object):
     OperationalSystem = Enum(
         'OperationalSystem', ['UNKNOWN', 'LINUX', 'BSD', 'MAC', 'WINDOWS'])
     DesktopEnvironment = Enum(
-        'DesktopEnvironment', ['UNKNOWN', 'KDE', 'GNOME', 'CINNAMON', 'XFCE'])
+        'DesktopEnvironment',
+        ['UNKNOWN', 'PLASMA', 'GNOME', 'CINNAMON', 'XFCE'])
 
     def __init__(self, platform_integration: bool = True):
         """..."""
@@ -219,9 +220,9 @@ class PlatformSettings(object):
     def __get_desktop_environment(self) -> DesktopEnvironment:
         # ...
         if (os.environ['DESKTOP_SESSION'] == 'plasma' or
-                os.environ['XDG_SESSION_DESKTOP'] == 'KDE' or
-                os.environ['XDG_CURRENT_DESKTOP'] == 'KDE'):
-            return self.DesktopEnvironment.KDE
+                os.environ['XDG_SESSION_DESKTOP'] == 'PLASMA' or
+                os.environ['XDG_CURRENT_DESKTOP'] == 'PLASMA'):
+            return self.DesktopEnvironment.PLASMA
 
         return self.DesktopEnvironment.UNKNOWN
 
@@ -229,7 +230,8 @@ class PlatformSettings(object):
         """..."""
         if self.__platform_integration:
             if self.__operational_system == self.OperationalSystem.LINUX:
-                if self.__desktop_environment == self.DesktopEnvironment.KDE:
+                if (self.__desktop_environment ==
+                        self.DesktopEnvironment.PLASMA):
                     return EnvSettingsPlasma()
         return EnvSettings()
 
