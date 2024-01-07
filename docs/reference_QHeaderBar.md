@@ -45,6 +45,8 @@ for more.
 
 - [set_left_control_buttons_visible](#set_left_control_buttons_visible)
 
+- [set_move_area_as_enable](#set_move_area_as_enable)
+
 - [set_right_control_buttons_visible](#set_right_control_buttons_visible)
 
 - [set_text](#set_text)
@@ -109,6 +111,17 @@ Parameter `visible`: `bool`
 
 Controls the visibility of the control buttons on the left side of the window. 
 Setting this to `False` will hide them, and `True` will show them.
+
+---
+
+### set_move_area_as_enable
+
+Signature: `set_move_area_as_enable(enable: bool) -> None`
+
+Parameter `enable`: `bool`
+
+Enable or disable the window moving area. The area does not disappear, it just 
+does not respond to clicking and dragging the mouse cursor.
 
 ---
 

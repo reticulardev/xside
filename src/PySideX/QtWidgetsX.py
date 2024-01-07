@@ -494,6 +494,15 @@ class QWindowMoveArea(QtWidgets.QFrame):
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(0, 0, 0, 0)
+        self.__enable = True
+
+    def set_enable(self, enable: bool) -> None:
+        """Enable or disable the window moving area.
+
+        The area does not disappear, it just does not respond to clicking and
+        dragging the mouse cursor.
+        """
+        self.__enable = enable
 
     def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
         """This method has changed.
@@ -695,6 +704,10 @@ class QHeaderBar(QtWidgets.QFrame):
         """
         self.__left_ctrl_buttons_visibility = visible
         self.__left_ctrl_buttons.set_visible(visible)
+
+    def set_move_area_as_enable(self, enable: bool):
+        """..."""
+        self.__window_move_area.set_enable(enable)
 
     def set_right_control_buttons_visible(self, visible: bool) -> None:
         """Visibility of the control buttons on the right side of the window

@@ -21,6 +21,25 @@ The area where you click and drag to move the window.
     
     self.move_area = QHeaderBar(self)
 
+## Methods
+
+Only new ones. See the
+[**QFrame** documentation](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QFrame.html) 
+for more.
+
+- [set_enable](#set_enable)
+
+### set_enable
+
+Signature: `set_enable(enable: bool) -> None`
+
+Parameter `enable`: `bool`
+
+Enable or disable the window moving area. The area does not disappear, it just 
+does not respond to clicking and dragging the mouse cursor.
+
+---
+
 ## Signals
 
 **mouse_press_event_signal** = QtCore.Signal(object)
