@@ -19,6 +19,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
     event_filter_signal = QtCore.Signal(object)
     resize_event_signal = QtCore.Signal(object)
     _resize_event_signal = QtCore.Signal(object)
+    _set_style_signal = QtCore.Signal(object)
 
     def __init__(
             self, is_decorated: bool = False, platform: bool = True,
@@ -107,6 +108,8 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         else:
             self.__central_widget.set_style_sheet(
                 self.__style_sheet)
+        
+        self._set_style_signal.emit(0)
 
     def __reset_style_properties(self) -> None:
         # ...
