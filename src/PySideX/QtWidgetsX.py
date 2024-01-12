@@ -67,7 +67,6 @@ class QApplicationWindow(QtWidgets.QMainWindow):
     The edges are rounded and there is no title bar. A custom header bar can
     be added
     """
-    context_menu_signal = QtCore.Signal(object)
     event_filter_signal = QtCore.Signal(object)
     reset_style_signal = QtCore.Signal(object)
     resize_event_signal = QtCore.Signal(object)
@@ -295,9 +294,6 @@ class QApplicationWindow(QtWidgets.QMainWindow):
     def event_filter(
             self, watched: QtCore.QObject, event: QtCore.QEvent) -> bool:
         self.event_filter_signal.emit(event)
-
-        if event.type() == QtCore.QEvent.ContextMenu:
-            self.context_menu_signal.emit(event)
 
         if self.__is_decorated:
             self.__central_widget.set_style_sheet(self.__style_sheet)
