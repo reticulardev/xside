@@ -68,6 +68,13 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.reset_style_button.clicked.connect(self.on_reset_style)
         self.body_layout.add_widget(self.reset_style_button)
 
+        # new
+        self.context_meno = QtWidgetsX.QContextMenu(self)
+        self.set_context_menu(self.context_meno)
+
+    def context_menu_event(self, event):
+        self.context_meno.exec(event.global_pos())
+
     def on_set_style(self):
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_style_sheet(

@@ -10,6 +10,57 @@ from __feature__ import snake_case
 import PySideX.platform.integration as integration
 
 
+class QContextMenu(QtWidgets.QWidget):
+    def __init__(self, main_window: QtWidgets, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
+        self.set_window_flags(
+            QtCore.Qt.FramelessWindowHint | QtCore.Qt.Popup)
+        self.__main_window = main_window
+        self.set_minimum_width(50)
+        self.set_minimum_height(35)
+        self.__point_x = None
+        self.__point_y = None
+        self.__style_saved = None
+
+        self.set_contents_margins(0, 0, 0, 0)
+        self.__main_layout = QtWidgets.QHBoxLayout()
+        self.__main_layout.set_contents_margins(5, 5, 5, 5)
+        self.set_layout(self.__main_layout)
+
+        self.__main_widget = QtWidgets.QWidget()
+        self.__main_widget.set_object_name('QContextMenu')
+        self.__main_layout.add_widget(self.__main_widget)
+
+        # Shadow
+        self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
+        self.__shadow_effect.set_blur_radius(5)
+        self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
+        self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 100))
+        self.__main_widget.set_graphics_effect(self.__shadow_effect)
+
+        self.__main_window.set_style_signal.connect(self.__set_style_signal)
+        self.__main_window.reset_style_signal.connect(self.__set_style_signal)
+
+    def exec(self, point: QtCore.QPoint) -> None:
+        self.__point_x = point.x()
+        self.__point_y = point.y()
+
+        self.__main_widget.set_style_sheet(self.__style())
+        self.set_geometry(self.__point_x - 5, self.__point_y - 5, 50, 30)
+        self.show()
+
+    def __set_style_signal(self) -> None:
+        self.__style_saved = self.__main_window.style_sheet()
+
+    def __style(self) -> str:
+        if self.__style_saved:
+            return self.__style_saved.replace(
+                '#QContextMenu', 'QContextMenu').replace(
+                'QContextMenu', '#QContextMenu')
+        return self.__main_window.style_sheet()
+
+
 class QApplicationWindow(QtWidgets.QMainWindow):
     """Application main window prepared to use CSD
 
@@ -47,7 +98,16 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__style_builder.adapt_to_fullscreen(self.__style_sheet))
 
         self.__central_widget = QtWidgets.QWidget()
+        self.__context_menu = None
         self.__configure_window()
+
+    def set_context_menu(self, context_menu: QContextMenu) -> None:
+        """..."""
+        self.__context_menu = context_menu
+
+    def context_menu(self) -> QContextMenu | None:
+        """..."""
+        return self.__context_menu
 
     def central_widget(self) -> QtWidgets.QWidget:
         """Returns the central widget for the main window
@@ -479,57 +539,6 @@ class QWindowControlButtons(QtWidgets.QFrame):
         if self.__button_order:
             for index in self.__button_order:
                 self.__layout.add_widget(buttons_dict[index])
-
-
-class QContextMenu(QtWidgets.QWidget):
-    def __init__(self, main_window: QtWidgets, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
-        self.set_window_flags(
-            QtCore.Qt.FramelessWindowHint | QtCore.Qt.Popup)
-        self.__main_window = main_window
-        self.set_minimum_width(50)
-        self.set_minimum_height(35)
-        self.__point_x = None
-        self.__point_y = None
-        self.__style_saved = None
-
-        self.set_contents_margins(0, 0, 0, 0)
-        self.__main_layout = QtWidgets.QHBoxLayout()
-        self.__main_layout.set_contents_margins(5, 5, 5, 5)
-        self.set_layout(self.__main_layout)
-
-        self.__main_widget = QtWidgets.QWidget()
-        self.__main_widget.set_object_name('QContextMenu')
-        self.__main_layout.add_widget(self.__main_widget)
-
-        # Shadow
-        self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
-        self.__shadow_effect.set_blur_radius(5)
-        self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
-        self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 100))
-        self.__main_widget.set_graphics_effect(self.__shadow_effect)
-
-        self.__main_window.set_style_signal.connect(self.__set_style_signal)
-        self.__main_window.reset_style_signal.connect(self.__set_style_signal)
-
-    def __set_style_signal(self):
-        self.__style_saved = self.__main_window.style_sheet()
-
-    def exec(self, point: QtCore.QPoint):
-        self.__point_x = point.x()
-        self.__point_y = point.y()
-
-        self.__main_widget.set_style_sheet(self.__style())
-        self.set_geometry(self.__point_x - 5, self.__point_y - 5, 50, 30)
-        self.show()
-
-    def __style(self) -> str:
-        if self.__style_saved:
-            return self.__style_saved.replace(
-                '#QContextMenu', 'QContextMenu').replace(
-                'QContextMenu', '#QContextMenu')
-        return self.__main_window.style_sheet()
 
 
 class QWindowMoveArea(QtWidgets.QFrame):
