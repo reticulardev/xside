@@ -267,24 +267,42 @@ class StyleBuilder(object):
 
         if self.__main_window.is_decorated():
             main_window_style = (
-                '#QApplicationWindow {' +
-                'background-color: rgba({}, {}, {}, {});'.format(
-                    self.__bg_color.red(), self.__bg_color.green(),
-                    self.__bg_color.blue(), self.__bd_color.alpha_f()) +
+                '#QApplicationWindow {'
+                'background-color: rgba('
+                f'{self.__bg_color.red()}, {self.__bg_color.green()}, '
+                f'{self.__bg_color.blue()}, {self.__bg_color.alpha_f()});'
+                '}'
+                '#QContextMenu {'
+                'background-color: rgba('
+                f'{self.__bg_color.red()}, {self.__bg_color.green()}, '
+                f'{self.__bg_color.blue()}, 0.9);'
+                'border: 1px solid rgba('
+                f'{self.__bd_color.red()}, {self.__bd_color.green()}, '
+                f'{self.__bd_color.blue()}, {self.__bd_color.alpha_f()});'
+                'border-radius: 5px;'
                 '}')
         else:
             main_window_style = (
-                '#QApplicationWindow {' +
-                'background-color: rgba({}, {}, {}, {});'.format(
-                    self.__bg_color.red(), self.__bg_color.green(),
-                    self.__bg_color.blue(), self.__bd_color.alpha_f()) +
-                'border: 1px solid rgba({}, {}, {}, {});'.format(
-                    self.__bd_color.red(), self.__bd_color.green(),
-                    self.__bd_color.blue(), self.__bd_color.alpha_f()) +
-                f'border-top-left-radius: {self.__bd_radius[0]};' +
-                f'border-top-right-radius: {self.__bd_radius[1]};' +
-                f'border-bottom-right-radius: {self.__bd_radius[2]};' +
-                f'border-bottom-left-radius: {self.__bd_radius[3]};' +
+                '#QApplicationWindow {'
+                'background-color: rgba('
+                f'{self.__bg_color.red()}, {self.__bg_color.green()}, '
+                f'{self.__bg_color.blue()}, {self.__bg_color.alpha_f()});'
+                'border: 1px solid rgba('
+                f'{self.__bd_color.red()}, {self.__bd_color.green()}, '
+                f'{self.__bd_color.blue()}, {self.__bd_color.alpha_f()});'
+                f'border-top-left-radius: {self.__bd_radius[0]};'
+                f'border-top-right-radius: {self.__bd_radius[1]};'
+                f'border-bottom-right-radius: {self.__bd_radius[2]};'
+                f'border-bottom-left-radius: {self.__bd_radius[3]};'
+                '}'
+                '#QContextMenu {'
+                'background-color: rgba('
+                f'{self.__bg_color.red()}, {self.__bg_color.green()}, '
+                f'{self.__bg_color.blue()}, 0.9);'
+                'border: 1px solid rgba('
+                f'{self.__bd_color.red()}, {self.__bd_color.green()}, '
+                f'{self.__bd_color.blue()}, {self.__bd_color.alpha_f()});'
+                'border-radius: 5px;'
                 '}')
 
         style_path = os.path.join(self.__src, 'static', 'style.qss')

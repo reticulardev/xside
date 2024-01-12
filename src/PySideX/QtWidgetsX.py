@@ -16,10 +16,11 @@ class QApplicationWindow(QtWidgets.QMainWindow):
     The edges are rounded and there is no title bar. A custom header bar can
     be added
     """
+    context_menu_signal = QtCore.Signal(object)
     event_filter_signal = QtCore.Signal(object)
+    reset_style_signal = QtCore.Signal(object)
     resize_event_signal = QtCore.Signal(object)
-    _resize_event_signal = QtCore.Signal(object)
-    _set_style_signal = QtCore.Signal(object)
+    set_style_signal = QtCore.Signal(object)
 
     def __init__(
             self, is_decorated: bool = False, platform: bool = True,
@@ -79,6 +80,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
                 self.__style_sheet_fullscreen)
         else:
             self.__central_widget.set_style_sheet(self.__style_sheet)
+        self.reset_style_signal.emit(0)
 
     def set_style_sheet(self, style: str) -> None:
         """Set the application style sheet
@@ -109,7 +111,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__central_widget.set_style_sheet(
                 self.__style_sheet)
         
-        self._set_style_signal.emit(0)
+        self.set_style_signal.emit(0)
 
     def __reset_style_properties(self) -> None:
         # ...
@@ -234,11 +236,13 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self, watched: QtCore.QObject, event: QtCore.QEvent) -> bool:
         self.event_filter_signal.emit(event)
 
+        if event.type() == QtCore.QEvent.ContextMenu:
+            self.context_menu_signal.emit(event)
+
         if self.__is_decorated:
             self.__central_widget.set_style_sheet(self.__style_sheet)
             if event.type() == QtCore.QEvent.Resize:
-                self.resize_event_signal.emit(0)
-                self._resize_event_signal.emit(0)
+                self.resize_event_signal.emit(event)
         else:
             if event.type() == QtCore.QEvent.HoverMove:
                 self.__set_edge_position(event)
@@ -255,7 +259,6 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
             elif event.type() == QtCore.QEvent.Resize:
                 self.resize_event_signal.emit(0)
-                self._resize_event_signal.emit(0)
 
                 if self.is_maximized() or self.is_full_screen():
                     self.__central_widget.set_style_sheet(
@@ -476,6 +479,57 @@ class QWindowControlButtons(QtWidgets.QFrame):
         if self.__button_order:
             for index in self.__button_order:
                 self.__layout.add_widget(buttons_dict[index])
+
+
+class QContextMenu(QtWidgets.QWidget):
+    def __init__(self, main_window: QtWidgets, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
+        self.set_window_flags(
+            QtCore.Qt.FramelessWindowHint | QtCore.Qt.Popup)
+        self.__main_window = main_window
+        self.set_minimum_width(50)
+        self.set_minimum_height(35)
+        self.__point_x = None
+        self.__point_y = None
+        self.__style_saved = None
+
+        self.set_contents_margins(0, 0, 0, 0)
+        self.__main_layout = QtWidgets.QHBoxLayout()
+        self.__main_layout.set_contents_margins(5, 5, 5, 5)
+        self.set_layout(self.__main_layout)
+
+        self.__main_widget = QtWidgets.QWidget()
+        self.__main_widget.set_object_name('QContextMenu')
+        self.__main_layout.add_widget(self.__main_widget)
+
+        # Shadow
+        self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
+        self.__shadow_effect.set_blur_radius(5)
+        self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
+        self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 100))
+        self.__main_widget.set_graphics_effect(self.__shadow_effect)
+
+        self.__main_window.set_style_signal.connect(self.__set_style_signal)
+        self.__main_window.reset_style_signal.connect(self.__set_style_signal)
+
+    def __set_style_signal(self):
+        self.__style_saved = self.__main_window.style_sheet()
+
+    def exec(self, point: QtCore.QPoint):
+        self.__point_x = point.x()
+        self.__point_y = point.y()
+
+        self.__main_widget.set_style_sheet(self.__style())
+        self.set_geometry(self.__point_x - 5, self.__point_y - 5, 50, 30)
+        self.show()
+
+    def __style(self) -> str:
+        if self.__style_saved:
+            return self.__style_saved.replace(
+                '#QContextMenu', 'QContextMenu').replace(
+                'QContextMenu', '#QContextMenu')
+        return self.__main_window.style_sheet()
 
 
 class QWindowMoveArea(QtWidgets.QFrame):
