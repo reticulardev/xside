@@ -23,6 +23,7 @@ class QContextMenu(QtWidgets.QWidget):
         self.__point_y = None
         self.__style_saved = None
 
+        # Main
         self.set_contents_margins(0, 0, 0, 0)
         self.__main_layout = QtWidgets.QHBoxLayout()
         self.__main_layout.set_contents_margins(5, 5, 5, 5)
@@ -31,6 +32,10 @@ class QContextMenu(QtWidgets.QWidget):
         self.__main_widget = QtWidgets.QWidget()
         self.__main_widget.set_object_name('QContextMenu')
         self.__main_layout.add_widget(self.__main_widget)
+
+        # Layout
+        self.__menu_context_layout = QtWidgets.QVBoxLayout()
+        self.__main_widget.set_layout(self.__menu_context_layout)
 
         # Shadow
         self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
@@ -42,12 +47,31 @@ class QContextMenu(QtWidgets.QWidget):
         self.__main_window.set_style_signal.connect(self.__set_style_signal)
         self.__main_window.reset_style_signal.connect(self.__set_style_signal)
 
+    def add_action(
+            self,
+            text: str,
+            receiver: callable,
+            icon: QtGui.QIcon | None = None,
+            shortcut: QtGui.QKeySequence | None = None) -> QtGui.QAction:
+        """..."""
+
+        btn = QtWidgets.QPushButton(text)
+        btn.clicked.connect(receiver)
+
+        self.__menu_context_layout.add_widget(btn)
+
+        if icon and text:
+            return QtGui.QAction(icon=icon, text=text)
+        return QtGui.QAction(text=text)
+
+
     def exec(self, point: QtCore.QPoint) -> None:
         self.__point_x = point.x()
         self.__point_y = point.y()
 
         self.__main_widget.set_style_sheet(self.__style())
-        self.set_geometry(self.__point_x - 5, self.__point_y - 5, 50, 30)
+        self.move(self.__point_x - 5, self.__point_y - 5)
+        # self.set_geometry(self.__point_x - 5, self.__point_y - 5, 50, 30)
         self.show()
 
     def __set_style_signal(self) -> None:
