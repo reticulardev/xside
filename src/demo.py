@@ -73,7 +73,7 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.body_layout.add_widget(self.context_menu_label)
 
         self.ctx_menu = QtWidgetsX.QContextMenu(self)
-        self.set_context_menu(self.ctx_menu)
+        self.set_global_context_menu(self.ctx_menu)
         self.ctx_menu.add_action('You', self.on_context_action)
         self.ctx_menu.add_action('Have', self.on_context_action)
         self.ctx_menu.add_action('No', self.on_context_action)

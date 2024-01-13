@@ -145,6 +145,10 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         """..."""
         return self.__platform_settings
 
+    def set_global_context_menu(self, context_menu: QContextMenu) -> None:
+        """..."""
+        self.__context_menu = context_menu
+
     def reset_style(self) -> None:
         """Reset the application style sheet to default"""
         self.__reset_style_properties()
@@ -155,10 +159,6 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         else:
             self.__central_widget.set_style_sheet(self.__style_sheet)
         self.reset_style_signal.emit(0)
-
-    def set_context_menu(self, context_menu: QContextMenu) -> None:
-        """..."""
-        self.__context_menu = context_menu
 
     def set_style_sheet(self, style: str) -> None:
         """Set the application style sheet
