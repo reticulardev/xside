@@ -72,18 +72,15 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.context_menu_label = QtWidgets.QLabel('Context menu text here')
         self.body_layout.add_widget(self.context_menu_label)
 
-        self.context_meno = QtWidgetsX.QContextMenu(self)
-        self.set_context_menu(self.context_meno)
-        self.context_meno.add_action('You', self.on_context_action)
-        self.context_meno.add_action('Have', self.on_context_action)
-        self.context_meno.add_action('No', self.on_context_action)
-        self.context_meno.add_action('Power', self.on_context_action)
-
-        # menu_action = self.context_meno.add_action('Hello', self.on_context_action)
-        # menu_action.triggered.connect(self.on_context_action)
+        self.ctx_menu = QtWidgetsX.QContextMenu(self)
+        self.set_context_menu(self.ctx_menu)
+        self.ctx_menu.add_action('You', self.on_context_action)
+        self.ctx_menu.add_action('Have', self.on_context_action)
+        self.ctx_menu.add_action('No', self.on_context_action)
+        self.ctx_menu.add_action('Power', self.on_context_action)
 
     def context_menu_event(self, event):
-        self.context_meno.exec(event.global_pos())
+        self.ctx_menu.exec(event.global_pos())
 
     def on_context_action(self):
         self.context_menu_label.set_text(self.sender().text())

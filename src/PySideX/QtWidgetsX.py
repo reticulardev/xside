@@ -57,6 +57,7 @@ class QContextMenu(QtWidgets.QWidget):
 
         btn = QtWidgets.QPushButton(text)
         btn.clicked.connect(receiver)
+        btn.released.connect(lambda: self.close())
 
         self.__menu_context_layout.add_widget(btn)
 
@@ -64,6 +65,8 @@ class QContextMenu(QtWidgets.QWidget):
             return QtGui.QAction(icon=icon, text=text)
         return QtGui.QAction(text=text)
 
+    def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
+        self.close()
 
     def exec(self, point: QtCore.QPoint) -> None:
         self.__point_x = point.x()
@@ -71,7 +74,6 @@ class QContextMenu(QtWidgets.QWidget):
 
         self.__main_widget.set_style_sheet(self.__style())
         self.move(self.__point_x - 5, self.__point_y - 5)
-        # self.set_geometry(self.__point_x - 5, self.__point_y - 5, 50, 30)
         self.show()
 
     def __set_style_signal(self) -> None:
@@ -124,10 +126,6 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         self.__context_menu = None
         self.__configure_window()
 
-    def set_context_menu(self, context_menu: QContextMenu) -> None:
-        """..."""
-        self.__context_menu = context_menu
-
     def context_menu(self) -> QContextMenu | None:
         """..."""
         return self.__context_menu
@@ -147,13 +145,6 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         """..."""
         return self.__platform_settings
 
-    def style_sheet(self) -> str:
-        """The application style sheet
-
-        :return: string containing 'qss' style
-        """
-        return self.__style_sheet
-
     def reset_style(self) -> None:
         """Reset the application style sheet to default"""
         self.__reset_style_properties()
@@ -164,6 +155,10 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         else:
             self.__central_widget.set_style_sheet(self.__style_sheet)
         self.reset_style_signal.emit(0)
+
+    def set_context_menu(self, context_menu: QContextMenu) -> None:
+        """..."""
+        self.__context_menu = context_menu
 
     def set_style_sheet(self, style: str) -> None:
         """Set the application style sheet
@@ -195,6 +190,13 @@ class QApplicationWindow(QtWidgets.QMainWindow):
                 self.__style_sheet)
         
         self.set_style_signal.emit(0)
+
+    def style_sheet(self) -> str:
+        """The application style sheet
+
+        :return: string containing 'qss' style
+        """
+        return self.__style_sheet
 
     def __reset_style_properties(self) -> None:
         # ...
