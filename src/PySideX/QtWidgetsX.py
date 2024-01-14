@@ -551,6 +551,21 @@ class QWindowControlButtons(QtWidgets.QFrame):
         """..."""
         self.__window_icon.set_pixmap(icon.pixmap(20))
 
+    def set_close_window_button_visible(self, visible: bool):
+        """..."""
+        if 2 in self.__button_order:
+            self.__close_button.set_visible(visible)
+
+    def set_maximize_window_button_visible(self, visible: bool):
+        """..."""
+        if 1 in self.__button_order:
+            self.__maximize_button.set_visible(visible)
+
+    def set_minimize_window_button_visible(self, visible: bool):
+        """..."""
+        if 0 in self.__button_order:
+            self.__minimize_button.set_visible(visible)
+
     def __set_buttons_order(self) -> None:
         # Add the buttons in the configured order
         buttons_dict = {
@@ -795,6 +810,21 @@ class QHeaderBar(QtWidgets.QFrame):
         """
         self.__left_ctrl_buttons_visibility = visible
         self.__left_ctrl_buttons.set_visible(visible)
+
+    def set_close_window_button_visible(self, visible: bool):
+        """..."""
+        self.__left_ctrl_buttons.set_close_window_button_visible(visible)
+        self.__right_ctrl_buttons.set_close_window_button_visible(visible)
+
+    def set_maximize_window_button_visible(self, visible: bool):
+        """..."""
+        self.__left_ctrl_buttons.set_maximize_window_button_visible(visible)
+        self.__right_ctrl_buttons.set_maximize_window_button_visible(visible)
+
+    def set_minimize_window_button_visible(self, visible: bool):
+        """..."""
+        self.__left_ctrl_buttons.set_minimize_window_button_visible(visible)
+        self.__right_ctrl_buttons.set_minimize_window_button_visible(visible)
 
     def set_move_area_as_enable(self, enable: bool):
         """..."""

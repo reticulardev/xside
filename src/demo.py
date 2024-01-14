@@ -43,6 +43,10 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.main_layout.add_widget(self.headerbar)
         self.headerbar.set_text(self.window_title())
 
+        self.headerbar.set_minimize_window_button_visible(False)
+        self.headerbar.set_maximize_window_button_visible(False)
+        # self.headerbar.set_close_window_button_visible(False)
+
         self.search_button = QtWidgets.QToolButton()
         self.search_button.set_icon(QtGui.QIcon.from_theme('search'))
         self.headerbar.add_widget_to_left(self.search_button)
@@ -67,6 +71,17 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.reset_style_button = QtWidgets.QPushButton('Reset style')
         self.reset_style_button.clicked.connect(self.on_reset_style)
         self.body_layout.add_widget(self.reset_style_button)
+
+        # show buttons
+        self.show_min = QtWidgets.QPushButton('Show "minimize" button')
+        self.show_min.clicked.connect(
+                lambda _: self.headerbar.set_minimize_window_button_visible(True))
+        self.body_layout.add_widget(self.show_min)
+        
+        self.show_max = QtWidgets.QPushButton('Show "maximize" button')
+        self.show_max.clicked.connect(
+                lambda _: self.headerbar.set_maximize_window_button_visible(True))
+        self.body_layout.add_widget(self.show_max)
 
         # new
         self.context_menu_label = QtWidgets.QLabel('Context menu text here')
