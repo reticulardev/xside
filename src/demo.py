@@ -89,9 +89,9 @@ class Window(QtWidgetsX.QApplicationWindow):
 
         self.ctx_menu = QtWidgetsX.QContextMenu(self)
         self.set_global_context_menu(self.ctx_menu)
-        self.ctx_menu.add_action('You', self.on_context_action)
-        self.ctx_menu.add_action('Have', self.on_context_action)
-        self.ctx_menu.add_action('No', self.on_context_action)
+        self.ctx_menu.add_action('You have', self.on_context_action)
+        self.ctx_menu.add_action('Have no', self.on_context_action)
+        self.ctx_menu.add_action('No power', self.on_context_action)
         self.ctx_menu.add_action('Power', self.on_context_action)
 
     def context_menu_event(self, event):
