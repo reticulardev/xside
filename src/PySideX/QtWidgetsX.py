@@ -84,11 +84,11 @@ class QContextMenu(QtWidgets.QWidget):
         screen_width = self.__main_window.screen().geometry().width()
         screen_height = self.__main_window.screen().geometry().height()
 
-        if self.geometry().x() + self.geometry().width() > screen_width - 30:
-            x -= self.geometry().width() - 10
+        if self.geometry().x() + self.geometry().width() > screen_width:
+            x = screen_width - self.geometry().width()
 
-        if self.geometry().y() + self.geometry().height() > screen_height - 30:
-            y -= self.geometry().height() - 10
+        if self.geometry().y() + self.geometry().height() > screen_height:
+            y = self.geometry().y() - self.geometry().height() + 10
         
         self.move(x, y)
         
