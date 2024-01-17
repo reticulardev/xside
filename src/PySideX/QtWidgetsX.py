@@ -10,39 +10,62 @@ from __feature__ import snake_case
 import PySideX.platform.integration as integration
 
 
-class QContextMenuButton(QtWidgets.QFrame):
+SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+class QQuickContextMenuButton(QtWidgets.QFrame):
     """..."""
     def __init__(
             self,
-            parent: QtWidgets,
+            parent_window: QtWidgets,
+            parent_context_menu: QtWidgets,
             text: str,
             receiver: callable,
             icon: QtGui.QIcon | None = None,
             shortcut: QtGui.QKeySequence | None = None,
             *args, **kwargs) -> None:
+        """..."""
         super().__init__(*args, **kwargs)
-        self.__parent = parent
+        self.set_contents_margins(0, 0, 0, 0)
+
+        self.__parent_window = parent_window
+        self.__parent = parent_context_menu
         self.__text = text
         self.__receiver = receiver
         self.__icon = icon
         self.__shortcut = shortcut
-
-        self.set_contents_margins(0, 0, 0, 0)
 
         self.__main_layout = QtWidgets.QHBoxLayout()
         self.__main_layout.set_contents_margins(0, 0, 0, 0)
         self.__main_layout.set_spacing(0)
         self.set_layout(self.__main_layout)
 
-        if self.__icon:
-            self.__main_layout.add_widget(self.__icon)
+        self.__left_layout = QtWidgets.QHBoxLayout()
+        self.__left_layout.set_alignment(QtCore.Qt.AlignLeft)
+        self.__main_layout.add_layout(self.__left_layout)
 
-        self.__main_layout.add_widget(QtWidgets.QLabel(self.__text))
+        if not self.__icon:
+            dark = ('-symbolic' if
+                self.__parent_window.platform_settings().is_dark(self) else '')
+            icon_path = os.path.join(
+                SRC_DIR, 'platform', 'static', f'context-menu-item{dark}.svg')
+            self.__icon  = QtGui.QIcon(QtGui.QPixmap(icon_path))
 
-        label_txt = self.__shortcut.to_string() if self.__shortcut else '     '
-        shortcut_label = QtWidgets.QLabel(label_txt)
+        icon_label = QtWidgets.QLabel()
+        icon_label.set_pixmap(self.__icon.pixmap(QtCore.QSize(16, 16)))
+        icon_label.set_contents_margins(0, 0, 5, 0)
+        icon_label.set_alignment(QtCore.Qt.AlignLeft)
+        self.__left_layout.add_widget(icon_label)
+
+        text_label = QtWidgets.QLabel(self.__text)
+        text_label.set_alignment(QtCore.Qt.AlignLeft)
+        self.__left_layout.add_widget(text_label)
+
+        txt_shortcut = self.__shortcut.to_string() if self.__shortcut else ' '
+        shortcut_label = QtWidgets.QLabel(txt_shortcut)
         shortcut_label.set_enabled(False)
         shortcut_label.set_contents_margins(20, 0, 0, 0)
+        shortcut_label.set_alignment(QtCore.Qt.AlignRight)
         self.__main_layout.add_widget(shortcut_label)
 
     def text(self) -> str:
@@ -53,7 +76,7 @@ class QContextMenuButton(QtWidgets.QFrame):
         self.__parent.close()
 
 
-class QContextMenu(QtWidgets.QWidget):
+class QQuickContextMenu(QtWidgets.QWidget):
     """..."""
     def __init__(self, main_window: QtWidgets, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -76,7 +99,7 @@ class QContextMenu(QtWidgets.QWidget):
         self.set_layout(self.__main_layout)
 
         self.__main_widget = QtWidgets.QWidget()
-        self.__main_widget.set_object_name('QContextMenu')
+        self.__main_widget.set_object_name('QQuickContextMenu')
         self.__main_layout.add_widget(self.__main_widget)
 
         # Layout
@@ -89,7 +112,10 @@ class QContextMenu(QtWidgets.QWidget):
         self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
         self.__shadow_effect.set_blur_radius(5)
         self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
-        self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 100))
+        if self.__main_window.platform_settings().is_dark(self):
+            self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 100))
+        else:
+            self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 70))
         self.__main_widget.set_graphics_effect(self.__shadow_effect)
 
         self.__main_window.set_style_signal.connect(self.__set_style_signal)
@@ -102,7 +128,8 @@ class QContextMenu(QtWidgets.QWidget):
             icon: QtGui.QIcon | None = None,
             shortcut: QtGui.QKeySequence | None = None) -> None:
         """..."""
-        ctx_btn = QContextMenuButton(self, text, receiver, icon, shortcut)
+        ctx_btn = QQuickContextMenuButton(
+            self.__main_window, self, text, receiver, icon, shortcut)
         ctx_btn.set_style_sheet(self.__style_saved)
         self.__menu_context_layout.add_widget(ctx_btn)
         self.__context_buttons.append(ctx_btn)
@@ -143,8 +170,8 @@ class QContextMenu(QtWidgets.QWidget):
     def __style(self) -> str:
         if self.__style_saved:
             return self.__style_saved.replace(
-                '#QContextMenu', 'QContextMenu').replace(
-                'QContextMenu', '#QContextMenu')
+                '#QQuickContextMenu', 'QQuickContextMenu').replace(
+                'QQuickContextMenu', '#QQuickContextMenu')
         return self.__main_window.style_sheet()
 
 
@@ -187,7 +214,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         self.__context_menu = None
         self.__configure_window()
 
-    def context_menu(self) -> QContextMenu | None:
+    def context_menu(self) -> QQuickContextMenu | None:
         """..."""
         return self.__context_menu
 
@@ -206,7 +233,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         """..."""
         return self.__platform_settings
 
-    def set_global_context_menu(self, context_menu: QContextMenu) -> None:
+    def set_quick_context_menu(self, context_menu: QQuickContextMenu) -> None:
         """..."""
         self.__context_menu = context_menu
 
@@ -281,7 +308,10 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         # Shadow
         self.__shadow_effect.set_blur_radius(self.__shadow_size)
         self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
-        self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 180))
+        if self.__platform_settings.is_dark(self):
+            self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 180))
+        else:
+            self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 80))
         self.__central_widget.set_graphics_effect(self.__shadow_effect)
         self.__set_visible_shadow(True)
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import math
 import os
 import subprocess
 import sys
@@ -181,6 +182,12 @@ class PlatformSettings(object):
         self.__operational_system = self.__get_operational_system()
         self.__env_settings = self.__get_env_settings()
 
+    def is_dark(self, widget: QtWidgets) -> bool:
+        color = widget.palette().color(QtGui.QPalette.Window)
+        r, g, b = (color.red(), color.green(), color.blue())
+        hsp = math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
+        return False if hsp > 127.5 else True
+
     @property
     def desktop_environment(self) -> DesktopEnvironment:
         """..."""
@@ -252,10 +259,14 @@ class StyleBuilder(object):
         self.__src = os.path.dirname(os.path.abspath(__file__))
         self.__bd_radius = (
             self.__main_window.platform_settings().window_border_radius())
+
         self.__bg_color = self.__main_window.palette().color(
             QtGui.QPalette.Window)
-        self.__bg_accent_color = self.__main_window.palette().color(
-            QtGui.QPalette.Accent)
+        
+        self.__bg_accent_color = QtGui.QColor(
+            QtGui.QPalette().color(
+                QtGui.QPalette.Active, QtGui.QPalette.Highlight))
+        
         self.__bd_color = self.__main_window.palette().color(
             QtGui.QPalette.Window.Mid)
         # https://doc.qt.io/qtforpython-6/PySide6/QtGui/
@@ -290,7 +301,7 @@ class StyleBuilder(object):
                 '}')
 
         main_window_style += (
-            '#QContextMenu {'
+            '#QQuickContextMenu {'
             'background-color: rgba('
             f'{self.__bg_color.red()}, {self.__bg_color.green()}, '
             f'{self.__bg_color.blue()}, 0.9);'
@@ -299,13 +310,13 @@ class StyleBuilder(object):
             f'{self.__bd_color.blue()}, {self.__bd_color.alpha_f()});'
             'border-radius: 5px;'
             '}'
-            'QContextMenuButton {'
+            'QQuickContextMenuButton {'
             'background: transparent;'
             'padding: 2px;'
             'border: 1px solid rgba(0, 0, 0, 0.0);'
             'border-radius: 3px;'
             '}'
-            'QContextMenuButton:hover {'
+            'QQuickContextMenuButton:hover {'
             'background-color: rgba('
             f'{self.__bg_accent_color.red()}, {self.__bg_accent_color.green()}, '
             f'{self.__bg_accent_color.blue()}, 0.2);'

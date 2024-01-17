@@ -43,8 +43,6 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.main_layout.add_widget(self.headerbar)
         self.headerbar.set_text(self.window_title())
 
-        self.headerbar.set_minimize_window_button_visible(False)
-
         self.search_button = QtWidgets.QToolButton()
         self.search_button.set_icon(QtGui.QIcon.from_theme('search'))
         self.headerbar.add_widget_to_left(self.search_button)
@@ -74,13 +72,15 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.context_menu_label = QtWidgets.QLabel('Context menu text here')
         self.body_layout.add_widget(self.context_menu_label)
 
-        self.ctx_menu = QtWidgetsX.QContextMenu(self)
-        self.set_global_context_menu(self.ctx_menu)
+        self.ctx_menu = QtWidgetsX.QQuickContextMenu(self)
+        self.set_quick_context_menu(self.ctx_menu)
         self.ctx_menu.add_action(
             'Copy', lambda: self.context_menu_cal('Copy'),
-            shortcut=QtGui.QKeySequence('Ctrl+C'))
+            icon=QtGui.QIcon.from_theme('edit-copy'),
+            shortcut=QtGui.QKeySequence('Ctrl+Shift+C'))
         self.ctx_menu.add_action(
             'Paste', lambda: self.context_menu_cal('Paste'),
+            icon=QtGui.QIcon.from_theme('edit-paste'),
             shortcut=QtGui.QKeySequence('Ctrl+V'))
         self.ctx_menu.add_action(
             'Delete', lambda: self.context_menu_cal('Delete'))
@@ -121,12 +121,15 @@ class Window(QtWidgetsX.QApplicationWindow):
             '   background: transparent;'
             '   border-radius: 9px;}'
             'QControlButton:hover {'
+            '   padding: 0px;'
+            '   background: transparent;'
+            '   border-radius: 9px;'
             '   background-color: rgba(100, 100, 100, 0.5);'
             '}'
-            'QContextMenu {'
+            'QQuickContextMenu {'
             'border: 1px solid rgba(125, 77, 136, 0.6);'
             '}'
-            'QContextMenuButton {'
+            'QQuickContextMenuButton {'
             'border: 1px solid rgba(77, 125, 77, 0.6);'
             '}')
 
