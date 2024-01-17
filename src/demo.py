@@ -76,18 +76,22 @@ class Window(QtWidgetsX.QApplicationWindow):
 
         self.ctx_menu = QtWidgetsX.QContextMenu(self)
         self.set_global_context_menu(self.ctx_menu)
-        self.ctx_menu.add_action('You have', self.on_context_action, shortcut=QtGui.QKeySequence('Ctrl+P'))
-        self.ctx_menu.add_action('Have no', self.on_context_action)
-        self.ctx_menu.add_action('No power', self.on_context_action)
-        self.ctx_menu.add_action('Power', self.on_context_action)
-        self.__context_count = 0
+        self.ctx_menu.add_action(
+            'Copy', lambda: self.context_menu_cal('Copy'),
+            shortcut=QtGui.QKeySequence('Ctrl+C'))
+        self.ctx_menu.add_action(
+            'Paste', lambda: self.context_menu_cal('Paste'),
+            shortcut=QtGui.QKeySequence('Ctrl+V'))
+        self.ctx_menu.add_action(
+            'Delete', lambda: self.context_menu_cal('Delete'))
+        self.ctx_menu.add_action(
+            'Save', lambda: self.context_menu_cal('Save'))
 
     def context_menu_event(self, event):
         self.ctx_menu.exec(event.global_pos())
 
-    def on_context_action(self):
-        self.__context_count += 1
-        self.context_menu_label.set_text(str(self.__context_count))
+    def context_menu_cal(self, text):
+        self.context_menu_label.set_text(text)
 
     def on_set_style(self):
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)

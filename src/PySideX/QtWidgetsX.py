@@ -14,12 +14,14 @@ class QContextMenuButton(QtWidgets.QFrame):
     """..."""
     def __init__(
             self,
+            parent: QtWidgets,
             text: str,
             receiver: callable,
             icon: QtGui.QIcon | None = None,
             shortcut: QtGui.QKeySequence | None = None,
             *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self.__parent = parent
         self.__text = text
         self.__receiver = receiver
         self.__icon = icon
@@ -48,6 +50,7 @@ class QContextMenuButton(QtWidgets.QFrame):
 
     def mouse_press_event(self, event):
         self.__receiver()
+        self.__parent.close()
 
 
 class QContextMenu(QtWidgets.QWidget):
@@ -99,7 +102,7 @@ class QContextMenu(QtWidgets.QWidget):
             icon: QtGui.QIcon | None = None,
             shortcut: QtGui.QKeySequence | None = None) -> None:
         """..."""
-        ctx_btn = QContextMenuButton(text, receiver, icon, shortcut)
+        ctx_btn = QContextMenuButton(self, text, receiver, icon, shortcut)
         ctx_btn.set_style_sheet(self.__style_saved)
         self.__menu_context_layout.add_widget(ctx_btn)
         self.__context_buttons.append(ctx_btn)
