@@ -44,8 +44,6 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.headerbar.set_text(self.window_title())
 
         self.headerbar.set_minimize_window_button_visible(False)
-        self.headerbar.set_maximize_window_button_visible(False)
-        # self.headerbar.set_close_window_button_visible(False)
 
         self.search_button = QtWidgets.QToolButton()
         self.search_button.set_icon(QtGui.QIcon.from_theme('search'))
@@ -72,33 +70,24 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.reset_style_button.clicked.connect(self.on_reset_style)
         self.body_layout.add_widget(self.reset_style_button)
 
-        # show buttons
-        self.show_min = QtWidgets.QPushButton('Show "minimize" button')
-        self.show_min.clicked.connect(
-                lambda _: self.headerbar.set_minimize_window_button_visible(True))
-        self.body_layout.add_widget(self.show_min)
-        
-        self.show_max = QtWidgets.QPushButton('Show "maximize" button')
-        self.show_max.clicked.connect(
-                lambda _: self.headerbar.set_maximize_window_button_visible(True))
-        self.body_layout.add_widget(self.show_max)
-
         # new
         self.context_menu_label = QtWidgets.QLabel('Context menu text here')
         self.body_layout.add_widget(self.context_menu_label)
 
         self.ctx_menu = QtWidgetsX.QContextMenu(self)
         self.set_global_context_menu(self.ctx_menu)
-        self.ctx_menu.add_action('You have', self.on_context_action)
+        self.ctx_menu.add_action('You have', self.on_context_action, shortcut=QtGui.QKeySequence('Ctrl+P'))
         self.ctx_menu.add_action('Have no', self.on_context_action)
         self.ctx_menu.add_action('No power', self.on_context_action)
         self.ctx_menu.add_action('Power', self.on_context_action)
+        self.__context_count = 0
 
     def context_menu_event(self, event):
         self.ctx_menu.exec(event.global_pos())
 
     def on_context_action(self):
-        self.context_menu_label.set_text(self.sender().text())
+        self.__context_count += 1
+        self.context_menu_label.set_text(str(self.__context_count))
 
     def on_set_style(self):
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
@@ -106,11 +95,13 @@ class Window(QtWidgetsX.QApplicationWindow):
             'QApplicationWindow {'
             '   background-color: rgba(59, 59, 59, 0.8);'
             '   border-radius: 10px;'
-            '   border: 1px solid #555;}'
+            '   border: 1px solid #555;'
+            '}'
             'QPushButton {'
             '   background-color: #363636;}'
             'QPushButton:hover {'
-            '   background-color: #513258;}'
+            '   background-color: #513258;'
+            '}'
             'QToolButton {'
             '   background-color: rgba(80, 80, 80, 0.6);'
             '   padding: 5px;'
@@ -119,13 +110,21 @@ class Window(QtWidgetsX.QApplicationWindow):
             'QToolButton:hover {'
             '   background: transparent;'
             '   border: 0px;'
-            '   background-color: rgba(125, 77, 136, 0.6);}'
+            '   background-color: rgba(125, 77, 136, 0.6);'
+            '}'
             'QControlButton {'
             '   padding: 0px;'
             '   background: transparent;'
             '   border-radius: 9px;}'
             'QControlButton:hover {'
-            '   background-color: rgba(100, 100, 100, 0.5);}')
+            '   background-color: rgba(100, 100, 100, 0.5);'
+            '}'
+            'QContextMenu {'
+            'border: 1px solid rgba(125, 77, 136, 0.6);'
+            '}'
+            'QContextMenuButton {'
+            'border: 1px solid rgba(77, 125, 77, 0.6);'
+            '}')
 
     def on_reset_style(self):
         self.reset_style()

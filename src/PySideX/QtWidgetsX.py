@@ -10,7 +10,48 @@ from __feature__ import snake_case
 import PySideX.platform.integration as integration
 
 
+class QContextMenuButton(QtWidgets.QFrame):
+    """..."""
+    def __init__(
+            self,
+            text: str,
+            receiver: callable,
+            icon: QtGui.QIcon | None = None,
+            shortcut: QtGui.QKeySequence | None = None,
+            *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.__text = text
+        self.__receiver = receiver
+        self.__icon = icon
+        self.__shortcut = shortcut
+
+        self.set_contents_margins(0, 0, 0, 0)
+
+        self.__main_layout = QtWidgets.QHBoxLayout()
+        self.__main_layout.set_contents_margins(0, 0, 0, 0)
+        self.__main_layout.set_spacing(0)
+        self.set_layout(self.__main_layout)
+
+        if self.__icon:
+            self.__main_layout.add_widget(self.__icon)
+
+        self.__main_layout.add_widget(QtWidgets.QLabel(self.__text))
+
+        label_txt = self.__shortcut.to_string() if self.__shortcut else '     '
+        shortcut_label = QtWidgets.QLabel(label_txt)
+        shortcut_label.set_enabled(False)
+        shortcut_label.set_contents_margins(20, 0, 0, 0)
+        self.__main_layout.add_widget(shortcut_label)
+
+    def text(self) -> str:
+        return self.__text
+
+    def mouse_press_event(self, event):
+        self.__receiver()
+
+
 class QContextMenu(QtWidgets.QWidget):
+    """..."""
     def __init__(self, main_window: QtWidgets, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
@@ -22,11 +63,13 @@ class QContextMenu(QtWidgets.QWidget):
         self.__point_x = None
         self.__point_y = None
         self.__style_saved = None
+        self.__context_buttons = []
 
         # Main
         self.set_contents_margins(0, 0, 0, 0)
         self.__main_layout = QtWidgets.QHBoxLayout()
-        self.__main_layout.set_contents_margins(5, 5, 5, 5)
+        self.__main_layout.set_contents_margins(0, 0, 0, 0)
+        self.__main_layout.set_spacing(0)
         self.set_layout(self.__main_layout)
 
         self.__main_widget = QtWidgets.QWidget()
@@ -35,6 +78,8 @@ class QContextMenu(QtWidgets.QWidget):
 
         # Layout
         self.__menu_context_layout = QtWidgets.QVBoxLayout()
+        self.__menu_context_layout.set_contents_margins(4, 4, 4, 4)
+        self.__menu_context_layout.set_spacing(0)
         self.__main_widget.set_layout(self.__menu_context_layout)
 
         # Shadow
@@ -52,18 +97,12 @@ class QContextMenu(QtWidgets.QWidget):
             text: str,
             receiver: callable,
             icon: QtGui.QIcon | None = None,
-            shortcut: QtGui.QKeySequence | None = None) -> QtGui.QAction:
+            shortcut: QtGui.QKeySequence | None = None) -> None:
         """..."""
-
-        btn = QtWidgets.QPushButton(text)
-        btn.clicked.connect(receiver)
-        btn.released.connect(lambda: self.close())
-
-        self.__menu_context_layout.add_widget(btn)
-
-        if icon and text:
-            return QtGui.QAction(icon=icon, text=text)
-        return QtGui.QAction(text=text)
+        ctx_btn = QContextMenuButton(text, receiver, icon, shortcut)
+        ctx_btn.set_style_sheet(self.__style_saved)
+        self.__menu_context_layout.add_widget(ctx_btn)
+        self.__context_buttons.append(ctx_btn)
 
     def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
         self.close()
@@ -73,6 +112,9 @@ class QContextMenu(QtWidgets.QWidget):
         self.__point_y = point.y()
 
         self.__main_widget.set_style_sheet(self.__style())
+        for btn in self.__context_buttons:
+            btn.set_style_sheet(self.__style_saved)
+
         self.move(self.__point_x - 5, self.__point_y - 5)
         self.show()
         self.__set_dynamic_positioning()
@@ -91,7 +133,6 @@ class QContextMenu(QtWidgets.QWidget):
             y = self.geometry().y() - self.geometry().height() + 10
         
         self.move(x, y)
-        
 
     def __set_style_signal(self) -> None:
         self.__style_saved = self.__main_window.style_sheet()

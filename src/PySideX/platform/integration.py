@@ -254,6 +254,8 @@ class StyleBuilder(object):
             self.__main_window.platform_settings().window_border_radius())
         self.__bg_color = self.__main_window.palette().color(
             QtGui.QPalette.Window)
+        self.__bg_accent_color = self.__main_window.palette().color(
+            QtGui.QPalette.Accent)
         self.__bd_color = self.__main_window.palette().color(
             QtGui.QPalette.Window.Mid)
         # https://doc.qt.io/qtforpython-6/PySide6/QtGui/
@@ -271,15 +273,6 @@ class StyleBuilder(object):
                 'background-color: rgba('
                 f'{self.__bg_color.red()}, {self.__bg_color.green()}, '
                 f'{self.__bg_color.blue()}, {self.__bg_color.alpha_f()});'
-                '}'
-                '#QContextMenu {'
-                'background-color: rgba('
-                f'{self.__bg_color.red()}, {self.__bg_color.green()}, '
-                f'{self.__bg_color.blue()}, 0.9);'
-                'border: 1px solid rgba('
-                f'{self.__bd_color.red()}, {self.__bd_color.green()}, '
-                f'{self.__bd_color.blue()}, {self.__bd_color.alpha_f()});'
-                'border-radius: 5px;'
                 '}')
         else:
             main_window_style = (
@@ -294,16 +287,34 @@ class StyleBuilder(object):
                 f'border-top-right-radius: {self.__bd_radius[1]};'
                 f'border-bottom-right-radius: {self.__bd_radius[2]};'
                 f'border-bottom-left-radius: {self.__bd_radius[3]};'
-                '}'
-                '#QContextMenu {'
-                'background-color: rgba('
-                f'{self.__bg_color.red()}, {self.__bg_color.green()}, '
-                f'{self.__bg_color.blue()}, 0.9);'
-                'border: 1px solid rgba('
-                f'{self.__bd_color.red()}, {self.__bd_color.green()}, '
-                f'{self.__bd_color.blue()}, {self.__bd_color.alpha_f()});'
-                'border-radius: 5px;'
                 '}')
+
+        main_window_style += (
+            '#QContextMenu {'
+            'background-color: rgba('
+            f'{self.__bg_color.red()}, {self.__bg_color.green()}, '
+            f'{self.__bg_color.blue()}, 0.9);'
+            'border: 1px solid rgba('
+            f'{self.__bd_color.red()}, {self.__bd_color.green()}, '
+            f'{self.__bd_color.blue()}, {self.__bd_color.alpha_f()});'
+            'border-radius: 5px;'
+            '}'
+            'QContextMenuButton {'
+            'background: transparent;'
+            'padding: 2px;'
+            'border: 1px solid rgba(0, 0, 0, 0.0);'
+            'border-radius: 3px;'
+            '}'
+            'QContextMenuButton:hover {'
+            'background-color: rgba('
+            f'{self.__bg_accent_color.red()}, {self.__bg_accent_color.green()}, '
+            f'{self.__bg_accent_color.blue()}, 0.2);'
+            'padding: 2px;'
+            'border: 1px solid rgba('
+            f'{self.__bg_accent_color.red()}, {self.__bg_accent_color.green()}, '
+            f'{self.__bg_accent_color.blue()}, 0.9);'
+            'border-radius: 3px;'
+            '}')
 
         style_path = os.path.join(self.__src, 'static', 'style.qss')
         with open(style_path, 'r') as style_qss_file:
