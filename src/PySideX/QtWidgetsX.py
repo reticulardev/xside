@@ -211,12 +211,12 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__style_builder.adapt_to_fullscreen(self.__style_sheet))
 
         self.__central_widget = QtWidgets.QWidget()
-        self.__context_menu = None
+        self.__quick_context_menu = None
         self.__configure_window()
 
-    def context_menu(self) -> QQuickContextMenu | None:
+    def quick_context_menu(self) -> QQuickContextMenu | None:
         """..."""
-        return self.__context_menu
+        return self.__quick_context_menu
 
     def central_widget(self) -> QtWidgets.QWidget:
         """Returns the central widget for the main window
@@ -235,7 +235,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
     def set_quick_context_menu(self, context_menu: QQuickContextMenu) -> None:
         """..."""
-        self.__context_menu = context_menu
+        self.__quick_context_menu = context_menu
 
     def reset_style(self) -> None:
         """Reset the application style sheet to default"""
