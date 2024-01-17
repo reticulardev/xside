@@ -71,7 +71,7 @@ class QContextMenu(QtWidgets.QWidget):
         # Main
         self.set_contents_margins(0, 0, 0, 0)
         self.__main_layout = QtWidgets.QHBoxLayout()
-        self.__main_layout.set_contents_margins(0, 0, 0, 0)
+        self.__main_layout.set_contents_margins(5, 5, 5, 5)
         self.__main_layout.set_spacing(0)
         self.set_layout(self.__main_layout)
 
