@@ -1,8 +1,39 @@
 QControlButton {
-    background: transparent;
-    border-radius: 10px;
-    border: 0px;
-}
+  background: transparent;
+  border-radius: 10px;
+  border: 0px;
+  }
 QControlButton:hover {
-    background-color: rgba(127, 127, 127, 0.5);
-}
+  background-color: rgba(127, 127, 127, 0.5);
+  }
+
+QToolButton {
+  background: transparent;
+  padding: 2px;
+  border: 0px;
+  border-radius: 3px;
+  }
+QToolButton:hover {
+  background: transparent;
+  padding: 2px;
+  border: 0px;
+  border-radius: 3px;
+  background-color: rgba(130, 130, 145, 0.2);
+  }
+QToolButton:pressed {
+  background-color: rgba(110, 110, 145, 0.3);
+  }
+
+QPushButton {
+  background: rgba(110, 110, 110, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-top: 0px;
+  padding: 5px;
+  border-radius: 3px;
+  }
+QPushButton:hover {
+  background-color: rgba(130, 130, 145, 0.2);
+  }
+QPushButton:pressed {
+  background-color: rgba(110, 110, 145, 0.3);
+  }
