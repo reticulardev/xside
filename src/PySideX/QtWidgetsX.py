@@ -69,9 +69,11 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__main_layout.add_widget(shortcut_label)
 
     def text(self) -> str:
+        """..."""
         return self.__text
 
     def mouse_press_event(self, event):
+        """..."""
         self.__receiver()
         self.__parent.close()
 
@@ -90,6 +92,13 @@ class QQuickContextMenu(QtWidgets.QWidget):
         self.__point_y = None
         self.__style_saved = None
         self.__context_buttons = []
+        self.__spacing = 4
+        self.__separator_spacing = 10
+        self.__left_margin = 4
+        self.__top_margin = 4
+        self.__right_margin = 4
+        self.__bottom_margin = 0
+        
 
         # Main
         self.set_contents_margins(0, 0, 0, 0)
@@ -104,7 +113,8 @@ class QQuickContextMenu(QtWidgets.QWidget):
 
         # Layout
         self.__menu_context_layout = QtWidgets.QVBoxLayout()
-        self.__menu_context_layout.set_contents_margins(4, 4, 4, 4)
+        self.__menu_context_layout.set_contents_margins(
+            0, self.__top_margin, 0, self.__bottom_margin)
         self.__menu_context_layout.set_spacing(0)
         self.__main_widget.set_layout(self.__menu_context_layout)
 
@@ -128,16 +138,27 @@ class QQuickContextMenu(QtWidgets.QWidget):
             icon: QtGui.QIcon | None = None,
             shortcut: QtGui.QKeySequence | None = None) -> None:
         """..."""
+        ctx_btn_l = QtWidgets.QHBoxLayout()
+        ctx_btn_l.set_contents_margins(
+            self.__left_margin, 0, self.__right_margin, self.__spacing)
+
         ctx_btn = QQuickContextMenuButton(
             self.__main_window, self, text, receiver, icon, shortcut)
         ctx_btn.set_style_sheet(self.__style_saved)
-        self.__menu_context_layout.add_widget(ctx_btn)
+        ctx_btn_l.add_widget(ctx_btn)
+
+        self.__menu_context_layout.add_layout(ctx_btn_l)
         self.__context_buttons.append(ctx_btn)
 
-    def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
-        self.close()
+    def add_separator(self) -> None:
+        """..."""
+        frame_line = QtWidgets.QFrame(frame_shape=QtWidgets.QFrame.HLine)
+        frame_line.set_contents_margins(20, 20, 20, 20)
+        frame_line.set_enabled(False)
+        self.__menu_context_layout.add_widget(frame_line)
 
     def exec(self, point: QtCore.QPoint) -> None:
+        """..."""
         self.__point_x = point.x()
         self.__point_y = point.y()
 
@@ -148,6 +169,21 @@ class QQuickContextMenu(QtWidgets.QWidget):
         self.move(self.__point_x - 5, self.__point_y - 5)
         self.show()
         self.__set_dynamic_positioning()
+
+    def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
+        """..."""
+        self.close()
+
+    def set_contents_padding(
+            self, left: int, top: int, right: int, bottom: int) -> None:
+        """..."""
+        self.__left_margin = left
+        self.__top_margin = top
+        self.__right_margin = right
+
+        self.__bottom_margin = 0
+        if (bottom - self.__spacing) >= self.__spacing:
+            self.__bottom_margin = bottom - self.__spacing
 
     def __set_dynamic_positioning(self) -> None:
         x = self.geometry().x()

@@ -68,7 +68,7 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.reset_style_button.clicked.connect(self.on_reset_style)
         self.body_layout.add_widget(self.reset_style_button)
 
-        # new
+        # Context menu
         self.context_menu_label = QtWidgets.QLabel('Context menu text here')
         self.body_layout.add_widget(self.context_menu_label)
 
@@ -82,6 +82,8 @@ class Window(QtWidgetsX.QApplicationWindow):
             'Paste', lambda: self.context_menu_cal('Paste'),
             icon=QtGui.QIcon.from_theme('edit-paste'),
             shortcut=QtGui.QKeySequence('Ctrl+V'))
+
+        self.ctx_menu.add_separator()
         self.ctx_menu.add_action(
             'Delete', lambda: self.context_menu_cal('Delete'))
         self.ctx_menu.add_action(
