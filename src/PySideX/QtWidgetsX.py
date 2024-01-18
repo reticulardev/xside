@@ -153,7 +153,6 @@ class QQuickContextMenu(QtWidgets.QWidget):
     def add_separator(self) -> None:
         """..."""
         frame_line = QtWidgets.QFrame(frame_shape=QtWidgets.QFrame.HLine)
-        frame_line.set_contents_margins(20, 20, 20, 20)
         frame_line.set_enabled(False)
         self.__menu_context_layout.add_widget(frame_line)
 
