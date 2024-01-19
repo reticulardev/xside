@@ -121,7 +121,6 @@ class QQuickContextMenu(QtWidgets.QWidget):
         self.__point_y = None
 
         self.__spacing = 0
-        self.__separator_spacing = 10
         self.__left_margin = 4
         self.__top_margin = 4
         self.__right_margin = 4
@@ -591,7 +590,8 @@ class QControlButton(QtWidgets.QToolButton):
 
             self.set_style_sheet(style)
             if 'background: url' not in style:
-                self.set_icon(QtGui.QIcon.from_theme('go-down'))
+                self.set_icon(
+                    QtGui.QIcon.from_theme('window-minimize-symbolic'))
 
             self.clicked.connect(
                 lambda _: self.__main_window.show_minimized())
@@ -604,7 +604,8 @@ class QControlButton(QtWidgets.QToolButton):
 
             self.set_style_sheet(style)
             if 'background: url' not in style:
-                self.set_icon(QtGui.QIcon.from_theme('go-up'))
+                self.set_icon(
+                    QtGui.QIcon.from_theme('window-maximize-symbolic'))
         else:
             style = (
                 self.__main_window.platform_settings()
@@ -613,7 +614,7 @@ class QControlButton(QtWidgets.QToolButton):
 
             self.set_style_sheet(style)
             if 'background: url' not in style:
-                self.set_icon(QtGui.QIcon.from_theme('edit-delete-remove'))
+                self.set_icon(QtGui.QIcon.from_theme('window-close-symbolic'))
 
             self.clicked.connect(
                 lambda _: self.__main_window.close())
@@ -645,7 +646,8 @@ class QControlButton(QtWidgets.QToolButton):
             self.set_style_sheet(maximize_style)
             if self.__maximize_or_restore_icon == 'restore':
                 if 'background: url' not in maximize_style:
-                    self.set_icon(QtGui.QIcon.from_theme('window-restore'))
+                    self.set_icon(
+                        QtGui.QIcon.from_theme('window-restore-symbolic'))
             else:
                 if 'background: url' not in maximize_style:
                     self.set_icon(QtGui.QIcon.from_theme('go-up'))

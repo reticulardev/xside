@@ -21,9 +21,9 @@ class EnvSettings(object):
     def __init__(self, *args, **kwargs):
         """..."""
         self.__kwinrc = self.rc_file_content(
-            os.path.join(os.environ['HOME'], '.config', 'kwinrc')).content
+            os.path.join(os.environ['HOME'], '.config', 'kwinrc'))
         self.__breezerc = self.rc_file_content(
-            os.path.join(os.environ['HOME'], '.config', 'breezerc')).content
+            os.path.join(os.environ['HOME'], '.config', 'breezerc'))
 
     @property
     def breeze_rc_content(self) -> dict:
@@ -77,8 +77,8 @@ class EnvSettings(object):
     def rc_file_content(file_url: str) -> str | None:
         """..."""
         if os.path.isfile(file_url):
-            return DesktopFile(url=file_url)
-        return None
+            return DesktopFile(url=file_url).content
+        return {}
 
     def use_global_menu(self) -> bool:
         """..."""
