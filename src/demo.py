@@ -83,7 +83,11 @@ class Window(QtWidgetsX.QApplicationWindow):
             icon=QtGui.QIcon.from_theme('edit-paste'),
             shortcut=QtGui.QKeySequence('Ctrl+V'))
 
-        self.ctx_menu.add_separator()
+        # self.ctx_menu.add_separator()
+        # self.ctx_menu.set_contents_paddings(10, 10, 10, 10)
+        # self.ctx_menu.set_spacing(5)
+        # self.ctx_menu.set_separators_margins(10, 0, 10, 0)
+
         self.ctx_menu.add_action(
             'Delete', lambda: self.context_menu_cal('Delete'))
         self.ctx_menu.add_action(

@@ -208,7 +208,6 @@ class PlatformSettings(object):
         :param button_name: 'minimize', 'maximize', 'restore' or 'close'
         :param button_state: 'normal', 'hover', 'inactive'
         """
-
         return self.__env_settings.control_button_style(
             window_is_dark, button_name, button_state)
 
