@@ -49,13 +49,13 @@ class EnvSettings(object):
     def context_menu_border_color(window_is_dark: bool) -> tuple:
         """RGBA tuple: (127, 127, 127, 0.8)"""
         if window_is_dark:
-            return (127, 127, 127, 0.8)
-        return (127, 127, 127, 0.8)
+            return 127, 127, 127, 0.8
+        return 127, 127, 127, 0.8
 
     @staticmethod
     def context_menu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
-        return (0, 0, 0, 0)
+        return 0, 4, 0, 4
 
     @staticmethod
     def control_button_order() -> tuple:
@@ -112,6 +112,11 @@ class EnvSettingsPlasma(EnvSettings):
     def __init__(self, *args, **kwargs):
         """..."""
         super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def context_menu_separator_margin() -> tuple:
+        """Left, top, right and bottom margins tuple"""
+        return 8, 4, 8, 4
 
     def control_button_order(self) -> tuple:
         """..."""
@@ -270,12 +275,10 @@ class PlatformSettings(object):
         """..."""
         return self.__operational_system
 
-    @property
     def context_menu_border_color(self, window_is_dark: bool) -> tuple:
         """..."""
         return self.__env_settings.context_menu_border_color(window_is_dark)
 
-    @property
     def context_menu_separator_margin(self) -> tuple:
         """..."""
         return self.__env_settings.context_menu_separator_margin()

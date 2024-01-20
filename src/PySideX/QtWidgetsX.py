@@ -187,7 +187,11 @@ class QQuickContextMenu(QtWidgets.QWidget):
     def add_separator(self) -> None:
         """..."""
         separator_layout = QtWidgets.QVBoxLayout()
-        separator_layout.set_contents_margins(0, 0, 0, self.__spacing)
+
+        margin = self.__main_window.platform_settings(
+            ).context_menu_separator_margin()
+        separator_layout.set_contents_margins(
+            margin[0], margin[1], margin[2], margin[3] + self.__spacing)
 
         separator = QQuickContextSeparator(self.__main_window)
         separator_layout.add_widget(separator)
