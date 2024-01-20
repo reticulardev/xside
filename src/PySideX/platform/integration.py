@@ -53,9 +53,19 @@ class EnvSettings(object):
         return 127, 127, 127, 0.8
 
     @staticmethod
+    def context_menu_padding() -> int:
+        """..."""
+        return 4
+
+    @staticmethod
     def context_menu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
         return 0, 4, 0, 4
+
+    @staticmethod
+    def context_menu_spacing() -> int:
+        """..."""
+        return 0
 
     @staticmethod
     def control_button_order() -> tuple:
@@ -114,9 +124,26 @@ class EnvSettingsPlasma(EnvSettings):
         super().__init__(*args, **kwargs)
 
     @staticmethod
+    def context_menu_border_color(window_is_dark: bool) -> tuple:
+        """RGBA tuple: (127, 127, 127, 0.8)"""
+        if window_is_dark:
+            return 127, 127, 127, 0.8
+        return 127, 127, 127, 0.8
+
+    @staticmethod
+    def context_menu_padding() -> int:
+        """..."""
+        return 4
+
+    @staticmethod
     def context_menu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
         return 8, 4, 8, 4
+
+    @staticmethod
+    def context_menu_spacing() -> int:
+        """..."""
+        return 0
 
     def control_button_order(self) -> tuple:
         """..."""
@@ -180,6 +207,12 @@ class EnvSettingsPlasma(EnvSettings):
             f'background: url({url_icon}) center no-repeat;'
             '}')
 
+    def use_global_menu(self) -> bool:
+        """..."""
+        top, key = '[Windows]', 'BorderlessMaximizedWindows'
+        if top in self.kwin_rc_content and key in self.kwin_rc_content[top]:
+            return True if self.kwin_rc_content[top][key] == 'true' else False
+
     @staticmethod
     def window_border_radius() -> tuple:
         """..."""
@@ -192,6 +225,63 @@ class EnvSettingsGnome(EnvSettings):
     def __init__(self, *args, **kwargs):
         """..."""
         super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def context_menu_border_color(window_is_dark: bool) -> tuple:
+        """RGBA tuple: (127, 127, 127, 0.8)"""
+        if window_is_dark:
+            return 127, 127, 127, 0.8
+        return 127, 127, 127, 0.8
+
+    @staticmethod
+    def context_menu_padding() -> int:
+        """..."""
+        return 6
+
+    @staticmethod
+    def context_menu_separator_margin() -> tuple:
+        """Left, top, right and bottom margins tuple"""
+        return 0, 6, 0, 6
+
+    @staticmethod
+    def context_menu_spacing() -> int:
+        """..."""
+        return 0
+
+    @staticmethod
+    def control_button_order() -> tuple:
+        """XAI M -> (2, 1, 0), (3,)
+
+        Close     Max       Min       Icon      Above all
+        X = 2     A = 1     I = 0     M = 3     F = 4
+
+        (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
+        """
+        # TODO: Auto
+        return (3,), (0, 1, 2)
+
+    @staticmethod
+    def control_button_style(*args, **kwargs) -> str:
+        """..."""
+        return (
+            'QControlButton {'
+            '  border: 0px;'
+            '  border-radius: 10px;'
+            '  padding: 1px;'
+            '  background-color: rgba(127, 127, 127, 0.2);'
+            '}'
+            'QControlButton:hover {'
+            '  background-color: rgba(200, 200, 200, 0.2);'
+            '}')
+
+    def use_global_menu(self) -> bool:
+        """..."""
+        return False
+
+    @staticmethod
+    def window_border_radius() -> tuple:
+        """..."""
+        return 10, 10, 10, 10
 
 
 class EnvSettingsCinnamon(EnvSettingsGnome):
@@ -279,9 +369,17 @@ class PlatformSettings(object):
         """..."""
         return self.__env_settings.context_menu_border_color(window_is_dark)
 
+    def context_menu_padding(self) -> int:
+        """..."""
+        return self.__env_settings.context_menu_padding()
+
     def context_menu_separator_margin(self) -> tuple:
         """..."""
         return self.__env_settings.context_menu_separator_margin()
+
+    def context_menu_spacing(self) -> int:
+        """..."""
+        return self.__env_settings.context_menu_spacing()
 
     def window_control_button_style(
             self, window_is_dark: bool,
@@ -410,10 +508,6 @@ class StyleBuilder(object):
 
     def build_style(self) -> str:
         """..."""
-
-        if not self.__bd_radius:
-            self.__bd_radius = 10, 10, 3, 3
-
         if self.__main_window.is_decorated():
             main_window_style = (
                 '#QApplicationWindow {'
@@ -444,7 +538,7 @@ class StyleBuilder(object):
             'border: 1px solid rgba('
             f'{self.__bd_color.red()}, {self.__bd_color.green()}, '
             f'{self.__bd_color.blue()}, {self.__bd_color.alpha_f()});'
-            'border-radius: 5px;'
+            f'border-radius: {self.__bd_radius[0]}px;'
             '}'
             'QQuickContextMenuButton {'
             'background: transparent;'

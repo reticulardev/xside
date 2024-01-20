@@ -122,11 +122,16 @@ class QQuickContextMenu(QtWidgets.QWidget):
         self.__point_x = None
         self.__point_y = None
 
-        self.__spacing = 0
-        self.__left_margin = 4
-        self.__top_margin = 4
-        self.__right_margin = 4
-        self.__bottom_margin = 4
+        self.__spacing = self.__main_window.platform_settings(
+            ).context_menu_spacing()
+        self.__left_margin = self.__main_window.platform_settings(
+            ).context_menu_padding()
+        self.__top_margin = self.__main_window.platform_settings(
+            ).context_menu_padding()
+        self.__right_margin = self.__main_window.platform_settings(
+            ).context_menu_padding()
+        self.__bottom_margin = self.__main_window.platform_settings(
+            ).context_menu_padding()
         
         # Main
         self.set_contents_margins(0, 0, 0, 0)
