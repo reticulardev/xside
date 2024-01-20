@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import math
 import os
+import platform
 import subprocess
 import sys
 from enum import Enum
@@ -45,6 +46,18 @@ class EnvSettings(object):
             return stdout.decode() if not stderr.decode() else None
 
     @staticmethod
+    def context_menu_border_color(window_is_dark: bool) -> tuple:
+        """RGBA tuple: (127, 127, 127, 0.8)"""
+        if window_is_dark:
+            return (127, 127, 127, 0.8)
+        return (127, 127, 127, 0.8)
+
+    @staticmethod
+    def context_menu_separator_margin() -> tuple:
+        """Left, top, right and bottom margins tuple"""
+        return (0, 0, 0, 0)
+
+    @staticmethod
     def control_button_order() -> tuple:
         """XAI M -> (2, 1, 0), (3,)
 
@@ -60,12 +73,13 @@ class EnvSettings(object):
         """..."""
         return (
             'QControlButton {'
-            'border-radius: 10px;'
-            'padding: 1px;'
-            'background-color: rgba(127, 127, 127, 0.2);'
+            '  border: 0px;'
+            '  border-radius: 10px;'
+            '  padding: 1px;'
+            '  background-color: rgba(127, 127, 127, 0.2);'
             '}'
             'QControlButton:hover {'
-            'background-color: rgba(200, 200, 200, 0.2);'
+            '  background-color: rgba(200, 200, 200, 0.2);'
             '}')
 
     @property
@@ -74,7 +88,7 @@ class EnvSettings(object):
         return self.__kwinrc
 
     @staticmethod
-    def rc_file_content(file_url: str) -> str | None:
+    def rc_file_content(file_url: str) -> dict:
         """..."""
         if os.path.isfile(file_url):
             return DesktopFile(url=file_url).content
@@ -167,22 +181,80 @@ class EnvSettingsPlasma(EnvSettings):
         return 4, 4, 0, 0
 
 
+class EnvSettingsGnome(EnvSettings):
+    """..."""
+
+    def __init__(self, *args, **kwargs):
+        """..."""
+        super().__init__(*args, **kwargs)
+
+
+class EnvSettingsCinnamon(EnvSettingsGnome):
+    """..."""
+
+    def __init__(self, *args, **kwargs):
+        """..."""
+        super().__init__(*args, **kwargs)
+
+
+class EnvSettingsXFCE(EnvSettingsGnome):
+    """..."""
+
+    def __init__(self, *args, **kwargs):
+        """..."""
+        super().__init__(*args, **kwargs)
+
+
+class EnvSettingsMac(EnvSettings):
+    """..."""
+
+    def __init__(self, *args, **kwargs):
+        """..."""
+        super().__init__(*args, **kwargs)
+
+
+class EnvSettingsWindows11(EnvSettings):
+    """..."""
+
+    def __init__(self, *args, **kwargs):
+        """..."""
+        super().__init__(*args, **kwargs)
+
+
+class EnvSettingsWindows10(EnvSettingsWindows11):
+    """..."""
+
+    def __init__(self, *args, **kwargs):
+        """..."""
+        super().__init__(*args, **kwargs)
+
+
+class EnvSettingsWindows7(EnvSettingsWindows11):
+    """..."""
+
+    def __init__(self, *args, **kwargs):
+        """..."""
+        super().__init__(*args, **kwargs)
+
+
 class PlatformSettings(object):
     """..."""
     OperationalSystem = Enum(
         'OperationalSystem', ['UNKNOWN', 'LINUX', 'BSD', 'MAC', 'WINDOWS'])
     DesktopEnvironment = Enum(
         'DesktopEnvironment',
-        ['UNKNOWN', 'PLASMA', 'GNOME', 'CINNAMON', 'XFCE'])
+        ['UNKNOWN', 'PLASMA', 'GNOME', 'CINNAMON', 'XFCE', 'MAC', 'WINDOWS_7',
+         'WINDOWS_10', 'WINDOWS_11'])
 
     def __init__(self, platform_integration: bool = True):
         """..."""
         self.__platform_integration = platform_integration
-        self.__desktop_environment = self.__get_desktop_environment()
         self.__operational_system = self.__get_operational_system()
+        self.__desktop_environment = self.__get_desktop_environment()
         self.__env_settings = self.__get_env_settings()
 
-    def is_dark(self, widget: QtWidgets) -> bool:
+    @staticmethod
+    def is_dark(widget: QtWidgets) -> bool:
         color = widget.palette().color(QtGui.QPalette.Window)
         r, g, b = (color.red(), color.green(), color.blue())
         hsp = math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
@@ -197,6 +269,16 @@ class PlatformSettings(object):
     def operational_system(self) -> OperationalSystem:
         """..."""
         return self.__operational_system
+
+    @property
+    def context_menu_border_color(self, window_is_dark: bool) -> tuple:
+        """..."""
+        return self.__env_settings.context_menu_border_color(window_is_dark)
+
+    @property
+    def context_menu_separator_margin(self) -> tuple:
+        """..."""
+        return self.__env_settings.context_menu_separator_margin()
 
     def window_control_button_style(
             self, window_is_dark: bool,
@@ -225,10 +307,30 @@ class PlatformSettings(object):
 
     def __get_desktop_environment(self) -> DesktopEnvironment:
         # ...
-        if (os.environ['DESKTOP_SESSION'] == 'plasma' or
-                os.environ['XDG_SESSION_DESKTOP'] == 'PLASMA' or
-                os.environ['XDG_CURRENT_DESKTOP'] == 'PLASMA'):
-            return self.DesktopEnvironment.PLASMA
+        if self.__platform_integration:
+            if self.__operational_system == self.OperationalSystem.LINUX:
+                if (os.environ['DESKTOP_SESSION'] == 'plasma' or
+                        os.environ['XDG_SESSION_DESKTOP'] == 'KDE' or
+                        os.environ['XDG_CURRENT_DESKTOP'] == 'KDE'):
+                    return self.DesktopEnvironment.PLASMA
+
+                # TODO: Gnome, Cinnamon, XFCE
+                return self.DesktopEnvironment.GNOME
+
+            elif self.__operational_system == self.OperationalSystem.WINDOWS:
+                if platform.release() == '10':
+                    return self.DesktopEnvironment.WINDOWS_10
+
+                elif platform.release() == '11':
+                    return self.DesktopEnvironment.WINDOWS_11
+
+                return self.DesktopEnvironment.WINDOWS_7
+
+            elif self.__operational_system == self.OperationalSystem.MAC:
+                return self.DesktopEnvironment.MAC
+
+            elif self.__operational_system == self.OperationalSystem.BSD:
+                return self.DesktopEnvironment.BSD
 
         return self.DesktopEnvironment.UNKNOWN
 
@@ -236,18 +338,50 @@ class PlatformSettings(object):
         """..."""
         if self.__platform_integration:
             if self.__operational_system == self.OperationalSystem.LINUX:
+
                 if (self.__desktop_environment ==
                         self.DesktopEnvironment.PLASMA):
                     return EnvSettingsPlasma()
+
+                if (self.__desktop_environment ==
+                        self.DesktopEnvironment.CINNAMON):
+                    return EnvSettingsCinnamon()
+
+                if (self.__desktop_environment ==
+                        self.DesktopEnvironment.XFCE):
+                    return EnvSettingsXFCE()
+
+                return EnvSettingsGnome()
+
+            if self.__operational_system == self.OperationalSystem.MAC:
+                return EnvSettingsMac()
+
+            if self.__operational_system == self.OperationalSystem.WINDOWS:
+
+                if (self.__desktop_environment ==
+                        self.DesktopEnvironment.WINDOWS_7):
+                    return EnvSettingsWindows7()
+
+                if (self.__desktop_environment ==
+                        self.DesktopEnvironment.WINDOWS_10):
+                    return EnvSettingsWindows10()
+                
+                return EnvSettingsWindows11()
+
         return EnvSettings()
 
     def __get_operational_system(self) -> OperationalSystem:
-        # ...
-        if sys.platform == 'win32':
-            # Config path: $HOME + AppData\Roaming\
+        # Win config path: $HOME + AppData\Roaming\
+        # Linux config path: $HOME + .config
+        if os.name == 'posix':
+            if platform.system() == 'Linux':
+                return self.OperationalSystem.LINUX
+
+            elif platform.system() == 'Darwin':
+                return self.OperationalSystem.MAC
+
+        elif os.name == 'nt' and platform.system() == 'Windows':
             return self.OperationalSystem.WINDOWS
-        # Config path: $HOME + .config
-        return self.OperationalSystem.LINUX
 
 
 class StyleBuilder(object):
@@ -317,11 +451,13 @@ class StyleBuilder(object):
             '}'
             'QQuickContextMenuButton:hover {'
             'background-color: rgba('
-            f'{self.__bg_accent_color.red()}, {self.__bg_accent_color.green()}, '
+            f'{self.__bg_accent_color.red()}, '
+            f'{self.__bg_accent_color.green()}, '
             f'{self.__bg_accent_color.blue()}, 0.2);'
             'padding: 2px;'
             'border: 1px solid rgba('
-            f'{self.__bg_accent_color.red()}, {self.__bg_accent_color.green()}, '
+            f'{self.__bg_accent_color.red()}, '
+            f'{self.__bg_accent_color.green()}, '
             f'{self.__bg_accent_color.blue()}, 0.9);'
             'border-radius: 3px;'
             '}')

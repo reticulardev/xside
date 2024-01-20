@@ -68,11 +68,12 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__main_layout.add_layout(self.__left_layout)
 
         if not self.__icon:
-            dark = ('-symbolic' if
+            dark = (
+                '-symbolic' if
                 self.__parent_window.platform_settings().is_dark(self) else '')
             icon_path = os.path.join(
                 SRC_DIR, 'platform', 'static', f'context-menu-item{dark}.svg')
-            self.__icon  = QtGui.QIcon(QtGui.QPixmap(icon_path))
+            self.__icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
 
         icon_label = QtWidgets.QLabel()
         icon_label.set_pixmap(self.__icon.pixmap(QtCore.QSize(16, 16)))
@@ -97,6 +98,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 
     def mouse_press_event(self, event):
         """..."""
+        logging.info(event)
         self.__receiver()
         self.__parent.close()
 
@@ -170,7 +172,7 @@ class QQuickContextMenu(QtWidgets.QWidget):
 
         if self.__context_buttons_layout:
             self.__context_buttons_layout[-1].set_contents_margins(
-            self.__left_margin, 0, self.__right_margin, self.__spacing)
+                self.__left_margin, 0, self.__right_margin, self.__spacing)
 
         ctx_btn = QQuickContextMenuButton(
             self.__main_window, self, text, receiver, icon, shortcut)
@@ -208,6 +210,7 @@ class QQuickContextMenu(QtWidgets.QWidget):
 
     def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
         """..."""
+        logging.info(event)
         self.close()
 
     def set_contents_paddings(
@@ -221,7 +224,7 @@ class QQuickContextMenu(QtWidgets.QWidget):
         if self.__context_buttons_layout:
             for item in self.__context_buttons_layout:
                 item.set_contents_margins(
-                self.__left_margin, 0, self.__right_margin, self.__spacing)
+                    self.__left_margin, 0, self.__right_margin, self.__spacing)
 
         self.__menu_context_layout.set_contents_margins(
             0, self.__top_margin, 0, self.__bottom_margin)
@@ -241,14 +244,13 @@ class QQuickContextMenu(QtWidgets.QWidget):
         if self.__context_buttons_layout:
             for item in self.__context_buttons_layout:
                 item.set_contents_margins(
-                self.__left_margin, 0, self.__right_margin, self.__spacing)
+                    self.__left_margin, 0, self.__right_margin, self.__spacing)
 
         if self.__separator_layouts:
             for item in self.__separator_layouts:
                 margins = item.contents_margins()
                 margins.set_bottom(self.__spacing)
                 item.set_contents_margins(margins)
-
 
     def __set_dynamic_positioning(self) -> None:
         x = self.geometry().x()
