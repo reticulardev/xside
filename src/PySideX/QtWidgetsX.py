@@ -7,8 +7,7 @@ import sys
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-import PySideX.platform.integration as integration
-
+import PySideX.platform.settings as settings
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -123,15 +122,15 @@ class QQuickContextMenu(QtWidgets.QWidget):
         self.__point_y = None
 
         self.__spacing = self.__main_window.platform_settings(
-            ).context_menu_spacing()
+            ).gui_env.context_menu_spacing()
         self.__left_margin = self.__main_window.platform_settings(
-            ).context_menu_padding()
+            ).gui_env.context_menu_padding()
         self.__top_margin = self.__main_window.platform_settings(
-            ).context_menu_padding()
+            ).gui_env.context_menu_padding()
         self.__right_margin = self.__main_window.platform_settings(
-            ).context_menu_padding()
+            ).gui_env.context_menu_padding()
         self.__bottom_margin = self.__main_window.platform_settings(
-            ).context_menu_padding()
+            ).gui_env.context_menu_padding()
         
         # Main
         self.set_contents_margins(0, 0, 0, 0)
@@ -194,7 +193,7 @@ class QQuickContextMenu(QtWidgets.QWidget):
         separator_layout = QtWidgets.QVBoxLayout()
 
         margin = self.__main_window.platform_settings(
-            ).context_menu_separator_margin()
+            ).gui_env.context_menu_separator_margin()
         separator_layout.set_contents_margins(
             margin[0], margin[1], margin[2], margin[3] + self.__spacing)
 
@@ -307,7 +306,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         """
         super().__init__(*args, **kwargs)
         self.__is_decorated = is_decorated
-        self.__platform_settings = integration.PlatformSettings(platform)
+        self.__platform_settings = settings.Settings(platform)
 
         self.__resize_corner_active = None
         self.__resize_corner_size_default = 5
@@ -317,7 +316,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         self.__shadow_size = 5
         self.__shadow_is_disabled = self.__is_decorated
 
-        self.__style_builder = integration.StyleBuilder(self)
+        self.__style_builder = settings.StyleBuilder(self)
         self.__style_sheet = self.__style_builder.build_style()
         self.__style_sheet_fullscreen = (
             self.__style_builder.adapt_to_fullscreen(self.__style_sheet))
@@ -341,7 +340,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         """..."""
         return self.__is_decorated
 
-    def platform_settings(self) -> integration.PlatformSettings:
+    def platform_settings(self) -> settings.Settings:
         """..."""
         return self.__platform_settings
 
@@ -588,6 +587,9 @@ class QControlButton(QtWidgets.QToolButton):
         self.__configure_buttons()
 
     def __configure_buttons(self) -> None:
+        # if QtGui.QIcon.theme_name() != icon_theme:
+        #     QtGui.QIcon.set_theme_name(icon_theme)
+
         if self.__button_id not in (0, 1, 2):
             raise ValueError(
                 'The value must be 0, 1 or 2. The values represent "minimize",'
@@ -596,7 +598,7 @@ class QControlButton(QtWidgets.QToolButton):
         if self.__button_id == 0:
             style = (
                 self.__main_window.platform_settings()
-                .window_control_button_style(
+                .gui_env.control_button_style(
                     self.__is_dark(), 'minimize', 'normal'))
 
             self.set_style_sheet(style)
@@ -610,7 +612,7 @@ class QControlButton(QtWidgets.QToolButton):
         elif self.__button_id == 1:
             style = (
                 self.__main_window.platform_settings()
-                .window_control_button_style(
+                .gui_env.control_button_style(
                     self.__is_dark(), 'maximize', 'normal'))
 
             self.set_style_sheet(style)
@@ -620,7 +622,7 @@ class QControlButton(QtWidgets.QToolButton):
         else:
             style = (
                 self.__main_window.platform_settings()
-                .window_control_button_style(
+                .gui_env.control_button_style(
                     self.__is_dark(), 'close', 'normal'))
 
             self.set_style_sheet(style)
@@ -650,7 +652,7 @@ class QControlButton(QtWidgets.QToolButton):
 
             maximize_style = (
                 self.__main_window.platform_settings()
-                .window_control_button_style(
+                .gui_env.control_button_style(
                     self.__is_dark(),
                     self.__maximize_or_restore_icon, 'normal'))
 
@@ -674,13 +676,13 @@ class QControlButton(QtWidgets.QToolButton):
         if self.__button_id == 1:
             self.set_style_sheet(
                 self.__main_window.platform_settings()
-                .window_control_button_style(
+                .gui_env.control_button_style(
                     self.__is_dark(),
                     self.__maximize_or_restore_icon, 'hover'))
         else:
             self.set_style_sheet(
                 self.__main_window.platform_settings()
-                .window_control_button_style(
+                .gui_env.control_button_style(
                     self.__is_dark(),
                     self.__buttons_schema[self.__button_id], 'hover'))
 
@@ -691,13 +693,13 @@ class QControlButton(QtWidgets.QToolButton):
         if self.__button_id == 1:
             self.set_style_sheet(
                 self.__main_window.platform_settings()
-                .window_control_button_style(
+                .gui_env.control_button_style(
                     self.__is_dark(),
                     self.__maximize_or_restore_icon, 'normal'))
         else:
             self.set_style_sheet(
                 self.__main_window.platform_settings()
-                .window_control_button_style(
+                .gui_env.control_button_style(
                     self.__is_dark(),
                     self.__buttons_schema[self.__button_id], 'normal'))
 
@@ -799,7 +801,7 @@ class QWindowMoveArea(QtWidgets.QFrame):
         """
         super().__init__(*args, **kwargs)
         self.__main_window = main_window
-        self.__default_style = integration.StyleBuilder(self.__main_window)
+        self.__default_style = settings.StyleBuilder(self.__main_window)
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(0, 0, 0, 0)
@@ -872,7 +874,7 @@ class QHeaderBar(QtWidgets.QFrame):
         self.__right_ctrl_buttons_visibility = True
         self.__window_control_buttons_order = (
             self.__main_window.platform_settings()
-            .window_control_button_order())
+            .gui_env.control_button_order())
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(4, 4, 4, 4)
@@ -964,7 +966,7 @@ class QHeaderBar(QtWidgets.QFrame):
 
             if self.__main_window.is_maximized():
                 if (self.__main_window.platform_settings()
-                        .window_use_global_menu()):
+                        .gui_env.use_global_menu()):
                     self.__left_ctrl_buttons.set_visible(False)
                     self.__right_ctrl_buttons.set_visible(False)
                     _50_percent_left = self.__50_percent_left_size(True)
