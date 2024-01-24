@@ -52,50 +52,6 @@ class Settings(object):
         """..."""
         return self.__operational_system
 
-    # def context_menu_border_color(self, window_is_dark: bool) -> tuple:
-    #     """..."""
-    #     return self.__env_settings.context_menu_border_color(window_is_dark)
-    #
-    # def context_menu_padding(self) -> int:
-    #     """..."""
-    #     return self.__env_settings.context_menu_padding()
-    #
-    # def context_menu_separator_margin(self) -> tuple:
-    #     """..."""
-    #     return self.__env_settings.context_menu_separator_margin()
-    #
-    # def context_menu_spacing(self) -> int:
-    #     """..."""
-    #     return self.__env_settings.context_menu_spacing()
-    #
-    # def icon_theme_name(self) -> str | None:
-    #     """..."""
-    #     return self.__env_settings.icon_theme_name()
-    #
-    # def window_control_button_style(
-    #         self, window_is_dark: bool,
-    #         button_name: str,
-    #         button_state: str) -> str | None:
-    #     """Control button style
-    #
-    #     :param window_is_dark: True or False
-    #     :param button_name: 'minimize', 'maximize', 'restore' or 'close'
-    #     :param button_state: 'normal', 'hover', 'inactive'
-    #     """
-    #     return self.__env_settings.control_button_style(
-    #         window_is_dark, button_name, button_state)
-    #
-    # def window_control_button_order(self) -> tuple | None:
-    #     """..."""
-    #     return self.__env_settings.control_button_order()
-    #
-    # def window_border_radius(self) -> tuple | None:
-    #     """..."""
-    #     return self.__env_settings.window_border_radius()
-    #
-    # def window_use_global_menu(self) -> bool:
-    #     """..."""
-    #     return self.__env_settings.use_global_menu()
     def __get_desktop_environment(self) -> DesktopEnvironment:
         # ...
         if self.__platform_integration:
