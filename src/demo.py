@@ -26,28 +26,28 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
         icon_path = os.path.join(SRC_DIR, 'icon_b.svg')
         self.__app_icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
         self.set_window_icon(self.__app_icon)
-        self.set_header_bar_icon(self.__app_icon)
+        self.set_headerbar_icon(self.__app_icon)
 
         # Title
         self.set_window_title("My custom MPX app")
-        self.set_header_bar_title(self.window_title())
+        self.set_headerbar_title(self.window_title())
 
         # Search
         self.tbutton = QtWidgets.QToolButton()
         self.tbutton.set_icon(QtGui.QIcon.from_theme('search'))
-        self.panel_header_bar().add_widget_to_right(self.tbutton)
+        self.sideview_headerbar().add_widget_to_right(self.tbutton)
 
         for i in ['Download', 'Pictures', 'Documents', 'Videos', 'Music']:
             btn = QtWidgets.QPushButton(i)
             btn.clicked.connect(self.on_btn)
-            self.panel_layout().add_widget(btn)
+            self.sideview_layout().add_widget(btn)
 
         # Image
         self.image = QtWidgets.QLabel()
         self.image.set_pixmap(
             QtGui.QIcon.from_theme('folder-download-symbolic').pixmap(96, 96))
-        self.frame_view_layout().add_widget(self.image)
-        self.frame_view_layout().set_alignment(QtCore.Qt.AlignCenter)
+        self.frameview_layout().add_widget(self.image)
+        self.frameview_layout().set_alignment(QtCore.Qt.AlignCenter)
 
         # Image context menu
         self.image_qcontext = QtWidgetsX.QQuickContextMenu(self)
@@ -63,16 +63,16 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
         # Style button
         self.set_style_button = QtWidgets.QPushButton('Set style')
         self.set_style_button.clicked.connect(self.on_set_style_button)
-        self.frame_view_layout().add_widget(self.set_style_button)
+        self.frameview_layout().add_widget(self.set_style_button)
 
-        # self.panel_opened_signal.connect(lambda event: print(event))
-        # self.panel_closed_signal.connect(lambda event: print(event))
+        # self.sideview_opened_signal.connect(lambda event: print(event))
+        # self.sideview_closed_signal.connect(lambda event: print(event))
         # self.adaptive_mode_signal.connect(lambda event: print(event))
         # self.wide_mode_signal.connect(lambda event: print(event))
 
         # Text  and their context menu (Global: use context_menu_event)
         self.context_menu_label = QtWidgets.QLabel('Menu text here')
-        self.frame_view_layout().add_widget(self.context_menu_label)
+        self.frameview_layout().add_widget(self.context_menu_label)
 
         self.qcontext_menu = QtWidgetsX.QQuickContextMenu(self)
         self.set_quick_context_menu(self.qcontext_menu)
@@ -129,7 +129,7 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
                 '  background-color: #513258;}'
                 'QContextMenuButton {'
                 '  border: 1px solid rgba(77, 125, 77, 0.6);}')
-            self.set_panel_color((79, 54, 95, 0.5))
+            self.set_sideview_color((79, 54, 95, 0.5))
             self.set_style_button.set_text('Reset style')
         else:
             self.reset_style()
