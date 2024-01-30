@@ -55,6 +55,15 @@ class QOverlaySidePanel(QtWidgets.QFrame):
         self.__sideview_background.set_layout(self.__sideview_box)
 
         # Close
+        class CloseArea(QtWidgets.QWidget):
+            def __init__(self, toplevel: QtWidgets.QWidget) -> None:
+                super().__init__()
+                self.__top = toplevel
+
+            def mouse_press_event(self, ev: QtGui.QMouseEvent) -> None:
+                if ev.button() == QtCore.Qt.LeftButton and self.under_mouse():
+                    self.__top.close()
+
         self.__close_view_background = QtWidgets.QWidget()
         self.__close_view_background.set_contents_margins(0, 0, 0, 0)
         self.__close_view_background.set_object_name('__close_view_background')
@@ -67,14 +76,25 @@ class QOverlaySidePanel(QtWidgets.QFrame):
             'border-bottom-left-radius: 0;}')
         self.__main_box.add_widget(self.__close_view_background)
 
+        self.__close_view_box = QtWidgets.QVBoxLayout()
+        self.__close_view_background.set_layout(self.__close_view_box)
+        self.__close_view_box.add_widget(CloseArea(self))
+
         self.__toplevel.resize_event_signal.connect(self.__resize_sig)
 
     def open(self) -> None:
+        self.__sideview_widget.set_visible(True)
         self.resize(self.__toplevel.width(), self.__toplevel.height())
         self.__sideview_widget_box.remove_widget(self.__sideview_widget)
         self.__sideview_box.add_widget(self.__sideview_widget)
         self.set_visible(True)
         self.move(0, 0)
+
+    def close(self) -> None:
+        self.__sideview_widget.set_visible(False)
+        self.__sideview_box.remove_widget(self.__sideview_widget)
+        self.__sideview_widget_box.insert_widget(0, self.__sideview_widget)
+        self.set_visible(False)
 
     def __parse_toplevel_style(self) -> str:
         return '; '.join(
@@ -198,7 +218,9 @@ class QSideViewApplicationWindow(QApplicationWindow):
 
     def close_sideview(self) -> None:
         """..."""
-        print('close sideview', self)
+        self.__sideview_overlay.close()
+        self.sideview_closed_signal.emit('sideview-closed-signal')
+        self.__is_panel_open = False
 
     def frame_view_layout(self) -> QtWidgets.QVBoxLayout:
         """..."""
@@ -209,12 +231,9 @@ class QSideViewApplicationWindow(QApplicationWindow):
         return self.__horizontal_and_vertical_flip_width
 
     def open_sideview(self) -> None:
-        self.__sideview_width.set_visible(True)
         self.__sideview_overlay.open()
-
-        self.sideview_opened_signal.emit('panel-opened-signal')
+        self.sideview_opened_signal.emit('sideview-opened-signal')
         self.__is_panel_open = True
-        print('open sideview')
 
     def panel_color(self) -> tuple:
         """..."""
@@ -332,15 +351,26 @@ class QSideViewApplicationWindow(QApplicationWindow):
         # self.__sideview_headerbar.set_move_area_as_enable(True)
         self.__sideview_close_button.set_visible(False)
 
+        if self.__is_panel_open:
+            self.close_sideview()
+            self.__sideview_width.set_visible(True)
+
     def __visibility_of_window_control_buttons(self) -> None:
         if self.is_maximized():
             if self.platform_settings().gui_env.use_global_menu():
                 self.__sideview_headerbar.set_left_control_buttons_visible(
                     False)
-            # Close panel
+
+            if self.__is_panel_open:
+                self.close_sideview()
+                self.__sideview_width.set_visible(True)
+
         elif self.is_full_screen():
             self.__sideview_headerbar.set_left_control_buttons_visible(False)
-            # Close panel
+
+            if self.__is_panel_open:
+                self.close_sideview()
+                self.__sideview_width.set_visible(True)
         else:
             self.__sideview_headerbar.set_left_control_buttons_visible(True)
 

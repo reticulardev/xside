@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import logging
 import os
+import pathlib
 
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
@@ -41,11 +42,14 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__main_layout.add_layout(self.__left_layout)
 
         if not self.__icon:
-            dark = (
-                '-symbolic' if
-                self.__parent_window.platform_settings().is_dark(self) else '')
+            symbolic = ''
+            if self.__parent_window.platform_settings().is_dark(self):
+                symbolic = '-symbolic'
+
             icon_path = os.path.join(
-                SRC_DIR, 'platform', 'static', f'context-menu-item{dark}.svg')
+                pathlib.Path(SRC_DIR).parent,
+                'platform', 'static', f'context-menu-item{symbolic}.svg')
+
             self.__icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
 
         icon_label = QtWidgets.QLabel()
