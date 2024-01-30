@@ -41,13 +41,6 @@ class QOverlaySidePanel(QtWidgets.QFrame):
             self.__sideview_widget.width())
         self.__sideview_background.set_contents_margins(0, 0, 0, 0)
         self.__sideview_background.set_object_name('__sideview_background')
-        self.__sideview_background.set_style_sheet(
-            self.__toplevel.style_sheet() +
-            '#__sideview_background {'
-            f'{self.__overlay_base_style}'
-            'border-right: 0px; '
-            'border-top-right-radius: 0;'
-            'border-bottom-right-radius: 0;}')
         self.__main_box.add_widget(self.__sideview_background)
 
         self.__sideview_box = QtWidgets.QHBoxLayout()
@@ -67,13 +60,6 @@ class QOverlaySidePanel(QtWidgets.QFrame):
         self.__close_view_background = QtWidgets.QWidget()
         self.__close_view_background.set_contents_margins(0, 0, 0, 0)
         self.__close_view_background.set_object_name('__close_view_background')
-        self.__close_view_background.set_style_sheet(
-            '#__close_view_background {'
-            f'{self.__overlay_base_style}'
-            'background-color: rgba(0, 0, 0, 0.2);'
-            'border-left: 0px;'
-            'border-top-left-radius: 0;'
-            'border-bottom-left-radius: 0;}')
         self.__main_box.add_widget(self.__close_view_background)
 
         self.__close_view_box = QtWidgets.QVBoxLayout()
@@ -82,7 +68,16 @@ class QOverlaySidePanel(QtWidgets.QFrame):
 
         self.__toplevel.resize_event_signal.connect(self.__resize_sig)
 
+    def close(self) -> None:
+        """..."""
+        self.__sideview_widget.set_visible(False)
+        self.__sideview_box.remove_widget(self.__sideview_widget)
+        self.__sideview_widget_box.insert_widget(0, self.__sideview_widget)
+        self.set_visible(False)
+
     def open(self) -> None:
+        """..."""
+        self.__update_style()
         self.__sideview_widget.set_visible(True)
         self.resize(self.__toplevel.width(), self.__toplevel.height())
         self.__sideview_widget_box.remove_widget(self.__sideview_widget)
@@ -90,11 +85,23 @@ class QOverlaySidePanel(QtWidgets.QFrame):
         self.set_visible(True)
         self.move(0, 0)
 
-    def close(self) -> None:
-        self.__sideview_widget.set_visible(False)
-        self.__sideview_box.remove_widget(self.__sideview_widget)
-        self.__sideview_widget_box.insert_widget(0, self.__sideview_widget)
-        self.set_visible(False)
+    def __update_style(self) -> None:
+        self.__overlay_base_style = self.__parse_toplevel_style()
+        self.__sideview_background.set_style_sheet(
+            self.__toplevel.style_sheet() +
+            '#__sideview_background {'
+            f'{self.__overlay_base_style}'
+            'border-right: 0px; '
+            'border-top-right-radius: 0;'
+            'border-bottom-right-radius: 0;}')
+
+        self.__close_view_background.set_style_sheet(
+            '#__close_view_background {'
+            f'{self.__overlay_base_style}'
+            'background-color: rgba(0, 0, 0, 0.2);'
+            'border-left: 0px;'
+            'border-top-left-radius: 0;'
+            'border-bottom-left-radius: 0;}')
 
     def __parse_toplevel_style(self) -> str:
         return '; '.join(
