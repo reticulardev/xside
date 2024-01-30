@@ -12,6 +12,80 @@ from PySideX.QtWidgetsX.header_bar import QHeaderBar
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
+class QOverlaySidePanel(QtWidgets.QFrame):
+    """..."""
+    panel_closed_signal = QtCore.Signal(object)
+
+    def __init__(self, widget: QtWidgets.QWidget, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        # Param
+        self.__sideview_widget = widget
+        self.__sideview_widget_box = self.__sideview_widget.parent().layout()
+        self.__toplevel = self.__sideview_widget.parent().window()
+
+        # Settings
+        self.set_contents_margins(
+            self.__toplevel.shadow_size(), self.__toplevel.shadow_size(),
+            self.__toplevel.shadow_size(), self.__toplevel.shadow_size())
+        self.__overlay_base_style = self.__parse_toplevel_style()
+
+        # Main layout
+        self.__main_box = QtWidgets.QHBoxLayout()
+        self.__main_box.set_contents_margins(0, 0, 0, 0)
+        self.__main_box.set_spacing(0)
+        self.set_layout(self.__main_box)
+
+        # Side
+        self.__sideview_background = QtWidgets.QWidget()
+        self.__sideview_background.set_fixed_width(
+            self.__sideview_widget.width())
+        self.__sideview_background.set_contents_margins(0, 0, 0, 0)
+        self.__sideview_background.set_object_name('__sideview_background')
+        self.__sideview_background.set_style_sheet(
+            self.__toplevel.style_sheet() +
+            '#__sideview_background {'
+            f'{self.__overlay_base_style}'
+            'border-right: 0px; '
+            'border-top-right-radius: 0;'
+            'border-bottom-right-radius: 0;}')
+        self.__main_box.add_widget(self.__sideview_background)
+
+        self.__sideview_box = QtWidgets.QHBoxLayout()
+        self.__sideview_box.set_contents_margins(0, 0, 0, 0)
+        self.__sideview_background.set_layout(self.__sideview_box)
+
+        # Close
+        self.__close_view_background = QtWidgets.QWidget()
+        self.__close_view_background.set_contents_margins(0, 0, 0, 0)
+        self.__close_view_background.set_object_name('__close_view_background')
+        self.__close_view_background.set_style_sheet(
+            '#__close_view_background {'
+            f'{self.__overlay_base_style}'
+            'background-color: rgba(0, 0, 0, 0.2);'
+            'border-left: 0px;'
+            'border-top-left-radius: 0;'
+            'border-bottom-left-radius: 0;}')
+        self.__main_box.add_widget(self.__close_view_background)
+
+        self.__toplevel.resize_event_signal.connect(self.__resize_sig)
+
+    def open(self) -> None:
+        self.resize(self.__toplevel.width(), self.__toplevel.height())
+        self.__sideview_widget_box.remove_widget(self.__sideview_widget)
+        self.__sideview_box.add_widget(self.__sideview_widget)
+        self.set_visible(True)
+        self.move(0, 0)
+
+    def __parse_toplevel_style(self) -> str:
+        return '; '.join(
+            [x.replace('#QApplicationWindow', '').replace('{', '').strip()
+             for x in self.__toplevel.style_sheet().split('}')
+             if 'QApplicationWindow' in x][-1].split(';'))
+
+    def __resize_sig(self) -> None:
+        self.resize(self.__toplevel.width(), self.__toplevel.height())
+
+
 class QSideViewApplicationWindow(QApplicationWindow):
     """Window with side panel"""
     adaptive_mode_signal = QtCore.Signal(object)
@@ -112,6 +186,11 @@ class QSideViewApplicationWindow(QApplicationWindow):
             self.__border_size, 0, self.__border_size, self.__border_size)
         self.__frameview_main_box.add_layout(self.__frameview_box, 9)
 
+        # Side view overlay
+        self.__sideview_overlay = QOverlaySidePanel(
+            self.__sideview_width, parent=self)
+        self.__sideview_overlay.set_visible(False)
+
         # Signals
         self.resize_event_signal.connect(self.__resize_event)
         self.set_style_signal.connect(lambda _: self.set_panel_color())
@@ -130,6 +209,9 @@ class QSideViewApplicationWindow(QApplicationWindow):
         return self.__horizontal_and_vertical_flip_width
 
     def open_sideview(self) -> None:
+        self.__sideview_width.set_visible(True)
+        self.__sideview_overlay.open()
+
         self.sideview_opened_signal.emit('panel-opened-signal')
         self.__is_panel_open = True
         print('open sideview')
@@ -240,14 +322,14 @@ class QSideViewApplicationWindow(QApplicationWindow):
         self.__sideview_width.set_visible(False)
         self.__frameview_header_bar.set_left_control_buttons_visible(True)
         self.__sideview_open_button.set_visible(True)
-        self.__sideview_headerbar.set_move_area_as_enable(False)
+        # self.__sideview_headerbar.set_move_area_as_enable(False)
         self.__sideview_close_button.set_visible(True)
 
     def __switch_to_horizontal(self) -> None:
         self.__sideview_width.set_visible(True)
         self.__frameview_header_bar.set_left_control_buttons_visible(False)
         self.__sideview_open_button.set_visible(False)
-        self.__sideview_headerbar.set_move_area_as_enable(True)
+        # self.__sideview_headerbar.set_move_area_as_enable(True)
         self.__sideview_close_button.set_visible(False)
 
     def __visibility_of_window_control_buttons(self) -> None:

@@ -79,6 +79,10 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__central_widget.set_style_sheet(self.__style_sheet)
         self.reset_style_signal.emit(0)
 
+    def set_shadow_size(self, size: int) -> None:
+        """..."""
+        self.__shadow_size = size
+
     def set_style_sheet(self, style: str) -> None:
         """Set the application style sheet
 
@@ -109,6 +113,10 @@ class QApplicationWindow(QtWidgets.QMainWindow):
                 self.__style_sheet)
 
         self.set_style_signal.emit(0)
+
+    def shadow_size(self) -> int:
+        """..."""
+        return self.__shadow_size
 
     def style_sheet(self) -> str:
         """The application style sheet

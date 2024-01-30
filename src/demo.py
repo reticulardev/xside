@@ -23,7 +23,7 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
         # self.set_close_window_button_visible(False)
 
         # Icon
-        icon_path = os.path.join(SRC_DIR, 'icon.svg')
+        icon_path = os.path.join(SRC_DIR, 'icon_b.svg')
         self.__app_icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
         self.set_window_icon(self.__app_icon)
         self.set_header_bar_icon(self.__app_icon)
@@ -290,7 +290,7 @@ class Application(object):
         Sets basic window details and starts the application.
         """
         self.sideview_window.show()
-        self.window.show()
+        # self.window.show()
         sys.exit(self.application.exec())
 
 
