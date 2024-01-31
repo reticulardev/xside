@@ -147,7 +147,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         # Shadow
         self.__shadow_effect.set_blur_radius(self.__shadow_size)
         self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
-        if self.__platform_settings.is_dark(self):
+        if self.__platform_settings.is_dark_widget(self):
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 180))
         else:
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 80))

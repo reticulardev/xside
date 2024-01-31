@@ -57,6 +57,12 @@ class QWindowControlButtons(QtWidgets.QFrame):
         """..."""
         self.__window_icon.set_pixmap(icon.pixmap(20))
 
+    def update_buttons_by_bg_color(self, background_color: tuple) -> None:
+        """..."""
+        self.__minimize_button.update_button(background_color)
+        self.__maximize_button.update_button(background_color)
+        self.__close_button.update_button(background_color)
+
     def set_close_window_button_visible(self, visible: bool) -> None:
         """..."""
         if 2 in self.__button_order:

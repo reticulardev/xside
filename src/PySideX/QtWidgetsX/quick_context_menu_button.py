@@ -43,7 +43,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 
         if not self.__icon:
             symbolic = ''
-            if self.__parent_window.platform_settings().is_dark(self):
+            if self.__parent_window.platform_settings().is_dark_widget(self):
                 symbolic = '-symbolic'
 
             icon_path = os.path.join(

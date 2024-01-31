@@ -31,9 +31,24 @@ class Settings(object):
         self.__env_settings = self.__get_env_settings()
 
     @staticmethod
-    def is_dark(widget: QtWidgets) -> bool:
+    def is_dark_widget(widget: QtWidgets) -> bool:
+        """..."""
         color = widget.palette().color(QtGui.QPalette.Window)
         r, g, b = (color.red(), color.green(), color.blue())
+        hsp = math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
+        return False if hsp > 127.5 else True
+
+    @staticmethod
+    def is_dark_rgb_color(rgb: tuple) -> bool:
+        """..."""
+        r, g, b = rgb
+        hsp = math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
+        return False if hsp > 127.5 else True
+
+    @staticmethod
+    def is_dark_hexa_color(hexa: str) -> bool:
+        """..."""
+        r, g, b = tuple(int(hexa.lstrip('#')[x:x + 2], 16) for x in (0, 2, 4))
         hsp = math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
         return False if hsp > 127.5 else True
 

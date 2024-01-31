@@ -63,7 +63,7 @@ class QQuickContextMenu(QtWidgets.QWidget):
         self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
         self.__shadow_effect.set_blur_radius(5)
         self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
-        if self.__main_window.platform_settings().is_dark(self):
+        if self.__main_window.platform_settings().is_dark_widget(self):
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 100))
         else:
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 70))
