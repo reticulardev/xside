@@ -85,7 +85,7 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.move(0, 0)
 
     def __update_style(self) -> None:
-        parse_overlay_base_style = '; '.join(
+        parse_base_style = '; '.join(
             [x.replace('#QApplicationWindow', '').replace('{', '').strip()
              for x in self.__toplevel.style_sheet().split('}')
              if 'QApplicationWindow' in x][-1].split(';'))
@@ -93,14 +93,14 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.__sideview_background.set_style_sheet(
             f'{self.__toplevel.style_sheet()}'
             '#__sideviewbgstyle {'
-            f'{parse_overlay_base_style}'
+            f'{parse_base_style}'
             'border-right: 0px; '
             'border-top-right-radius: 0;'
             'border-bottom-right-radius: 0;}')
 
         self.__close_view_background.set_style_sheet(
             '#__closeviewbgtyle {'
-            f'{parse_overlay_base_style}'
+            f'{parse_base_style}'
             'background-color: rgba(0, 0, 0, 0.2);'
             'border-left: 0px;'
             'border-top-left-radius: 0;'
@@ -108,6 +108,12 @@ class QOverlaySideView(QtWidgets.QFrame):
 
     def __resize_sig(self) -> None:
         self.resize(self.__toplevel.width(), self.__toplevel.height())
+
+    def __str__(self) -> str:
+        return 'QOverlaySideView()'
+
+    def __repr__(self) -> str:
+        return 'QOverlaySideView(QtWidgets.QFrame)'
 
 
 class QSideViewApplicationWindow(QApplicationWindow):
@@ -127,12 +133,12 @@ class QSideViewApplicationWindow(QApplicationWindow):
         self.__minimum_width = 340
         self.__minimum_height = 200
         self.__border_size = 12
-        self.__is_panel_open = False
+        self.__is_sideview_open = False
         self.__sideview_width = 250
         self.__sideview_color_default = (0, 0, 0, 0.05)
         self.__sideview_color = self.__sideview_color_default
         self.__adaptive_mode_toggle_width = 650
-        self.__is_vertical = False
+        self.__is_adaptive_mode = False
 
         # Settings
         self.set_window_title('MPX Application Window')
@@ -153,6 +159,7 @@ class QSideViewApplicationWindow(QApplicationWindow):
 
         # Side view
         self.__sideview_width_area = QtWidgets.QWidget()
+        self.__sideview_width_area.set_object_name('__panelwidthstyle')
         self.__sideview_width_area.set_fixed_width(self.__sideview_width)
         self.__main_box.add_widget(self.__sideview_width_area, 9)
 
@@ -224,7 +231,7 @@ class QSideViewApplicationWindow(QApplicationWindow):
         """..."""
         self.__sideview_overlay.close()
         self.sideview_closed_signal.emit('sideview-closed-signal')
-        self.__is_panel_open = False
+        self.__is_sideview_open = False
 
     def frameview_layout(self) -> QtWidgets.QVBoxLayout:
         """..."""
@@ -237,7 +244,7 @@ class QSideViewApplicationWindow(QApplicationWindow):
     def open_sideview(self) -> None:
         self.__sideview_overlay.open()
         self.sideview_opened_signal.emit('sideview-opened-signal')
-        self.__is_panel_open = True
+        self.__is_sideview_open = True
 
     def sideview_color(self) -> tuple:
         """..."""
@@ -286,7 +293,8 @@ class QSideViewApplicationWindow(QApplicationWindow):
         self.__frameview_header_bar.set_minimize_window_button_visible(
             visible)
 
-    def set_sideview_color(self, rgba: tuple = None) -> None:
+    def set_sideview_color(
+            self, rgba: tuple = None, maximized_style: bool = False) -> None:
         """..."""
         self.__sideview_color = rgba if rgba else self.__sideview_color_default
         application_style_sheet = '; '.join(
@@ -294,18 +302,27 @@ class QSideViewApplicationWindow(QApplicationWindow):
              for x in self.style_sheet().split('}')
              if 'QApplicationWindow' in x][-1].split(';'))
 
-        self.__sideview_width_area.set_object_name('__panelwidthstyle')
-        self.__sideview_width_area.set_style_sheet(
+        sideview_style_sheet = (
             '#__panelwidthstyle {'
             f'{application_style_sheet}'
             'background-color: rgba('
             f'{self.__sideview_color[0]}, {self.__sideview_color[1]}, '
             f'{self.__sideview_color[2]}, {self.__sideview_color[3]});'
-            'border: 0px; '
-            'border-top-right-radius: 0;'
-            'border-bottom-right-radius: 0;'
-            'padding: 0px;'
-            'margin: 1px 0px 1px 1px;}')
+            'border: 0px;')
+
+        if maximized_style:
+            self.__sideview_width_area.set_style_sheet(
+                f'{sideview_style_sheet}'
+                'border-radius: 0;'
+                'padding: 0px;'
+                'margin: 1px 0px 1px 1px;}')
+        else:
+            self.__sideview_width_area.set_style_sheet(
+                f'{sideview_style_sheet}'
+                'border-top-right-radius: 0;'
+                'border-bottom-right-radius: 0;'
+                'padding: 0px;'
+                'margin: 1px 0px 1px 1px;}')
 
     def set_sideview_fixed_width(self, width: int) -> None:
         """..."""
@@ -322,72 +339,76 @@ class QSideViewApplicationWindow(QApplicationWindow):
         return 750
 
     def __sideview_was_closed_signal(self, event: QtCore.Signal) -> None:
-        if self.__is_panel_open:
+        if self.__is_sideview_open:
             self.sideview_closed_signal.emit(event)
-            self.__is_panel_open = False
+            self.__is_sideview_open = False
 
-    def __switch_vertical_and_horizontal_window(self) -> None:
+    def __switch_adaptive_and_wide_mode_window(self) -> None:
         # Vertical
-        if (not self.__is_vertical and self.size().width() <
+        if (not self.__is_adaptive_mode and self.size().width() <
                 self.__adaptive_mode_toggle_width):
-            self.__is_vertical = True
-            self.__switch_to_vertical()
+            self.__is_adaptive_mode = True
+            self.__switch_to_adaptive_mode()
             self.adaptive_mode_signal.emit('adaptive-mode-signal')
 
         # Horizontal
-        elif (self.__is_vertical and self.size().width() >
+        elif (self.__is_adaptive_mode and self.size().width() >
               self.__adaptive_mode_toggle_width):
-            self.__is_vertical = False
-            self.__switch_to_horizontal()
+            self.__is_adaptive_mode = False
+            self.__switch_to_wide_mode()
             self.wide_mode_signal.emit('wide-mode-signal')
 
-    def __switch_to_vertical(self) -> None:
+    def __switch_to_adaptive_mode(self) -> None:
         self.__sideview_width_area.set_visible(False)
         self.__frameview_header_bar.set_left_control_buttons_visible(True)
         self.__sideview_open_button.set_visible(True)
         self.__sideview_close_button.set_visible(True)
 
-    def __switch_to_horizontal(self) -> None:
+    def __switch_to_wide_mode(self) -> None:
         self.__sideview_width_area.set_visible(True)
         self.__frameview_header_bar.set_left_control_buttons_visible(False)
         self.__sideview_open_button.set_visible(False)
-        # self.__sideview_headerbar.set_move_area_as_enable(True)
         self.__sideview_close_button.set_visible(False)
 
-        if self.__is_panel_open:
+        if self.__is_sideview_open:
             self.close_sideview()
             self.__sideview_width_area.set_visible(True)
 
-    def __visibility_of_window_control_buttons(self) -> None:
+    def __fullscreen_maximized_and_windowed_modes_adjusts(self) -> None:
         if self.is_maximized():
             if self.platform_settings().gui_env.use_global_menu():
                 self.__sideview_headerbar.set_left_control_buttons_visible(
                     False)
+                self.set_sideview_color(
+                    self.__sideview_color, maximized_style=True)
 
-            if self.__is_panel_open:
+            if self.__is_sideview_open:
                 self.close_sideview()
                 self.__sideview_width_area.set_visible(True)
 
         elif self.is_full_screen():
             self.__sideview_headerbar.set_left_control_buttons_visible(False)
+            self.set_sideview_color(
+                self.__sideview_color, maximized_style=True)
 
-            if self.__is_panel_open:
+            if self.__is_sideview_open:
                 self.close_sideview()
                 self.__sideview_width_area.set_visible(True)
         else:
             self.__sideview_headerbar.set_left_control_buttons_visible(True)
+            self.set_sideview_color(self.__sideview_color)
 
     def __resize_event(self, event: QtGui.QResizeEvent) -> None:
         logging.info(event)
-        self.__switch_vertical_and_horizontal_window()
-        self.__visibility_of_window_control_buttons()
+        self.__switch_adaptive_and_wide_mode_window()
+        self.__fullscreen_maximized_and_windowed_modes_adjusts()
 
     def __reset_style(self, event) -> None:
         logging.info(event)
         self.set_sideview_color()
 
     def __str__(self) -> str:
-        return 'QSidePanelApplicationWindow()'
+        return 'QSideViewApplicationWindow()'
 
     def __repr__(self) -> str:
-        return 'QSidePanelApplicationWindow(QtWidgetsX.QApplicationWindow)'
+        return 'QSideViewApplicationWindow(QtWidgetsX.QApplicationWindow)'
