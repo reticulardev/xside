@@ -1,8 +1,9 @@
 ### PySideX
 
+(In progress)
+
 PySide eXtras is a collection of extra resources for pyside with a focus on CSD 
-([Client-side decoration](https://en.wikipedia.org/wiki/Client-side_decoration)). 
-It is the basis of the ([MPX](https://github.com/reticulardev/mpx)) project.
+([Client-side decoration](https://en.wikipedia.org/wiki/Client-side_decoration)).
 
 See the [documentation](https://reticulardev.github.io/pysidex) for details.
 
