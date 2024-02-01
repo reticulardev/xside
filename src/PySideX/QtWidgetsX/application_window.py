@@ -3,7 +3,6 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 import PySideX.platform.settings as settings
-from PySideX.QtWidgetsX.quick_context_menu import QQuickContextMenu
 
 
 class QApplicationWindow(QtWidgets.QMainWindow):
@@ -42,12 +41,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__style_builder.adapt_to_fullscreen(self.__style_sheet))
 
         self.__central_widget = QtWidgets.QWidget()
-        self.__quick_context_menu = None
         self.__configure_window()
-
-    def quick_context_menu(self) -> QQuickContextMenu | None:
-        """..."""
-        return self.__quick_context_menu
 
     def central_widget(self) -> QtWidgets.QWidget:
         """Returns the central widget for the main window
@@ -63,10 +57,6 @@ class QApplicationWindow(QtWidgets.QMainWindow):
     def platform_settings(self) -> settings.Settings:
         """..."""
         return self.__platform_settings
-
-    def set_quick_context_menu(self, context_menu: QQuickContextMenu) -> None:
-        """..."""
-        self.__quick_context_menu = context_menu
 
     def reset_style(self) -> None:
         """Reset the application style sheet to default"""
@@ -152,7 +142,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         else:
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 90))
         self.__central_widget.set_graphics_effect(self.__shadow_effect)
-        self.__set_visible_shadow(True)
+        self.__shadow_visible(True)
 
         # Filter
         self.install_event_filter(self)
@@ -208,7 +198,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         else:
             self.__resize_corner_active = None
 
-    def __set_visible_shadow(self, visible: bool = True) -> None:
+    def __shadow_visible(self, visible: bool = True) -> None:
         if self.__shadow_is_disabled:
             self.__resize_corner_size = self.__resize_corner_size_default
         else:
@@ -309,9 +299,9 @@ class QApplicationWindow(QtWidgets.QMainWindow):
                 if self.is_maximized() or self.is_full_screen():
                     self.__central_widget.set_style_sheet(
                         self.__style_sheet_fullscreen)
-                    self.__set_visible_shadow(False)
+                    self.__shadow_visible(False)
                 else:
                     self.__central_widget.set_style_sheet(self.__style_sheet)
-                    self.__set_visible_shadow(True)
+                    self.__shadow_visible(True)
 
         return QtWidgets.QMainWindow.event_filter(self, watched, event)

@@ -3,24 +3,25 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 import PySideX.platform.settings as settings
+from PySideX.QtWidgetsX.application_window import QApplicationWindow
 
 
 class QWindowMoveArea(QtWidgets.QFrame):
     """Window move area"""
-    mouse_press_event_signal = QtCore.Signal(object)
     mouse_double_click_event_signal = QtCore.Signal(object)
+    mouse_press_event_signal = QtCore.Signal(object)
 
     def __init__(
-            self, main_window: QtWidgets, *args, **kwargs) -> None:
+            self, toplevel: QApplicationWindow, *args, **kwargs) -> None:
         """Class constructor
 
         Initialize class attributes
 
-        :param main_window: QApplicationWindow app main window instance
+        :param toplevel: QApplicationWindow app main window instance
         """
         super().__init__(*args, **kwargs)
-        self.__main_window = main_window
-        self.__default_style = settings.StyleBuilder(self.__main_window)
+        self.__toplevel = toplevel
+        self.__default_style = settings.StyleBuilder(self.__toplevel)
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(0, 0, 0, 0)
@@ -44,10 +45,10 @@ class QWindowMoveArea(QtWidgets.QFrame):
         """
         if self.__enable:
             self.mouse_press_event_signal.emit(event)
-            if not self.__main_window.is_decorated():
+            if not self.__toplevel.is_decorated():
                 if (event.button() == QtCore.Qt.LeftButton and
                         self.under_mouse()):
-                    self.__main_window.window_handle().start_system_move()
+                    self.__toplevel.window_handle().start_system_move()
 
     def mouse_double_click_event(self, event: QtGui.QMouseEvent) -> None:
         """This method has changed.
@@ -60,9 +61,9 @@ class QWindowMoveArea(QtWidgets.QFrame):
         if self.__enable:
             self.mouse_double_click_event_signal.emit(event)
             if event.button() == QtCore.Qt.LeftButton:
-                if self.__main_window.is_maximized():
+                if self.__toplevel.is_maximized():
                     self.native_parent_widget().show_normal()
-                elif self.__main_window.is_full_screen():
+                elif self.__toplevel.is_full_screen():
                     self.native_parent_widget().show_maximized()
                 else:
                     self.native_parent_widget().show_maximized()

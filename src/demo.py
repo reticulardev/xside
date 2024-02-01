@@ -76,7 +76,6 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
         self.frameview_layout().add_widget(self.context_menu_label)
 
         self.qcontext_menu = QtWidgetsX.QQuickContextMenu(self)
-        self.set_quick_context_menu(self.qcontext_menu)
         self.qcontext_menu.add_action(
             'Copy', lambda: self.__context_menu_cal('Copy'),
             icon=QtGui.QIcon.from_theme('edit-copy'),
@@ -202,7 +201,6 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.body_layout.add_widget(self.context_menu_label)
 
         self.ctx_menu = QtWidgetsX.QQuickContextMenu(self)
-        self.set_quick_context_menu(self.ctx_menu)
         self.ctx_menu.add_action(
             'Copy', lambda: self.context_menu_cal('Copy'),
             icon=QtGui.QIcon.from_theme('edit-copy'),
@@ -282,7 +280,7 @@ class Application(object):
         """
         self.application = QtWidgets.QApplication(args)
         self.sideview_window = SideViewWindow()
-        self.window = Window(is_decorated=False, platform=True)
+        self.window = Window()
 
     def main(self) -> None:
         """Start the app

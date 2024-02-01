@@ -4,6 +4,7 @@ import logging
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
+from PySideX.QtWidgetsX.application_window import QApplicationWindow
 from PySideX.QtWidgetsX.window_move_area import QWindowMoveArea
 from PySideX.QtWidgetsX.window_control_buttons import QWindowControlButtons
 
@@ -15,12 +16,12 @@ class QHeaderBar(QtWidgets.QFrame):
     """
     resize_event_signal = QtCore.Signal(object)
 
-    def __init__(self, main_window: QtWidgets, *args, **kwargs) -> None:
+    def __init__(self, toplevel: QApplicationWindow, *args, **kwargs) -> None:
         """Class constructor
 
         Initialize class attributes
 
-        :param main_window: QApplicationWindow app main window instance
+        :param toplevel: QApplicationWindow app main window instance
         :param window_control_buttons_on_left:
             window control buttons (minimize, maximize and close) on left
         :param window_control_buttons_order:
@@ -28,11 +29,11 @@ class QHeaderBar(QtWidgets.QFrame):
             the maximize button and 2 is the close button. Default is (0, 1, 2)
         """
         super().__init__(*args, **kwargs)
-        self.__main_window = main_window
+        self.__toplevel = toplevel
         self.__left_ctrl_buttons_visibility = True
         self.__right_ctrl_buttons_visibility = True
         self.__window_control_buttons_order = (
-            self.__main_window.platform_settings()
+            self.__toplevel.platform_settings()
             .gui_env.control_button_order())
 
         self.__layout = QtWidgets.QHBoxLayout(self)
@@ -51,7 +52,7 @@ class QHeaderBar(QtWidgets.QFrame):
         self.__bar_item_layout_center.set_contents_margins(0, 0, 0, 0)
         self.__layout.add_layout(self.__bar_item_layout_center)
 
-        self.__window_move_area = QWindowMoveArea(self.__main_window)
+        self.__window_move_area = QWindowMoveArea(self.__toplevel)
         self.__bar_item_layout_center.add_widget(self.__window_move_area, 9)
 
         self.__window_move_area_text = QtWidgets.QLabel()
@@ -68,12 +69,12 @@ class QHeaderBar(QtWidgets.QFrame):
         self.__layout.add_layout(self.__bar_item_layout_right)
 
         self.__left_ctrl_buttons = QWindowControlButtons(
-            self.__main_window,
+            self.__toplevel,
             self.__window_control_buttons_order[0])
         self.__bar_item_layout_left.add_widget(self.__left_ctrl_buttons)
 
         self.__right_ctrl_buttons = QWindowControlButtons(
-            self.__main_window,
+            self.__toplevel,
             self.__window_control_buttons_order[1])
         self.__bar_item_layout_right.add_widget(self.__right_ctrl_buttons)
 
@@ -116,21 +117,21 @@ class QHeaderBar(QtWidgets.QFrame):
         """
         self.resize_event_signal.emit(event)
 
-        if self.__main_window.is_decorated():
+        if self.__toplevel.is_decorated():
             self.__left_ctrl_buttons.set_visible(False)
             self.__right_ctrl_buttons.set_visible(False)
             _50_percent_left = self.__50_percent_left_size(True)
         else:
             _50_percent_left = self.__50_percent_left_size(False)
 
-            if self.__main_window.is_maximized():
-                if (self.__main_window.platform_settings()
+            if self.__toplevel.is_maximized():
+                if (self.__toplevel.platform_settings()
                         .gui_env.use_global_menu()):
                     self.__left_ctrl_buttons.set_visible(False)
                     self.__right_ctrl_buttons.set_visible(False)
                     _50_percent_left = self.__50_percent_left_size(True)
 
-            elif self.__main_window.is_full_screen():
+            elif self.__toplevel.is_full_screen():
                 self.__left_ctrl_buttons.set_visible(False)
                 self.__right_ctrl_buttons.set_visible(False)
                 _50_percent_left = self.__50_percent_left_size(True)
@@ -210,7 +211,7 @@ class QHeaderBar(QtWidgets.QFrame):
 
         :param text: The text to be shown in the center of the QWindowMoveArea
         """
-        if not self.__main_window.is_decorated():
+        if not self.__toplevel.is_decorated():
             self.__window_move_area_text.set_text(text)
 
     def set_window_icon(self, icon: QtGui.QIcon) -> None:

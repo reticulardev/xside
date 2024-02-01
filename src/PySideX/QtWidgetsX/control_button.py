@@ -5,6 +5,8 @@ import math
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
+from PySideX.QtWidgetsX.application_window import QApplicationWindow
+
 
 class QControlButton(QtWidgets.QToolButton):
     """Control Button
@@ -15,7 +17,7 @@ class QControlButton(QtWidgets.QToolButton):
     leave_event_signal = QtCore.Signal(object)
 
     def __init__(
-            self, toplevel: QtWidgets.QWidget, button_id: int,
+            self, toplevel: QApplicationWindow, button_id: int,
             *args, **kwargs) -> None:
         """Class constructor
 

@@ -16,10 +16,11 @@ class QOverlaySideView(QtWidgets.QFrame):
     """..."""
     side_view_closed_signal = QtCore.Signal(object)
 
-    def __init__(self, widget: QtWidgets.QWidget, *args, **kwargs) -> None:
+    def __init__(
+            self, sideview_widget: QtWidgets.QWidget, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         # Param
-        self.__sideview_widget = widget
+        self.__sideview_widget = sideview_widget
         self.__sideview_widget_box = self.__sideview_widget.parent().layout()
         self.__toplevel = self.__sideview_widget.parent().window()
 
@@ -61,7 +62,7 @@ class QOverlaySideView(QtWidgets.QFrame):
 
             def mouse_press_event(self, ev: QtGui.QMouseEvent) -> None:
                 if ev.button() == QtCore.Qt.LeftButton and self.under_mouse():
-                    self.__top.close()
+                    self.__top.close_sideview()
 
         self.__close_view_background = QtWidgets.QWidget()
         self.__close_view_background.set_contents_margins(0, 0, 0, 0)
@@ -70,7 +71,7 @@ class QOverlaySideView(QtWidgets.QFrame):
 
         self.__close_view_box = QtWidgets.QVBoxLayout()
         self.__close_view_background.set_layout(self.__close_view_box)
-        self.__close_view_box.add_widget(CloseArea(self))
+        self.__close_view_box.add_widget(CloseArea(self.__toplevel))
 
         self.__toplevel.resize_event_signal.connect(self.__resize_sig)
 
@@ -236,9 +237,10 @@ class QSideViewApplicationWindow(QApplicationWindow):
 
     def close_sideview(self) -> None:
         """..."""
-        self.__sideview_overlay.close()
-        self.sideview_closed_signal.emit('sideview-closed-signal')
-        self.__is_sideview_open = False
+        if self.__is_sideview_open:
+            self.__sideview_overlay.close()
+            self.sideview_closed_signal.emit('sideview-closed-signal')
+            self.__is_sideview_open = False
 
     def frameview_layout(self) -> QtWidgets.QVBoxLayout:
         """..."""
@@ -250,10 +252,11 @@ class QSideViewApplicationWindow(QApplicationWindow):
 
     def open_sideview(self) -> None:
         """..."""
-        self.__sideview_headerbar.set_left_control_buttons_visible(False)
-        self.__sideview_overlay.open()
-        self.sideview_opened_signal.emit('sideview-opened-signal')
-        self.__is_sideview_open = True
+        if not self.__is_sideview_open:
+            self.__sideview_headerbar.set_left_control_buttons_visible(False)
+            self.__sideview_overlay.open()
+            self.sideview_opened_signal.emit('sideview-opened-signal')
+            self.__is_sideview_open = True
 
     def sideview_headerbar(self) -> QHeaderBar:
         """..."""

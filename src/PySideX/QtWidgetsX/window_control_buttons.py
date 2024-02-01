@@ -3,6 +3,7 @@ from PySide6 import QtGui, QtWidgets
 from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.control_button import QControlButton
+from PySideX.QtWidgetsX.application_window import QApplicationWindow
 
 
 class QWindowControlButtons(QtWidgets.QFrame):
@@ -12,7 +13,8 @@ class QWindowControlButtons(QtWidgets.QFrame):
     """
 
     def __init__(
-            self, main_window: QtWidgets, button_order: tuple = (0, 1, 2),
+            self, main_window: QApplicationWindow,
+            button_order: tuple = (0, 1, 2),
             *args, **kwargs) -> None:
         """Class constructor
 
