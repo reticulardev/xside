@@ -150,7 +150,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         if self.__platform_settings.is_dark_widget(self):
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 180))
         else:
-            self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 80))
+            self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 90))
         self.__central_widget.set_graphics_effect(self.__shadow_effect)
         self.__set_visible_shadow(True)
 

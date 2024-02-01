@@ -34,7 +34,7 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.__main_box.set_spacing(0)
         self.set_layout(self.__main_box)
 
-        # Side
+        # Side view
         self.__sideview_background = QtWidgets.QWidget()
         self.__sideview_background.set_fixed_width(
             self.__sideview_widget.width())
@@ -45,6 +45,13 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.__sideview_box = QtWidgets.QHBoxLayout()
         self.__sideview_box.set_contents_margins(0, 0, 0, 0)
         self.__sideview_background.set_layout(self.__sideview_box)
+
+        # Shadow
+        self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
+        self.__shadow_effect.set_blur_radius(50)
+        self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
+        self.__shadow_effect.set_color(QtGui.QColor(0, 0, 0, 50))
+        self.__sideview_background.set_graphics_effect(self.__shadow_effect)
 
         # Close
         class CloseArea(QtWidgets.QWidget):
