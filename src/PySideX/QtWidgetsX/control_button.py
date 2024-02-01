@@ -37,9 +37,9 @@ class QControlButton(QtWidgets.QToolButton):
         self.__toplevel.resize_event_signal.connect(
             self.__check_maximize_and_restore_icon)
 
-        self.update_button()
+        self.__update_button()
 
-    def update_button(self, background_color: tuple = None) -> None:
+    def __update_button(self, background_color: tuple = None) -> None:
         """..."""
         # if QtGui.QIcon.theme_name() != icon_theme:
         #     QtGui.QIcon.set_theme_name(icon_theme)
@@ -91,12 +91,9 @@ class QControlButton(QtWidgets.QToolButton):
 
     def __is_dark_tone(self) -> bool:
         # ...
-        if self.__background_color:
-            r, g, b = self.__background_color
-        else:
-            color = self.palette().color(QtGui.QPalette.Window)
-            r, g, b = (color.red(), color.green(), color.blue())
-            self.__background_color = r, g, b
+        color = self.palette().color(QtGui.QPalette.Window)
+        r, g, b = (color.red(), color.green(), color.blue())
+        self.__background_color = (r, g, b)
 
         hsp = math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
         return False if hsp > 127.5 else True

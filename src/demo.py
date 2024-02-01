@@ -129,7 +129,6 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
                 '  background-color: #513258;}'
                 'QContextMenuButton {'
                 '  border: 1px solid rgba(77, 125, 77, 0.6);}')
-            self.set_sideview_color((255, 255, 255, 0.9))
             self.set_style_button.set_text('Reset style')
         else:
             self.reset_style()

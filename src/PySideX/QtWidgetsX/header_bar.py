@@ -228,11 +228,6 @@ class QHeaderBar(QtWidgets.QFrame):
         """
         return self.__window_move_area.text()
 
-    def update_buttons_by_bg_color(self, background_color: tuple) -> None:
-        """..."""
-        self.__right_ctrl_buttons.update_buttons_by_bg_color(background_color)
-        self.__left_ctrl_buttons.update_buttons_by_bg_color(background_color)
-
     def __50_percent_left_size(self, hidden_sides: bool) -> int:
         # ...
         if hidden_sides or not self.__left_ctrl_buttons_visibility:
