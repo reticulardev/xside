@@ -21,6 +21,7 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
         # self.set_minimize_window_button_visible(False)
         # self.set_maximize_window_button_visible(False)
         # self.set_close_window_button_visible(False)
+        # self.set_right_control_buttons_visible(False)
 
         # Icon
         icon_path = os.path.join(SRC_DIR, 'icon_b.svg')

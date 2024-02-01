@@ -145,6 +145,7 @@ class QSideViewApplicationWindow(QApplicationWindow):
         self.__sideview_color = (0, 0, 0, 0.05)
         self.__adaptive_mode_toggle_width = 650
         self.__is_adaptive_mode = False
+        self.__is_sideview_headerbar_left_control_set_as_visible = True
 
         # Settings
         self.set_window_title('MPX Application Window')
@@ -205,15 +206,15 @@ class QSideViewApplicationWindow(QApplicationWindow):
         self.__main_box.add_layout(self.__frameview_main_box)
 
         # Frame view header bar
-        self.__frameview_header_bar = QHeaderBar(self)
-        self.__frameview_header_bar.set_left_control_buttons_visible(False)
-        self.__frameview_main_box.add_widget(self.__frameview_header_bar)
+        self.__frameview_headerbar = QHeaderBar(self)
+        self.__frameview_headerbar.set_left_control_buttons_visible(False)
+        self.__frameview_main_box.add_widget(self.__frameview_headerbar)
 
         self.__sideview_open_button = QtWidgets.QToolButton()
         self.__sideview_open_button.set_icon(
             QtGui.QIcon.from_theme('page-2sides'))  # sidebar-collapse
         self.__sideview_open_button.clicked.connect(self.open_sideview)
-        self.__frameview_header_bar.add_widget_to_left(
+        self.__frameview_headerbar.add_widget_to_left(
             self.__sideview_open_button)
         self.__sideview_open_button.set_visible(False)
 
@@ -248,6 +249,8 @@ class QSideViewApplicationWindow(QApplicationWindow):
         return self.__adaptive_mode_toggle_width
 
     def open_sideview(self) -> None:
+        """..."""
+        self.__sideview_headerbar.set_left_control_buttons_visible(False)
         self.__sideview_overlay.open()
         self.sideview_opened_signal.emit('sideview-opened-signal')
         self.__is_sideview_open = True
@@ -263,17 +266,17 @@ class QSideViewApplicationWindow(QApplicationWindow):
     def set_close_window_button_visible(self, visible: bool) -> None:
         """..."""
         self.__sideview_headerbar.set_close_window_button_visible(visible)
-        self.__frameview_header_bar.set_close_window_button_visible(visible)
+        self.__frameview_headerbar.set_close_window_button_visible(visible)
 
     def set_headerbar_icon(self, icon: QtGui.QIcon) -> None:
         """..."""
         self.set_window_icon(icon)
         self.__sideview_headerbar.set_window_icon(icon)
-        self.__frameview_header_bar.set_window_icon(icon)
+        self.__frameview_headerbar.set_window_icon(icon)
 
     def set_headerbar_title(self, text: str) -> None:
         """..."""
-        self.__frameview_header_bar.set_text(text)
+        self.__frameview_headerbar.set_text(text)
 
     def set_adaptive_mode_toggle_width(self, width: int) -> None:
         """..."""
@@ -281,18 +284,19 @@ class QSideViewApplicationWindow(QApplicationWindow):
 
     def set_left_control_buttons_visible(self, visible: bool) -> None:
         """..."""
+        self.__is_sideview_headerbar_left_control_set_as_visible = visible
         self.__sideview_headerbar.set_left_control_buttons_visible(visible)
 
     def set_maximize_window_button_visible(self, visible: bool) -> None:
         """..."""
         self.__sideview_headerbar.set_maximize_window_button_visible(visible)
-        self.__frameview_header_bar.set_maximize_window_button_visible(
+        self.__frameview_headerbar.set_maximize_window_button_visible(
             visible)
 
     def set_minimize_window_button_visible(self, visible: bool) -> None:
         """..."""
         self.__sideview_headerbar.set_minimize_window_button_visible(visible)
-        self.__frameview_header_bar.set_minimize_window_button_visible(
+        self.__frameview_headerbar.set_minimize_window_button_visible(
             visible)
 
     def set_sideview_fixed_width(self, width: int) -> None:
@@ -302,7 +306,7 @@ class QSideViewApplicationWindow(QApplicationWindow):
 
     def set_right_control_buttons_visible(self, visible: bool) -> None:
         """..."""
-        self.__sideview_headerbar.set_right_control_buttons_visible(visible)
+        self.__frameview_headerbar.set_right_control_buttons_visible(visible)
 
     def __fullscreen_maximized_and_windowed_modes_adjusts(self) -> None:
         if self.is_maximized():
@@ -323,7 +327,9 @@ class QSideViewApplicationWindow(QApplicationWindow):
                 self.close_sideview()
                 self.__sideview_width_area.set_visible(True)
         else:
-            self.__sideview_headerbar.set_left_control_buttons_visible(True)
+            if self.__is_sideview_headerbar_left_control_set_as_visible:
+                self.__sideview_headerbar.set_left_control_buttons_visible(
+                    True)
             self.__darken_sideview()
 
     def __initial_width(self) -> int:
@@ -353,13 +359,14 @@ class QSideViewApplicationWindow(QApplicationWindow):
 
     def __switch_to_adaptive_mode(self) -> None:
         self.__sideview_width_area.set_visible(False)
-        self.__frameview_header_bar.set_left_control_buttons_visible(True)
+        if self.__is_sideview_headerbar_left_control_set_as_visible:
+            self.__frameview_headerbar.set_left_control_buttons_visible(True)
         self.__sideview_open_button.set_visible(True)
         self.__sideview_close_button.set_visible(True)
 
     def __switch_to_wide_mode(self) -> None:
         self.__sideview_width_area.set_visible(True)
-        self.__frameview_header_bar.set_left_control_buttons_visible(False)
+        self.__frameview_headerbar.set_left_control_buttons_visible(False)
         self.__sideview_open_button.set_visible(False)
         self.__sideview_close_button.set_visible(False)
 
