@@ -117,7 +117,7 @@ class QHeaderBar(QtWidgets.QFrame):
         """
         self.resize_event_signal.emit(event)
 
-        if self.__toplevel.is_decorated():
+        if self.__toplevel.is_server_side_decorated():
             self.__left_ctrl_buttons.set_visible(False)
             self.__right_ctrl_buttons.set_visible(False)
             _50_percent_left = self.__50_percent_left_size(True)
@@ -211,7 +211,7 @@ class QHeaderBar(QtWidgets.QFrame):
 
         :param text: The text to be shown in the center of the QWindowMoveArea
         """
-        if not self.__toplevel.is_decorated():
+        if not self.__toplevel.is_server_side_decorated():
             self.__window_move_area_text.set_text(text)
 
     def set_window_icon(self, icon: QtGui.QIcon) -> None:

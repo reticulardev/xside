@@ -45,7 +45,7 @@ class QWindowMoveArea(QtWidgets.QFrame):
         """
         if self.__enable:
             self.mouse_press_event_signal.emit(event)
-            if not self.__toplevel.is_decorated():
+            if not self.__toplevel.is_server_side_decorated():
                 if (event.button() == QtCore.Qt.LeftButton and
                         self.under_mouse()):
                     self.__toplevel.window_handle().start_system_move()

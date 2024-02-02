@@ -169,7 +169,7 @@ class StyleBuilder(object):
 
     def build_style(self) -> str:
         """..."""
-        if self.__main_window.is_decorated():
+        if self.__main_window.is_server_side_decorated():
             main_window_style = (
                 '#QApplicationWindow {'
                 'background-color: rgba('

@@ -279,7 +279,8 @@ class Application(object):
         :param args: List of command line arguments
         """
         self.application = QtWidgets.QApplication(args)
-        self.sideview_window = SideViewWindow()
+        self.sideview_window = SideViewWindow(
+            server_side_decoration=False, follow_platform=True)
         self.window = Window()
 
     def main(self) -> None:
