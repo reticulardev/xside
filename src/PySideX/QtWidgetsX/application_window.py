@@ -88,10 +88,6 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         """..."""
         self.__shadow_size = size
 
-    def set_shadow_visible(self, visible: bool = True) -> None:
-        """..."""
-        self.__add_window_shadow(visible)
-
     def set_style_sheet(self, style: str) -> None:
         """Set the application style sheet
 
@@ -145,7 +141,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         if not self.__is_server_side_decorated:
             self.set_window_flags(
                 QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window)
-            self.__add_window_shadow(True)
+            self.__window_shadow_visible(True)
         else:
             self.__shadow_is_disabled = True
 
@@ -191,19 +187,22 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         else:
             self.__active_resize_border = None
 
-    def __add_window_shadow(self, visible: bool) -> None:
+    def __window_shadow_visible(self, visible: bool) -> None:
         if self.__shadow_is_disabled:
             self.__resize_border_size = self.__default_resize_border_size
         else:
-            if self.__platform_settings.is_dark_widget(self):
-                self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 180))
-
             if visible:
+                if self.__platform_settings.is_dark_widget(self):
+                    self.__shadow_effect.set_color(
+                        QtGui.QColor(10, 10, 10, 180))
+
                 self.set_contents_margins(
                     self.__shadow_size, self.__shadow_size,
                     self.__shadow_size, self.__shadow_size)
+
                 self.__resize_border_size = (
                         self.__default_resize_border_size + self.__shadow_size)
+
                 self.__central_widget.set_graphics_effect(self.__shadow_effect)
             else:
                 self.set_contents_margins(0, 0, 0, 0)
@@ -234,40 +233,6 @@ class QApplicationWindow(QtWidgets.QMainWindow):
                   QtCore.Qt.Edge.BottomEdge):
                 self.set_cursor(QtCore.Qt.CursorShape.SizeBDiagCursor)
 
-    @staticmethod
-    def __variant_icon_theme() -> tuple:
-        # ...
-        theme_name = QtGui.QIcon.theme_name()
-        variant_theme_name = None
-        variant_theme_path = None
-
-        icon_theme_is_dark = False
-        if 'dark' in theme_name.lower():
-            icon_theme_is_dark = True
-
-        variant = 'dark'
-        if icon_theme_is_dark:
-            variant = 'light'
-
-        for path_dirs in QtGui.QIcon.theme_search_paths():
-            if os.path.isdir(path_dirs):
-                for dire in os.listdir(path_dirs):
-
-                    if variant == 'dark':
-                        if theme_name in dire and 'dark' in dire.lower():
-                            variant_theme_name = dire
-                            variant_theme_path = os.path.join(path_dirs, dire)
-                    else:
-                        name = theme_name.replace(
-                            '-Dark', '').replace('-dark', '').replace(
-                            '-DARK', '').replace('Dark', '').replace(
-                            'dark', '').replace('DARK', '')
-                        if 'dark' not in dire.lower() and name in dire:
-                            variant_theme_name = dire
-                            variant_theme_path = os.path.join(path_dirs, dire)
-
-        return variant_theme_name, variant_theme_path
-
     def event_filter(
             self, watched: QtCore.QObject, event: QtCore.QEvent) -> bool:
         self.event_filter_signal.emit(event)
@@ -296,9 +261,9 @@ class QApplicationWindow(QtWidgets.QMainWindow):
                 if self.is_maximized() or self.is_full_screen():
                     self.__central_widget.set_style_sheet(
                         self.__style_sheet_fullscreen)
-                    self.__add_window_shadow(False)
+                    self.__window_shadow_visible(False)
                 else:
                     self.__central_widget.set_style_sheet(self.__style_sheet)
-                    self.__add_window_shadow(True)
+                    self.__window_shadow_visible(True)
 
         return QtWidgets.QMainWindow.event_filter(self, watched, event)

@@ -67,6 +67,36 @@ class Settings(object):
         """..."""
         return self.__operational_system
 
+    @staticmethod
+    def variant_icon_theme() -> tuple:
+        # ...
+        variant = 'dark'
+        if 'dark' in QtGui.QIcon.theme_name().lower():
+            variant = 'light'
+
+        theme_name = QtGui.QIcon.theme_name()
+        variant_theme_name = None
+        variant_theme_path = None
+
+        for path_dirs in QtGui.QIcon.theme_search_paths():
+            if os.path.isdir(path_dirs):
+                for dire in os.listdir(path_dirs):
+
+                    if variant == 'dark':
+                        if theme_name in dire and 'dark' in dire.lower():
+                            variant_theme_name = dire
+                            variant_theme_path = os.path.join(path_dirs, dire)
+                    else:
+                        name = theme_name.replace(
+                            '-Dark', '').replace('-dark', '').replace(
+                            '-DARK', '').replace('Dark', '').replace(
+                            'dark', '').replace('DARK', '')
+                        if 'dark' not in dire.lower() and name in dire:
+                            variant_theme_name = dire
+                            variant_theme_path = os.path.join(path_dirs, dire)
+
+        return variant_theme_name, variant_theme_path
+
     def __get_desktop_environment(self) -> DesktopEnvironment:
         # ...
         if self.__platform_integration:
