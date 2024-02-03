@@ -16,18 +16,17 @@ sys.path.append(SRC_DIR)
 
 class Settings(object):
     """..."""
-    OperationalSystem = Enum(
-        'OperationalSystem', ['UNKNOWN', 'LINUX', 'BSD', 'MAC', 'WINDOWS'])
-    DesktopEnvironment = Enum(
-        'DesktopEnvironment',
-        ['UNKNOWN', 'PLASMA', 'GNOME', 'CINNAMON', 'XFCE', 'MAC', 'WINDOWS_7',
-         'WINDOWS_10', 'WINDOWS_11'])
-
     def __init__(self, platform_integration: bool = True):
         """..."""
         self.__platform_integration = platform_integration
+
+        # unknown linux bsd mac windows
         self.__operational_system = self.__get_operational_system()
+
+        # unknown plasma gnome cinnamon xfce mac
+        # windows-7 windows-10 windows-11
         self.__desktop_environment = self.__get_desktop_environment()
+
         self.__env_settings = self.__get_env_settings()
 
     @staticmethod
@@ -53,7 +52,7 @@ class Settings(object):
         return False if hsp > 127.5 else True
 
     @property
-    def desktop_environment(self) -> DesktopEnvironment:
+    def desktop_environment(self) -> str:
         """..."""
         return self.__desktop_environment
 
@@ -63,7 +62,7 @@ class Settings(object):
         return self.__env_settings
 
     @property
-    def operational_system(self) -> OperationalSystem:
+    def operational_system(self) -> str:
         """..."""
         return self.__operational_system
 
@@ -97,83 +96,81 @@ class Settings(object):
 
         return variant_theme_name, variant_theme_path
 
-    def __get_desktop_environment(self) -> DesktopEnvironment:
+    def __get_desktop_environment(self) -> str:
         # ...
         if self.__platform_integration:
-            if self.__operational_system == self.OperationalSystem.LINUX:
+            if self.__operational_system == 'linux':
                 if (os.environ['DESKTOP_SESSION'] == 'plasma' or
                         os.environ['XDG_SESSION_DESKTOP'] == 'KDE' or
                         os.environ['XDG_CURRENT_DESKTOP'] == 'KDE'):
-                    return self.DesktopEnvironment.PLASMA
+                    return 'plasma'
 
                 # TODO: Gnome, Cinnamon, XFCE
-                return self.DesktopEnvironment.GNOME
+                return 'gnome'
 
-            elif self.__operational_system == self.OperationalSystem.WINDOWS:
+            elif self.__operational_system == 'windows':
                 if platform.release() == '10':
-                    return self.DesktopEnvironment.WINDOWS_10
+                    return 'windows-10'
 
                 elif platform.release() == '11':
-                    return self.DesktopEnvironment.WINDOWS_11
+                    return 'windows-11'
 
-                return self.DesktopEnvironment.WINDOWS_7
+                return 'windows-7'
 
-            elif self.__operational_system == self.OperationalSystem.MAC:
-                return self.DesktopEnvironment.MAC
+            elif self.__operational_system == 'mac':
+                return 'mac'
 
-            elif self.__operational_system == self.OperationalSystem.BSD:
-                return self.DesktopEnvironment.BSD
+            elif self.__operational_system == 'bsd':
+                return 'bsd'
 
-        return self.DesktopEnvironment.UNKNOWN
+        return 'unknown'
 
     def __get_env_settings(self) -> environment.EnvSettings | None:
         """..."""
         if self.__platform_integration:
-            if self.__operational_system == self.OperationalSystem.LINUX:
+            if self.__operational_system == 'linux':
 
-                if (self.__desktop_environment ==
-                        self.DesktopEnvironment.PLASMA):
+                if self.__desktop_environment == 'plasma':
                     return environment.EnvSettingsPlasma()
 
-                if (self.__desktop_environment ==
-                        self.DesktopEnvironment.CINNAMON):
+                if self.__desktop_environment == 'cinnamon':
                     return environment.EnvSettingsCinnamon()
 
-                if (self.__desktop_environment ==
-                        self.DesktopEnvironment.XFCE):
+                if self.__desktop_environment == 'xfce':
                     return environment.EnvSettingsXFCE()
 
                 return environment.EnvSettingsGnome()
 
-            if self.__operational_system == self.OperationalSystem.MAC:
+            if self.__operational_system == 'mac':
                 return environment.EnvSettingsMac()
 
-            if self.__operational_system == self.OperationalSystem.WINDOWS:
+            if self.__operational_system == 'windows':
 
-                if (self.__desktop_environment ==
-                        self.DesktopEnvironment.WINDOWS_7):
+                if self.__desktop_environment == 'windows-7':
                     return environment.EnvSettingsWindows7()
 
-                if (self.__desktop_environment ==
-                        self.DesktopEnvironment.WINDOWS_10):
+                if self.__desktop_environment == 'windows-10':
                     return environment.EnvSettingsWindows10()
                 
                 return environment.EnvSettingsWindows11()
 
         return environment.EnvSettings()
 
-    def __get_operational_system(self) -> OperationalSystem:
+    @staticmethod
+    def __get_operational_system() -> str:
+        # 'unknown', 'linux', 'bsd', 'mac', 'windows'
+
         # Win config path: $HOME + AppData\Roaming\
         # Linux config path: $HOME + .config
         if os.name == 'posix':
             if platform.system() == 'Linux':
-                return self.OperationalSystem.LINUX
+                return 'linux'
 
             elif platform.system() == 'Darwin':
-                return self.OperationalSystem.MAC
+                return 'mac'
 
         elif os.name == 'nt' and platform.system() == 'Windows':
-            return self.OperationalSystem.WINDOWS
+            return 'windows'
 
 
 class StyleBuilder(object):
