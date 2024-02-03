@@ -45,7 +45,8 @@ class QControlButton(QtWidgets.QToolButton):
         """..."""
         if self.__toplevel.platform_settings().desktop_environment == 'gnome':
             QtGui.QIcon.set_fallback_search_paths(
-                ['/usr/share/icons/Adwaita/symbolic/ui/'])
+                ['/usr/share/icons/Adwaita/',
+                 '/usr/share/icons/Adwaita/symbolic/ui/'])
 
         # if QtGui.QIcon.theme_name() != icon_theme:
         #     QtGui.QIcon.set_theme_name(icon_theme)
@@ -80,7 +81,6 @@ class QControlButton(QtWidgets.QToolButton):
 
             self.set_style_sheet(style)
             if 'background: url' not in style:
-                print(QtGui.QIcon.fallback_search_paths())
                 self.set_icon(
                     QtGui.QIcon.from_theme('window-maximize-symbolic'))
         else:

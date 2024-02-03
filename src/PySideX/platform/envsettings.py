@@ -19,15 +19,6 @@ sys.path.append(SRC_DIR)
 class EnvSettings(object):
     """..."""
 
-    def __init__(self, *args, **kwargs):
-        """..."""
-        self.__cli = cli.Cli()
-
-    @property
-    def cli(self) -> cli.Cli:
-        """..."""
-        return self.__cli
-
     @staticmethod
     def context_menu_border_color(window_is_dark: bool) -> tuple:
         """RGBA tuple: (127, 127, 127, 0.8)"""

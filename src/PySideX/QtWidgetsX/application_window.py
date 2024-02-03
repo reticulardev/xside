@@ -2,7 +2,8 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-import PySideX.platform.settings as settings
+from PySideX.platform.platformsettings import PlatformSettings
+from PySideX.platform.stylebuilder import StyleBuilder
 
 
 class QApplicationWindow(QtWidgets.QMainWindow):
@@ -28,7 +29,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         super().__init__(*args, **kwargs)
         # Param
         self.__is_server_side_decorated = server_side_decoration
-        self.__platform_settings = settings.Settings(follow_platform)
+        self.__platform_settings = PlatformSettings(follow_platform)
 
         # Flags
         self.__shadow_size = 5
@@ -43,7 +44,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         self.__central_widget.set_object_name('QApplicationWindow')
 
         # Style
-        self.__style_builder = settings.StyleBuilder(self)
+        self.__style_builder = StyleBuilder(self)
         self.__style_sheet = self.__style_builder.build_style()
         self.__style_sheet_fullscreen = (
             self.__style_builder.adapt_to_fullscreen(self.__style_sheet))
@@ -69,7 +70,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         """..."""
         return self.__is_server_side_decorated
 
-    def platform_settings(self) -> settings.Settings:
+    def platform_settings(self) -> PlatformSettings:
         """..."""
         return self.__platform_settings
 

@@ -2,7 +2,7 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-import PySideX.platform.settings as settings
+from PySideX.platform.stylebuilder import StyleBuilder
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
 
 
@@ -21,7 +21,7 @@ class QWindowMoveArea(QtWidgets.QFrame):
         """
         super().__init__(*args, **kwargs)
         self.__toplevel = toplevel
-        self.__default_style = settings.StyleBuilder(self.__toplevel)
+        self.__default_style = StyleBuilder(self.__toplevel)
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(0, 0, 0, 0)

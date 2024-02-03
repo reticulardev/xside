@@ -280,7 +280,7 @@ class Application(object):
         """
         self.application = QtWidgets.QApplication(args)
         self.sideview_window = SideViewWindow(
-            server_side_decoration=False, follow_platform=False)
+            server_side_decoration=False, follow_platform=True)
         self.window = Window()
 
     def main(self) -> None:
