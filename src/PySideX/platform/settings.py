@@ -3,7 +3,6 @@ import math
 import os
 import platform
 import sys
-from enum import Enum
 
 from PySide6 import QtGui, QtWidgets
 from __feature__ import snake_case
