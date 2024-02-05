@@ -9,6 +9,7 @@ from PySide6 import QtGui, QtWidgets
 from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.modules.parser import DesktopFile
+from PySideX.QtWidgetsX.modules.cli import Cli
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
@@ -16,6 +17,14 @@ sys.path.append(SRC_DIR)
 
 class EnvSettings(object):
     """Base environment settings"""
+
+    def __init__(self):
+        self.__cli = Cli()
+
+    @property
+    def cli(self) -> Cli:
+        """..."""
+        return self.__cli
 
     @staticmethod
     def context_menu_border_color(window_is_dark: bool) -> tuple:
@@ -94,9 +103,9 @@ class EnvSettings(object):
 class EnvSettingsPlasma(EnvSettings):
     """..."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """..."""
-        super().__init__(*args, **kwargs)
+        super().__init__()
 
         self.__kwinrc = self.rc_file_content(
             os.path.join(os.environ['HOME'], '.config', 'kwinrc'))
@@ -217,9 +226,9 @@ class EnvSettingsPlasma(EnvSettings):
 class EnvSettingsGnome(EnvSettings):
     """..."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """..."""
-        super().__init__(*args, **kwargs)
+        super().__init__()
 
     @staticmethod
     def context_menu_border_color(window_is_dark: bool) -> tuple:
@@ -243,8 +252,7 @@ class EnvSettingsGnome(EnvSettings):
         """..."""
         return 0
 
-    @staticmethod
-    def control_button_order() -> tuple:
+    def control_button_order(self) -> tuple:
         """XAI M -> (2, 1, 0), (3,)
 
         Close     Max       Min       Icon      Above all
@@ -252,8 +260,26 @@ class EnvSettingsGnome(EnvSettings):
 
         (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
         """
-        # TODO: Auto
-        return (3,), (0, 1, 2)
+        button_layout = self.cli.output_by_args(
+            ["gsettings", "get", "org.gnome.desktop.wm.preferences",
+             "button-layout"]).split(':')
+
+        d = {'close': 2, 'maximize': 1, 'minimize': 0}
+        left = []
+        for x in button_layout[0].split(','):
+            if x in d:
+                left.append(d[x])
+            else:
+                left.append(3)
+
+        right = []
+        for x in button_layout[1].split(','):
+            if x in d:
+                right.append(d[x])
+            else:
+                right.append(3)
+
+        return tuple(left), tuple(right)
 
     @staticmethod
     def control_button_style(*args, **kwargs) -> str:
@@ -290,55 +316,55 @@ class EnvSettingsGnome(EnvSettings):
     @staticmethod
     def window_icon_margin() -> tuple:
         """..."""
-        return 5, 2, 5, 2
+        return 5, 5, 5, 5
 
 
 class EnvSettingsCinnamon(EnvSettingsGnome):
     """..."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """..."""
-        super().__init__(*args, **kwargs)
+        super().__init__()
 
 
 class EnvSettingsXFCE(EnvSettingsGnome):
     """..."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """..."""
-        super().__init__(*args, **kwargs)
+        super().__init__()
 
 
 class EnvSettingsMac(EnvSettings):
     """..."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """..."""
-        super().__init__(*args, **kwargs)
+        super().__init__()
 
 
 class EnvSettingsWindows11(EnvSettings):
     """..."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """..."""
-        super().__init__(*args, **kwargs)
+        super().__init__()
 
 
 class EnvSettingsWindows10(EnvSettingsWindows11):
     """..."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """..."""
-        super().__init__(*args, **kwargs)
+        super().__init__()
 
 
 class EnvSettingsWindows7(EnvSettingsWindows11):
     """..."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """..."""
-        super().__init__(*args, **kwargs)
+        super().__init__()
 
 
 class GuiEnv(object):
