@@ -290,11 +290,11 @@ class EnvSettingsGnome(EnvSettings):
             '  border-radius: 10px;'
             '  padding: 1px;'
             '  background-color: rgba(127, 127, 127, 0.2);'
-            '  margin: 5px 2px 5px 2px;'
-            '  padding: 2px 0px 0px 2px;'
+            '  margin: 5px 4px 5px 4px;'
+            '  padding: 2px 1px 1px 2px;'
             '}'
             'QControlButton:hover {'
-            '  background-color: rgba(200, 200, 200, 0.2);'
+            '  background-color: rgba(127, 127, 127, 0.3);'
             '}')
 
     def use_global_menu(self) -> bool:
@@ -316,7 +316,7 @@ class EnvSettingsGnome(EnvSettings):
     @staticmethod
     def window_icon_margin() -> tuple:
         """..."""
-        return 5, 5, 5, 5
+        return 5, 7, 5, 7
 
 
 class EnvSettingsCinnamon(EnvSettingsGnome):

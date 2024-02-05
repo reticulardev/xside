@@ -112,7 +112,17 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.__close_view_background.set_style_sheet(
             '#__closeviewbgtyle {'
             f'{parse_base_style}'
-            'background-color: rgba(0, 0, 0, 0.1);'
+            # 'background-color: rgba(0, 0, 0, 0.1);'
+            # 'color: qlineargradient('
+            # '  spread:pad, '
+            # '  x1:0 y1:0, x2:1 y2:0, '
+            # '  stop:0 rgba(0, 0, 0, 255), '
+            # '  stop:1 rgba(255, 255, 255, 255));'
+            'background: qlineargradient('
+            '  x1:0 y1:0, x2:1 y2:0,'
+            '  stop:0.0 rgba(0, 0, 0, 50),'
+            '  stop:0.5 rgba(0, 0, 0, 30),'
+            '  stop:1.0 rgba(0, 0, 0, 30));'
             'border: 0px;'
             'border-top-left-radius: 0;'
             'border-bottom-left-radius: 0;}')
@@ -150,6 +160,7 @@ class QSideViewApplicationWindow(QApplicationWindow):
         self.__adaptive_mode_toggle_width = 650
         self.__is_adaptive_mode = False
         self.__is_sideview_headerbar_left_control_set_as_visible = True
+        self.__is_sideview_close_button_set_as_visible = False
 
         # Settings
         self.__gui_env = GuiEnv(
@@ -309,6 +320,10 @@ class QSideViewApplicationWindow(QApplicationWindow):
         self.__frameview_headerbar.set_minimize_window_button_visible(
             visible)
 
+    def set_sideview_close_button_visible(self, visible: bool) -> None:
+        """Visible only on overlay mode"""
+        self.__is_sideview_close_button_set_as_visible = visible
+
     def set_sideview_fixed_width(self, width: int) -> None:
         """..."""
         self.__sideview_width = width
@@ -373,7 +388,8 @@ class QSideViewApplicationWindow(QApplicationWindow):
         if self.__is_sideview_headerbar_left_control_set_as_visible:
             self.__frameview_headerbar.set_left_control_buttons_visible(True)
         self.__sideview_open_button.set_visible(True)
-        self.__sideview_close_button.set_visible(True)
+        if self.__is_sideview_close_button_set_as_visible:
+            self.__sideview_close_button.set_visible(True)
 
     def __switch_to_wide_mode(self) -> None:
         self.__sideview_width_area.set_visible(True)

@@ -93,6 +93,8 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
         self.qcontext_menu.add_action(
             'Save', lambda: self.__context_menu_cal('Save'))
 
+        # self.set_sideview_close_button_visible(True)
+
     def context_menu_event(self, event):
         self.qcontext_menu.exec(event.global_pos())
 
