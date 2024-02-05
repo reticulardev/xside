@@ -8,16 +8,14 @@ import sys
 from PySide6 import QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.tools import parser
-from PySideX.tools import cli
-
+from PySideX.QtWidgetsX.modules.parser import DesktopFile
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
 
 
 class EnvSettings(object):
-    """..."""
+    """Base environment settings"""
 
     @staticmethod
     def context_menu_border_color(window_is_dark: bool) -> tuple:
@@ -75,7 +73,7 @@ class EnvSettings(object):
     def rc_file_content(file_url: str) -> dict:
         """..."""
         if os.path.isfile(file_url):
-            return parser.DesktopFile(url=file_url).content
+            return DesktopFile(url=file_url).content
         return {}
 
     def use_global_menu(self) -> bool:
@@ -179,7 +177,8 @@ class EnvSettingsPlasma(EnvSettings):
             button_name += '-symbolic'
 
         url_icon = os.path.join(
-            SRC_DIR, 'kde-breeze-control-buttons', button_name + '.svg')
+            SRC_DIR, 'static',
+            'kde-breeze-control-buttons', button_name + '.svg')
         return (
             # f'background: url({url_icon}) top center no-repeat;'
             'QControlButton {'
@@ -255,6 +254,8 @@ class EnvSettingsGnome(EnvSettings):
             '  border-radius: 10px;'
             '  padding: 1px;'
             '  background-color: rgba(127, 127, 127, 0.2);'
+            '  margin: 5px 2px 5px 2px;'
+            '  padding: 2px 0px 0px 2px;'
             '}'
             'QControlButton:hover {'
             '  background-color: rgba(200, 200, 200, 0.2);'
@@ -323,3 +324,52 @@ class EnvSettingsWindows7(EnvSettingsWindows11):
     def __init__(self, *args, **kwargs):
         """..."""
         super().__init__(*args, **kwargs)
+
+
+class GuiEnv(object):
+    """..."""
+    def __init__(
+            self,
+            operational_system: str,
+            desktop_environment: str,
+            follow_platform: bool = True) -> None:
+        """..."""
+        self.__operational_system = operational_system
+        self.__desktop_environment = desktop_environment
+        self.__follow_platform = follow_platform
+        self.__gui_env_settings = self.__get_gui_env_settings()
+
+    def settings(self) -> EnvSettings:
+        """..."""
+        return self.__gui_env_settings
+
+    def __get_gui_env_settings(self) -> EnvSettings:
+        # ...
+        if self.__follow_platform:
+            if self.__operational_system == 'linux':
+
+                if self.__desktop_environment == 'plasma':
+                    return EnvSettingsPlasma()
+
+                if self.__desktop_environment == 'cinnamon':
+                    return EnvSettingsCinnamon()
+
+                if self.__desktop_environment == 'xfce':
+                    return EnvSettingsXFCE()
+
+                return EnvSettingsGnome()
+
+            if self.__operational_system == 'mac':
+                return EnvSettingsMac()
+
+            if self.__operational_system == 'windows':
+
+                if self.__desktop_environment == 'windows-7':
+                    return EnvSettingsWindows7()
+
+                if self.__desktop_environment == 'windows-10':
+                    return EnvSettingsWindows10()
+
+                return EnvSettingsWindows11()
+
+        return EnvSettings()

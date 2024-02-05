@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 import logging
 import math
+import os
+import sys
 
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
+from PySideX.QtWidgetsX.modules.colorop import ColorOp
+from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
+
+SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class QControlButton(QtWidgets.QToolButton):
@@ -29,11 +35,17 @@ class QControlButton(QtWidgets.QToolButton):
             2 is the close button
         """
         super().__init__(*args, **kwargs)
+        # Param
         self.__toplevel = toplevel
         self.__button_id = button_id
+
+        # Flags
         self.__buttons_schema = {0: 'minimize', 1: 'maximize', 2: 'close'}
         self.__background_color = None
         self.__is_dark = self.__is_dark_tone()
+        self.__gui_env = GuiEnv(
+            self.__toplevel.platform().operational_system(),
+            self.__toplevel.platform().desktop_environment())
 
         self.__maximize_or_restore_icon = 'maximize'
         self.__toplevel.resize_event_signal.connect(
@@ -43,7 +55,7 @@ class QControlButton(QtWidgets.QToolButton):
 
     def __update_button(self, background_color: tuple = None) -> None:
         """..."""
-        if self.__toplevel.platform_settings().desktop_environment == 'gnome':
+        if self.__toplevel.platform().desktop_environment() == 'gnome':
             QtGui.QIcon.set_fallback_search_paths(
                 ['/usr/share/icons/Adwaita/',
                  '/usr/share/icons/Adwaita/symbolic/ui/'])
@@ -60,10 +72,8 @@ class QControlButton(QtWidgets.QToolButton):
                 ' "maximize" and "close" buttons respectively.')
 
         if self.__button_id == 0:
-            style = (
-                self.__toplevel.platform_settings()
-                .gui_env.control_button_style(
-                    self.__is_dark, 'minimize', 'normal'))
+            style = self.__gui_env.settings().control_button_style(
+                self.__is_dark, 'minimize', 'normal')
 
             self.set_style_sheet(style)
             if 'background: url' not in style:
@@ -74,20 +84,16 @@ class QControlButton(QtWidgets.QToolButton):
                 lambda _: self.__toplevel.show_minimized())
 
         elif self.__button_id == 1:
-            style = (
-                self.__toplevel.platform_settings()
-                .gui_env.control_button_style(
-                    self.__is_dark, 'maximize', 'normal'))
+            style = self.__gui_env.settings().control_button_style(
+                self.__is_dark, 'maximize', 'normal')
 
             self.set_style_sheet(style)
             if 'background: url' not in style:
                 self.set_icon(
                     QtGui.QIcon.from_theme('window-maximize-symbolic'))
         else:
-            style = (
-                self.__toplevel.platform_settings()
-                .gui_env.control_button_style(
-                    self.__is_dark, 'close', 'normal'))
+            style = self.__gui_env.settings().control_button_style(
+                self.__is_dark, 'close', 'normal')
 
             self.set_style_sheet(style)
             if 'background: url' not in style:
@@ -99,11 +105,10 @@ class QControlButton(QtWidgets.QToolButton):
     def __is_dark_tone(self) -> bool:
         # ...
         color = self.palette().color(QtGui.QPalette.Window)
-        r, g, b = (color.red(), color.green(), color.blue())
-        self.__background_color = (r, g, b)
+        self.__background_color = (color.red(), color.green(), color.blue())
 
-        hsp = math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
-        return False if hsp > 127.5 else True
+        color = ColorOp(self.__background_color)
+        return color.is_dark()
 
     def __check_maximize_and_restore_icon(
             self, event: QtGui.QResizeEvent) -> None:
@@ -116,10 +121,8 @@ class QControlButton(QtWidgets.QToolButton):
                     self.__toplevel.is_full_screen()):
                 self.__maximize_or_restore_icon = 'restore'
 
-            maximize_style = (
-                self.__toplevel.platform_settings()
-                .gui_env.control_button_style(
-                    self.__is_dark, self.__maximize_or_restore_icon, 'normal'))
+            maximize_style = self.__gui_env.settings().control_button_style(
+                self.__is_dark, self.__maximize_or_restore_icon, 'normal')
 
             self.set_style_sheet(maximize_style)
             if self.__maximize_or_restore_icon == 'restore':
@@ -140,13 +143,11 @@ class QControlButton(QtWidgets.QToolButton):
     def enter_event(self, event: QtGui.QEnterEvent) -> None:
         if self.__button_id == 1:
             self.set_style_sheet(
-                self.__toplevel.platform_settings()
-                .gui_env.control_button_style(
+                self.__gui_env.settings().control_button_style(
                     self.__is_dark, self.__maximize_or_restore_icon, 'hover'))
         else:
             self.set_style_sheet(
-                self.__toplevel.platform_settings()
-                .gui_env.control_button_style(
+                self.__gui_env.settings().control_button_style(
                     self.__is_dark,
                     self.__buttons_schema[self.__button_id], 'hover'))
 
@@ -156,13 +157,11 @@ class QControlButton(QtWidgets.QToolButton):
     def leave_event(self, event: QtGui.QEnterEvent) -> None:
         if self.__button_id == 1:
             self.set_style_sheet(
-                self.__toplevel.platform_settings()
-                .gui_env.control_button_style(
+                self.__gui_env.settings().control_button_style(
                     self.__is_dark, self.__maximize_or_restore_icon, 'normal'))
         else:
             self.set_style_sheet(
-                self.__toplevel.platform_settings()
-                .gui_env.control_button_style(
+                self.__gui_env.settings().control_button_style(
                     self.__is_dark,
                     self.__buttons_schema[self.__button_id], 'normal'))
 

@@ -4,6 +4,7 @@ from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.control_button import QControlButton
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
+from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 
 
 class QWindowControlButtons(QtWidgets.QFrame):
@@ -13,8 +14,9 @@ class QWindowControlButtons(QtWidgets.QFrame):
     """
 
     def __init__(
-            self, main_window: QApplicationWindow,
-            button_order: tuple = (0, 1, 2),
+            self, toplevel: QApplicationWindow,
+            button_order: tuple = None,
+            side: str = 'right',
             *args, **kwargs) -> None:
         """Class constructor
 
@@ -25,27 +27,43 @@ class QWindowControlButtons(QtWidgets.QFrame):
             2 is the close button
             3 is window icon
 
-        :param main_window: Main window instance
+        :param toplevel: Main window instance
         :param button_order:
             Tuple with the order of the buttons. Default is (0, 1, 2).
+            If defined, the 'side' parameter will be ignored.
+        :param side:
+            The values are 'left' or 'right'.
+            Try setting the buttons to the right or left of the window.
+            Will be ignored if parameter 'button_order' is defined.
         """
+        # Param
         super().__init__(*args, **kwargs)
-
-        self.__main_window = main_window
+        self.__toplevel = toplevel
         self.__button_order = button_order
+        self.__side = side
+
+        # Flags
+        self.__gui_env = GuiEnv(
+            self.__toplevel.platform().operational_system(),
+            self.__toplevel.platform().desktop_environment())
+
+        self.__env_btn_order = self.__gui_env.settings().control_button_order()
+        self.__left_system_button_order = self.__env_btn_order[0]
+        self.__right_system_button_order = self.__env_btn_order[1]
+        self.__set_button_order()
 
         self.__window_icon = QtWidgets.QLabel()
         self.__window_icon.set_pixmap(
-            self.__main_window.window_icon().pixmap(20))
+            self.__toplevel.window_icon().pixmap(20))
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(2, 0, 2, 0)
 
-        self.__minimize_button = QControlButton(self.__main_window, 0)
-        self.__maximize_button = QControlButton(self.__main_window, 1)
-        self.__close_button = QControlButton(self.__main_window, 2)
+        self.__minimize_button = QControlButton(self.__toplevel, 0)
+        self.__maximize_button = QControlButton(self.__toplevel, 1)
+        self.__close_button = QControlButton(self.__toplevel, 2)
 
-        self.__set_buttons_order()
+        self.__add_buttons_in_order()
 
     def button_order(self) -> tuple:
         """Tuple with the order of the buttons
@@ -74,7 +92,14 @@ class QWindowControlButtons(QtWidgets.QFrame):
         if 0 in self.__button_order:
             self.__minimize_button.set_visible(visible)
 
-    def __set_buttons_order(self) -> None:
+    def __set_button_order(self):
+        if not self.__button_order:
+            if self.__side == 'left':
+                self.__button_order = self.__left_system_button_order
+            else:
+                self.__button_order = self.__right_system_button_order
+
+    def __add_buttons_in_order(self) -> None:
         # Add the buttons in the configured order
         buttons_dict = {
             0: self.__minimize_button,

@@ -6,6 +6,7 @@ import sys
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
+from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
 from PySideX.QtWidgetsX.header_bar import QHeaderBar
 
@@ -21,6 +22,8 @@ class QOverlaySideView(QtWidgets.QFrame):
         super().__init__(*args, **kwargs)
         # Param
         self.__sideview_widget = sideview_widget
+
+        # Properties
         self.__sideview_widget_box = self.__sideview_widget.parent().layout()
         self.__toplevel = self.__sideview_widget.parent().window()
 
@@ -149,6 +152,10 @@ class QSideViewApplicationWindow(QApplicationWindow):
         self.__is_sideview_headerbar_left_control_set_as_visible = True
 
         # Settings
+        self.__gui_env = GuiEnv(
+            self.platform().operational_system(),
+            self.platform().desktop_environment())
+
         self.set_window_title('MPX Application Window')
         self.set_minimum_width(self.__minimum_width)
         self.set_minimum_height(self.__minimum_height)
@@ -313,7 +320,7 @@ class QSideViewApplicationWindow(QApplicationWindow):
 
     def __fullscreen_maximized_and_windowed_modes_adjusts(self) -> None:
         if self.is_maximized():
-            if self.platform_settings().gui_env.use_global_menu():
+            if self.__gui_env.settings().use_global_menu():
                 self.__sideview_headerbar.set_left_control_buttons_visible(
                     False)
                 self.__darken_sideview()

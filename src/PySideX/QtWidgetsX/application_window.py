@@ -2,8 +2,9 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.platform.platformsettings import PlatformSettings
-from PySideX.platform.stylebuilder import StyleBuilder
+from PySideX.QtWidgetsX.modules.colorop import ColorOp
+from PySideX.QtWidgetsX.modules.platform import Platform
+from PySideX.QtWidgetsX.modules.dynamicstyle import DynamicStyle
 
 
 class QApplicationWindow(QtWidgets.QMainWindow):
@@ -29,7 +30,8 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         super().__init__(*args, **kwargs)
         # Param
         self.__is_server_side_decorated = server_side_decoration
-        self.__platform_settings = PlatformSettings(follow_platform)
+        self.__follow_platform = follow_platform
+        self.__platform = Platform()
 
         # Flags
         self.__shadow_size = 5
@@ -44,10 +46,14 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         self.__central_widget.set_object_name('QApplicationWindow')
 
         # Style
-        self.__style_builder = StyleBuilder(self)
-        self.__style_sheet = self.__style_builder.build_style()
+        color = self.palette().color(QtGui.QPalette.Window)
+        self.__color_op = ColorOp(
+            (color.red(), color.green(), color.blue()))
+
+        self.__dynamic_style = DynamicStyle(self)
+        self.__style_sheet = self.__dynamic_style.build_style()
         self.__style_sheet_fullscreen = (
-            self.__style_builder.adapt_to_fullscreen(self.__style_sheet))
+            self.__dynamic_style.fullscreen_adapted_style(self.__style_sheet))
 
         self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
         self.__shadow_effect.set_blur_radius(self.__shadow_size)
@@ -66,13 +72,17 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         """
         return self.__central_widget
 
+    def follow_platform(self) -> bool:
+        """..."""
+        return self.__follow_platform
+
     def is_server_side_decorated(self) -> bool:
         """..."""
         return self.__is_server_side_decorated
 
-    def platform_settings(self) -> PlatformSettings:
+    def platform(self) -> Platform:
         """..."""
-        return self.__platform_settings
+        return self.__platform
 
     def reset_style(self) -> None:
         """Reset the application style sheet to default"""
@@ -106,7 +116,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         self.__style_sheet += style
 
         self.__style_sheet_fullscreen = (
-            self.__style_builder.adapt_to_fullscreen(self.__style_sheet))
+            self.__dynamic_style.fullscreen_adapted_style(self.__style_sheet))
 
         if self.__is_server_side_decorated:
             self.__style_sheet = self.__style_sheet_fullscreen
@@ -133,9 +143,9 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
     def __reset_style_properties(self) -> None:
         # ...
-        self.__style_sheet = self.__style_builder.build_style()
+        self.__style_sheet = self.__dynamic_style.build_style()
         self.__style_sheet_fullscreen = (
-            self.__style_builder.adapt_to_fullscreen(self.__style_sheet))
+            self.__dynamic_style.fullscreen_adapted_style(self.__style_sheet))
 
     def __set_window_decoration(self) -> None:
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
@@ -193,7 +203,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__resize_border_size = self.__default_resize_border_size
         else:
             if visible:
-                if self.__platform_settings.is_dark_widget(self):
+                if self.__color_op.is_dark():
                     self.__shadow_effect.set_color(
                         QtGui.QColor(10, 10, 10, 180))
 

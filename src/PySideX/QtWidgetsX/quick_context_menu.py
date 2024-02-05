@@ -5,16 +5,20 @@ import pathlib
 
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
+
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
+from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
+from PySideX.QtWidgetsX.modules.colorop import ColorOp
+
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class QQuickContextMenuSeparator(QtWidgets.QFrame):
     """..."""
-    def __init__(self, toplevel: QApplicationWindow, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """..."""
         super().__init__(*args, **kwargs)
-        self.__bd_color = toplevel.palette().color(QtGui.QPalette.Window.Mid)
+        self.__bd_color = self.palette().color(QtGui.QPalette.Window.Mid)
         self.set_frame_shape(QtWidgets.QFrame.HLine)
         self.set_frame_shadow(QtWidgets.QFrame.Plain)
         self.set_line_width(0)
@@ -33,12 +37,12 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
     """..."""
     def __init__(
             self,
-            toplevel: QApplicationWindow,
             context_menu: QtWidgets.QWidget,
             text: str,
             receiver: callable,
             icon: QtGui.QIcon | None = None,
             shortcut: QtGui.QKeySequence | None = None,
+            is_dark: bool = False,
             *args, **kwargs) -> None:
         """..."""
         super().__init__(*args, **kwargs)
@@ -49,6 +53,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__receiver = receiver
         self.__icon = icon
         self.__shortcut = shortcut
+        self.__is_dark = is_dark
 
         self.__main_layout = QtWidgets.QHBoxLayout()
         self.__main_layout.set_contents_margins(0, 0, 0, 0)
@@ -61,7 +66,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 
         if not self.__icon:
             symbolic = ''
-            if toplevel.platform_settings().is_dark_widget(self):
+            if self.__is_dark:
                 symbolic = '-symbolic'
 
             icon_path = os.path.join(
@@ -109,11 +114,18 @@ class QQuickContextMenu(QtWidgets.QFrame):
         :param toplevel: QApplicationWindow app main window instance
         """
         super().__init__(*args, **kwargs)
+        # Param
+        self.__toplevel = toplevel
+
+        # Settings
+        color = self.palette().color(QtGui.QPalette.Window)
+        self.__color_op = ColorOp((color.red(), color.green(), color.blue()))
+
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_window_flags(
             QtCore.Qt.FramelessWindowHint | QtCore.Qt.Popup)
 
-        self.__toplevel = toplevel
+        # Flags
         self.set_minimum_width(50)
         self.set_minimum_height(35)
 
@@ -125,16 +137,18 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__point_x = None
         self.__point_y = None
 
-        self.__spacing = self.__toplevel.platform_settings(
-        ).gui_env.context_menu_spacing()
-        self.__left_margin = self.__toplevel.platform_settings(
-        ).gui_env.context_menu_padding()
-        self.__top_margin = self.__toplevel.platform_settings(
-        ).gui_env.context_menu_padding()
-        self.__right_margin = self.__toplevel.platform_settings(
-        ).gui_env.context_menu_padding()
-        self.__bottom_margin = self.__toplevel.platform_settings(
-        ).gui_env.context_menu_padding()
+        # Properties
+        self.__gui_env = GuiEnv(
+            self.__toplevel.platform().operational_system(),
+            self.__toplevel.platform().desktop_environment())
+
+        self.__spacing = self.__gui_env.settings().context_menu_spacing()
+        self.__left_margin = self.__gui_env.settings().context_menu_padding()
+        self.__top_margin = self.__gui_env.settings().context_menu_padding()
+        self.__right_margin = self.__gui_env.settings().context_menu_padding()
+        self.__bottom_margin = self.__gui_env.settings().context_menu_padding()
+
+        self.__is_dark = self.__color_op.is_dark()
 
         # Main
         self.set_contents_margins(0, 0, 0, 0)
@@ -158,7 +172,8 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
         self.__shadow_effect.set_blur_radius(5)
         self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
-        if self.__toplevel.platform_settings().is_dark_widget(self):
+
+        if self.__is_dark:
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 100))
         else:
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 70))
@@ -183,7 +198,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
                 self.__left_margin, 0, self.__right_margin, self.__spacing)
 
         ctx_btn = QQuickContextMenuButton(
-            self.__toplevel, self, text, receiver, icon, shortcut)
+            self, text, receiver, icon, shortcut, self.__is_dark)
         ctx_btn.set_style_sheet(self.__style_saved)
         ctx_btn_l.add_widget(ctx_btn)
 
@@ -196,12 +211,11 @@ class QQuickContextMenu(QtWidgets.QFrame):
         """..."""
         separator_layout = QtWidgets.QVBoxLayout()
 
-        margin = self.__toplevel.platform_settings(
-        ).gui_env.context_menu_separator_margin()
+        margin = self.__gui_env.settings().context_menu_separator_margin()
         separator_layout.set_contents_margins(
             margin[0], margin[1], margin[2], margin[3] + self.__spacing)
 
-        separator = QQuickContextMenuSeparator(self.__toplevel)
+        separator = QQuickContextMenuSeparator()
         separator_layout.add_widget(separator)
 
         self.__menu_context_layout.add_layout(separator_layout)

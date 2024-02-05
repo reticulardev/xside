@@ -7,6 +7,7 @@ from __feature__ import snake_case
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
 from PySideX.QtWidgetsX.window_move_area import QWindowMoveArea
 from PySideX.QtWidgetsX.window_control_buttons import QWindowControlButtons
+from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 
 
 class QHeaderBar(QtWidgets.QFrame):
@@ -32,9 +33,10 @@ class QHeaderBar(QtWidgets.QFrame):
         self.__toplevel = toplevel
         self.__left_ctrl_buttons_visibility = True
         self.__right_ctrl_buttons_visibility = True
-        self.__window_control_buttons_order = (
-            self.__toplevel.platform_settings()
-            .gui_env.control_button_order())
+
+        self.__gui_env = GuiEnv(
+            self.__toplevel.platform().operational_system(),
+            self.__toplevel.platform().desktop_environment())
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(4, 4, 4, 4)
@@ -69,13 +71,11 @@ class QHeaderBar(QtWidgets.QFrame):
         self.__layout.add_layout(self.__bar_item_layout_right)
 
         self.__left_ctrl_buttons = QWindowControlButtons(
-            self.__toplevel,
-            self.__window_control_buttons_order[0])
+            self.__toplevel, side='left')
         self.__bar_item_layout_left.add_widget(self.__left_ctrl_buttons)
 
         self.__right_ctrl_buttons = QWindowControlButtons(
-            self.__toplevel,
-            self.__window_control_buttons_order[1])
+            self.__toplevel, side='right')
         self.__bar_item_layout_right.add_widget(self.__right_ctrl_buttons)
 
     def add_widget_to_left(self, widget: QtWidgets.QWidget) -> None:
@@ -125,8 +125,7 @@ class QHeaderBar(QtWidgets.QFrame):
             _50_percent_left = self.__50_percent_left_size(False)
 
             if self.__toplevel.is_maximized():
-                if (self.__toplevel.platform_settings()
-                        .gui_env.use_global_menu()):
+                if self.__gui_env.settings().use_global_menu():
                     self.__left_ctrl_buttons.set_visible(False)
                     self.__right_ctrl_buttons.set_visible(False)
                     _50_percent_left = self.__50_percent_left_size(True)
