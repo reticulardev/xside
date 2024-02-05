@@ -85,6 +85,11 @@ class EnvSettings(object):
         """..."""
         return 5, 5, 5, 5
 
+    @staticmethod
+    def window_icon_margin() -> tuple:
+        """..."""
+        return 0, 1, 0, 1
+
 
 class EnvSettingsPlasma(EnvSettings):
     """..."""
@@ -203,6 +208,11 @@ class EnvSettingsPlasma(EnvSettings):
         """..."""
         return 4, 4, 0, 0
 
+    @staticmethod
+    def window_icon_margin() -> tuple:
+        """..."""
+        return 0, 1, 0, 1
+
 
 class EnvSettingsGnome(EnvSettings):
     """..."""
@@ -276,6 +286,11 @@ class EnvSettingsGnome(EnvSettings):
     def window_border_radius() -> tuple:
         """..."""
         return 10, 10, 10, 10
+
+    @staticmethod
+    def window_icon_margin() -> tuple:
+        """..."""
+        return 5, 2, 5, 2
 
 
 class EnvSettingsCinnamon(EnvSettingsGnome):

@@ -55,13 +55,6 @@ class QControlButton(QtWidgets.QToolButton):
 
     def __update_button(self, background_color: tuple = None) -> None:
         """..."""
-        if self.__toplevel.platform().desktop_environment() == 'gnome':
-            QtGui.QIcon.set_fallback_search_paths(
-                ['/usr/share/icons/Adwaita/',
-                 '/usr/share/icons/Adwaita/symbolic/ui/'])
-
-        # if QtGui.QIcon.theme_name() != icon_theme:
-        #     QtGui.QIcon.set_theme_name(icon_theme)
         if background_color:
             self.__background_color = background_color
             self.__is_dark = self.__is_dark_tone()

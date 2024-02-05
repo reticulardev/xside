@@ -34,8 +34,8 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
         self.set_headerbar_title(self.window_title())
 
         # Search
-        self.tbutton = QtWidgets.QToolButton()
-        self.tbutton.set_icon(QtGui.QIcon.from_theme('search'))
+        self.tbutton = QtWidgets.QToolButton()  # edit-find-symbolic
+        self.tbutton.set_icon(QtGui.QIcon.from_theme('system-search-symbolic'))
         self.sideview_headerbar().add_widget_to_right(self.tbutton)
 
         for i in ['Download', 'Pictures', 'Documents', 'Videos', 'Music']:

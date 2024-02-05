@@ -51,11 +51,11 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.__sideview_background.set_layout(self.__sideview_box)
 
         # Shadow
-        self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
-        self.__shadow_effect.set_blur_radius(50)
-        self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
-        self.__shadow_effect.set_color(QtGui.QColor(0, 0, 0, 50))
-        self.__sideview_background.set_graphics_effect(self.__shadow_effect)
+        # self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
+        # self.__shadow_effect.set_blur_radius(50)
+        # self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
+        # self.__shadow_effect.set_color(QtGui.QColor(0, 0, 0, 50))
+        # self.__sideview_background.set_graphics_effect(self.__shadow_effect)
 
         # Close
         class CloseArea(QtWidgets.QWidget):
@@ -112,8 +112,8 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.__close_view_background.set_style_sheet(
             '#__closeviewbgtyle {'
             f'{parse_base_style}'
-            'background-color: rgba(0, 0, 0, 0.2);'
-            'border-left: 0px;'
+            'background-color: rgba(0, 0, 0, 0.1);'
+            'border: 0px;'
             'border-top-left-radius: 0;'
             'border-bottom-left-radius: 0;}')
 
@@ -197,7 +197,7 @@ class QSideViewApplicationWindow(QApplicationWindow):
         self.__sideview_close_button.set_visible(False)
         self.__sideview_close_button.clicked.connect(self.close_sideview)
         self.__sideview_close_button.set_icon(
-            QtGui.QIcon.from_theme('arrow-left'))
+            QtGui.QIcon.from_theme('go-previous-symbolic'))
         self.__sideview_headerbar_box.add_widget(self.__sideview_close_button)
 
         # Side view layout
@@ -220,7 +220,7 @@ class QSideViewApplicationWindow(QApplicationWindow):
 
         self.__sideview_open_button = QtWidgets.QToolButton()
         self.__sideview_open_button.set_icon(
-            QtGui.QIcon.from_theme('page-2sides'))  # sidebar-collapse
+            QtGui.QIcon.from_theme('sidebar-show-symbolic'))
         self.__sideview_open_button.clicked.connect(self.open_sideview)
         self.__frameview_headerbar.add_widget_to_left(
             self.__sideview_open_button)
@@ -338,8 +338,9 @@ class QSideViewApplicationWindow(QApplicationWindow):
                 self.__sideview_width_area.set_visible(True)
         else:
             if self.__is_sideview_headerbar_left_control_set_as_visible:
-                self.__sideview_headerbar.set_left_control_buttons_visible(
-                    True)
+                if not self.__is_sideview_open:
+                    self.__sideview_headerbar.set_left_control_buttons_visible(
+                        True)
             self.__darken_sideview()
 
     def __initial_width(self) -> int:

@@ -55,6 +55,9 @@ class QWindowControlButtons(QtWidgets.QFrame):
         self.__window_icon = QtWidgets.QLabel()
         self.__window_icon.set_pixmap(
             self.__toplevel.window_icon().pixmap(20))
+        margin = self.__gui_env.settings().window_icon_margin()
+        self.__window_icon.set_contents_margins(
+            margin[0], margin[1], margin[2], margin[3])
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(2, 0, 2, 0)
