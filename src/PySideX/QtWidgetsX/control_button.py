@@ -131,7 +131,8 @@ class QControlButton(QtWidgets.QToolButton):
                         QtGui.QIcon.from_theme('window-restore-symbolic'))
             else:
                 if 'background: url' not in maximize_style:
-                    self.set_icon(QtGui.QIcon.from_theme('go-up'))
+                    self.set_icon(
+                        QtGui.QIcon.from_theme('window-maximize-symbolic'))
 
             if self.__maximize_or_restore_icon == 'restore':
                 self.clicked.connect(

@@ -289,7 +289,7 @@ class Application(object):
         Sets basic window details and starts the application.
         """
         self.sideview_window.show()
-        self.window.show()
+        # self.window.show()
         sys.exit(self.application.exec())
 
 
