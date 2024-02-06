@@ -97,7 +97,7 @@ class QControlButton(QtWidgets.QToolButton):
 
     def __is_dark_tone(self) -> bool:
         # ...
-        palette = self.palette().color(QtGui.QPalette.Window)
+        palette = self.__toplevel.color_by_state_name('window-background')
         self.__background_color = (
             palette.red(), palette.green(), palette.blue())
 

@@ -14,20 +14,6 @@ sys.path.append(SRC_DIR)
 class EnvSettings(object):
     """Base environment settings"""
 
-    def __init__(self):
-        """..."""
-        self.__disabled_text_color = QtGui.QPalette().color(
-            QtGui.QPalette.Disabled, QtGui.QPalette.Text)
-
-        self.__window_border_color = QtGui.QPalette().color(
-            QtGui.QPalette.Window.Mid)
-
-        self.__window_background_color = QtGui.QPalette().color(
-            QtGui.QPalette.Window)
-
-        self.__accent_color = QtGui.QPalette().color(
-            QtGui.QPalette.Active, QtGui.QPalette.Highlight)
-
     @staticmethod
     def context_menu_border_color(window_is_dark: bool) -> tuple:
         """RGBA tuple: (127, 127, 127, 0.8)"""

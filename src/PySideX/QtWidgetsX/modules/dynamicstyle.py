@@ -25,18 +25,11 @@ class DynamicStyle(object):
 
         # Properties
         self.__border_radius = self.__gui_env.settings().window_border_radius()
-
-        self.__background_color = self.__toplevel.palette().color(
-            QtGui.QPalette.Window)
-        
-        self.__accent_color = QtGui.QColor(
-            QtGui.QPalette().color(
-                QtGui.QPalette.Active, QtGui.QPalette.Highlight))
-        
-        self.__border_color = self.__toplevel.palette().color(
-            QtGui.QPalette.Window.Mid)
-        # https://doc.qt.io/qtforpython-6/PySide6/QtGui/
-        # QPalette.html#PySide6.QtGui.PySide6.QtGui.QPalette.ColorGroup
+        self.__accent_color = self.__toplevel.color_by_state_name('accent')
+        self.__background_color = self.__toplevel.color_by_state_name(
+            'window-background')
+        self.__border_color = self.__toplevel.color_by_state_name(
+            'window-border')
 
     def build_style(self) -> str:
         """..."""

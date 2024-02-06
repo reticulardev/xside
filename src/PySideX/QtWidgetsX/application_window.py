@@ -68,6 +68,31 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         """
         return self.__central_widget
 
+    def color_by_state_name(self, state_name: str) -> QtGui.QColor:
+        """Get QColor using a state_name key
+
+        Available state_name keys are:
+            'accent', 'disabled-text', 'window-background', 'window-border'
+
+        :param state_name: state name keys string
+        """
+        # https://doc.qt.io/qtforpython-6/PySide6/QtGui/
+        # QPalette.html#PySide6.QtGui.PySide6.QtGui.QPalette.ColorGroup
+        colors_by_state = {
+            'accent': self.palette().color(
+                QtGui.QPalette.Active, QtGui.QPalette.Highlight),
+            'disabled-text': self.palette().color(
+                QtGui.QPalette.Disabled, QtGui.QPalette.Text),
+            'window-background': self.palette().color(
+                QtGui.QPalette.Window),
+            'window-border': self.palette().color(
+                QtGui.QPalette.Window.Mid)}
+
+        if state_name not in colors_by_state:
+            raise KeyError
+
+        return colors_by_state[state_name]
+
     def follow_platform(self) -> bool:
         """..."""
         return self.__follow_platform
@@ -199,7 +224,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__resize_border_size = self.__default_resize_border_size
         else:
             if visible:
-                palette = self.palette().color(QtGui.QPalette.Window)
+                palette = self.color_by_state_name('window-background')
                 if color.is_dark(
                         (palette.red(), palette.green(), palette.blue())):
                     self.__shadow_effect.set_color(
