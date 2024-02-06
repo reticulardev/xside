@@ -50,13 +50,6 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.__sideview_box.set_contents_margins(0, 0, 0, 0)
         self.__sideview_background.set_layout(self.__sideview_box)
 
-        # Shadow
-        # self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
-        # self.__shadow_effect.set_blur_radius(50)
-        # self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
-        # self.__shadow_effect.set_color(QtGui.QColor(0, 0, 0, 50))
-        # self.__sideview_background.set_graphics_effect(self.__shadow_effect)
-
         # Close
         class CloseArea(QtWidgets.QWidget):
             def __init__(self, toplevel: QtWidgets.QWidget) -> None:
@@ -73,10 +66,15 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.__main_box.add_widget(self.__close_view_background)
 
         self.__close_view_box = QtWidgets.QVBoxLayout()
+        self.__close_view_box.set_contents_margins(0, 0, 0, 0)
         self.__close_view_background.set_layout(self.__close_view_box)
         self.__close_view_box.add_widget(CloseArea(self.__toplevel))
 
         self.__toplevel.resize_event_signal.connect(self.__resize_sig)
+
+    def set_sideview_fixed_width(self, width: int) -> None:
+        """..."""
+        self.__sideview_background.set_fixed_width(width)
 
     def close(self) -> None:
         """..."""
@@ -151,7 +149,7 @@ class QSideViewApplicationWindow(QApplicationWindow):
         """
         super().__init__(*args, **kwargs)
         # Flags
-        self.__minimum_width = 340
+        self.__minimum_width = 350
         self.__minimum_height = 200
         self.__border_size = 12
         self.__is_sideview_open = False
@@ -321,13 +319,30 @@ class QSideViewApplicationWindow(QApplicationWindow):
             visible)
 
     def set_sideview_close_button_visible(self, visible: bool) -> None:
-        """Visible only on overlay mode"""
+        """Visibility of the side view close button
+
+        The button to close the side view is only visible when the side view
+        is in floating/overlay mode.
+
+        :param visible: True to be visible. Default is False
+        """
         self.__is_sideview_close_button_set_as_visible = visible
 
     def set_sideview_fixed_width(self, width: int) -> None:
-        """..."""
+        """It's just a simple adjustment.
+
+        The side view is not smaller than 150px or larger than the minimum
+        window size (350px).
+
+        :param width: Integer with the new side view width
+        """
+        if width < 150:
+            width = 150
+        elif width > self.__minimum_width - 50:
+            width = self.__minimum_width - 50
         self.__sideview_width = width
         self.__sideview_width_area.set_fixed_width(self.__sideview_width)
+        self.__sideview_overlay.set_sideview_fixed_width(self.__sideview_width)
 
     def set_right_control_buttons_visible(self, visible: bool) -> None:
         """..."""

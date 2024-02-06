@@ -94,6 +94,7 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
             'Save', lambda: self.__context_menu_cal('Save'))
 
         # self.set_sideview_close_button_visible(True)
+        # self.set_sideview_fixed_width(500)
 
     def context_menu_event(self, event):
         self.qcontext_menu.exec(event.global_pos())
