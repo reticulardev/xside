@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
-import math
 import os
-import platform
-import subprocess
 import sys
 
-from PySide6 import QtGui, QtWidgets
-from __feature__ import snake_case
+from PySide6 import QtGui
 
 from PySideX.QtWidgetsX.modules.parser import DesktopFile
-from PySideX.QtWidgetsX.modules.cli import Cli
+import PySideX.QtWidgetsX.modules.cli as cli
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
@@ -19,12 +15,18 @@ class EnvSettings(object):
     """Base environment settings"""
 
     def __init__(self):
-        self.__cli = Cli()
-
-    @property
-    def cli(self) -> Cli:
         """..."""
-        return self.__cli
+        self.__disabled_text_color = QtGui.QPalette().color(
+            QtGui.QPalette.Disabled, QtGui.QPalette.Text)
+
+        self.__window_border_color = QtGui.QPalette().color(
+            QtGui.QPalette.Window.Mid)
+
+        self.__window_background_color = QtGui.QPalette().color(
+            QtGui.QPalette.Window)
+
+        self.__accent_color = QtGui.QPalette().color(
+            QtGui.QPalette.Active, QtGui.QPalette.Highlight)
 
     @staticmethod
     def context_menu_border_color(window_is_dark: bool) -> tuple:
@@ -275,9 +277,12 @@ class EnvSettingsGnome(EnvSettings):
 
         (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
         """
-        button_layout = self.cli.output_by_args(
+        button_layout = cli.output_by_args(
             ["gsettings", "get", "org.gnome.desktop.wm.preferences",
              "button-layout"]).split(':')
+
+        if not button_layout:
+            return (3,), (0, 1, 2)
 
         d = {'close': 2, 'maximize': 1, 'minimize': 0}
         left = []

@@ -2,7 +2,7 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.QtWidgetsX.modules.colorop import ColorOp
+import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.platform import Platform
 from PySideX.QtWidgetsX.modules.dynamicstyle import DynamicStyle
 
@@ -46,10 +46,6 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         self.__central_widget.set_object_name('QApplicationWindow')
 
         # Style
-        color = self.palette().color(QtGui.QPalette.Window)
-        self.__color_op = ColorOp(
-            (color.red(), color.green(), color.blue()))
-
         self.__dynamic_style = DynamicStyle(self)
         self.__style_sheet = self.__dynamic_style.build_style()
         self.__style_sheet_fullscreen = (
@@ -203,7 +199,9 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__resize_border_size = self.__default_resize_border_size
         else:
             if visible:
-                if self.__color_op.is_dark():
+                palette = self.palette().color(QtGui.QPalette.Window)
+                if color.is_dark(
+                        (palette.red(), palette.green(), palette.blue())):
                     self.__shadow_effect.set_color(
                         QtGui.QColor(10, 10, 10, 180))
 

@@ -61,7 +61,7 @@ class QOverlaySideView(QtWidgets.QFrame):
                     self.__top.close_sideview()
 
         self.__close_view_background = QtWidgets.QWidget()
-        self.__close_view_background.set_contents_margins(0, 0, 0, 0)
+        self.__close_view_background.set_contents_margins(0, 5, 5, 5)
         self.__close_view_background.set_object_name('__closeviewbgtyle')
         self.__main_box.add_widget(self.__close_view_background)
 

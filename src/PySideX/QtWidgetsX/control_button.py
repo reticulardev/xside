@@ -8,7 +8,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
-from PySideX.QtWidgetsX.modules.colorop import ColorOp
+import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -97,11 +97,11 @@ class QControlButton(QtWidgets.QToolButton):
 
     def __is_dark_tone(self) -> bool:
         # ...
-        color = self.palette().color(QtGui.QPalette.Window)
-        self.__background_color = (color.red(), color.green(), color.blue())
+        palette = self.palette().color(QtGui.QPalette.Window)
+        self.__background_color = (
+            palette.red(), palette.green(), palette.blue())
 
-        color = ColorOp(self.__background_color)
-        return color.is_dark()
+        return color.is_dark(self.__background_color)
 
     def __check_maximize_and_restore_icon(
             self, event: QtGui.QResizeEvent) -> None:

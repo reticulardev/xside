@@ -8,7 +8,7 @@ from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
-from PySideX.QtWidgetsX.modules.colorop import ColorOp
+import PySideX.QtWidgetsX.modules.color as color
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -119,9 +119,6 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__toplevel = toplevel
 
         # Settings
-        color = self.palette().color(QtGui.QPalette.Window)
-        self.__color_op = ColorOp((color.red(), color.green(), color.blue()))
-
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_window_flags(
             QtCore.Qt.FramelessWindowHint | QtCore.Qt.Popup)
@@ -149,7 +146,9 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__right_margin = self.__gui_env.settings().context_menu_padding()
         self.__bottom_margin = self.__gui_env.settings().context_menu_padding()
 
-        self.__is_dark = self.__color_op.is_dark()
+        palette = self.palette().color(QtGui.QPalette.Window)
+        self.__is_dark = color.is_dark(
+            (palette.red(), palette.green(), palette.blue()))
 
         # Main
         self.set_contents_margins(0, 0, 0, 0)
@@ -210,13 +209,14 @@ class QQuickContextMenu(QtWidgets.QFrame):
 
     def add_separator(self, color: QtGui.QColor = None) -> None:
         """..."""
-        color = color if color else QtGui.QPalette().color(
-            QtGui.QPalette.Window.Mid)
         if self.__gui_env.settings().context_menu_separator_color_type(
                 ) == 'disabled-text':
             color = QtGui.QColor(
                 QtGui.QPalette().color(
                     QtGui.QPalette.Disabled, QtGui.QPalette.Text))
+        else:
+            color = color if color else QtGui.QPalette().color(
+                QtGui.QPalette.Window.Mid)
 
         separator_layout = QtWidgets.QVBoxLayout()
 
