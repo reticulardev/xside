@@ -11,8 +11,23 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
 
 
-class EnvSettings(object):
+class GlobalEnvSettings(object):
     """Base environment settings"""
+
+    def __init__(self):
+        self.pallete = QtGui.QPalette()
+
+    @staticmethod
+    def color_of_disabled_text(window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        if window_is_dark:
+            return QtGui.QColor(127, 127, 127)
+        return QtGui.QColor(127, 127, 127)
+
+    @staticmethod
+    def context_menu_alpha_color_value() -> float:
+        """..."""
+        return 0.9
 
     @staticmethod
     def context_menu_border_color(window_is_dark: bool) -> tuple:
@@ -93,7 +108,7 @@ class EnvSettings(object):
         return 0, 1, 0, 1
 
 
-class EnvSettingsPlasma(EnvSettings):
+class EnvSettingsPlasma(GlobalEnvSettings):
     """..."""
 
     def __init__(self):
@@ -107,32 +122,19 @@ class EnvSettingsPlasma(EnvSettings):
         self.__kde_globals = self.rc_file_content(
             os.path.join(os.environ['HOME'], '.config', 'kdeglobals'))
 
-    @staticmethod
-    def context_menu_border_color(window_is_dark: bool) -> tuple:
-        """RGBA tuple: (127, 127, 127, 0.8)"""
-        if window_is_dark:
-            return 127, 127, 127, 0.8
-        return 127, 127, 127, 0.8
-
-    @staticmethod
-    def context_menu_padding() -> int:
+    def color_of_disabled_text(self, window_is_dark: bool):
         """..."""
-        return 4
+        cor = self.pallete.color(
+            QtGui.QPalette.Disabled, QtGui.QPalette.Text)
 
-    @staticmethod
-    def context_menu_separator_color_type() -> str:
-        """window-border, disabled-text"""
-        return 'window-border'
+        if window_is_dark:
+            return cor
+        return cor
 
     @staticmethod
     def context_menu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
         return 8, 4, 8, 4
-
-    @staticmethod
-    def context_menu_spacing() -> int:
-        """..."""
-        return 0
 
     def control_button_order(self) -> tuple:
         """..."""
@@ -215,13 +217,8 @@ class EnvSettingsPlasma(EnvSettings):
         """..."""
         return 4, 4, 0, 0
 
-    @staticmethod
-    def window_icon_margin() -> tuple:
-        """..."""
-        return 0, 1, 0, 1
 
-
-class EnvSettingsGnome(EnvSettings):
+class EnvSettingsGnome(GlobalEnvSettings):
     """..."""
 
     def __init__(self):
@@ -229,11 +226,9 @@ class EnvSettingsGnome(EnvSettings):
         super().__init__()
 
     @staticmethod
-    def context_menu_border_color(window_is_dark: bool) -> tuple:
-        """RGBA tuple: (127, 127, 127, 0.8)"""
-        if window_is_dark:
-            return 127, 127, 127, 0.8
-        return 127, 127, 127, 0.8
+    def context_menu_alpha_color_value() -> float:
+        """..."""
+        return 1.0
 
     @staticmethod
     def context_menu_padding() -> int:
@@ -249,11 +244,6 @@ class EnvSettingsGnome(EnvSettings):
     def context_menu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
         return 8, 6, 8, 6
-
-    @staticmethod
-    def context_menu_spacing() -> int:
-        """..."""
-        return 0
 
     def control_button_order(self) -> tuple:
         """XAI M -> (2, 1, 0), (3,)
@@ -303,11 +293,6 @@ class EnvSettingsGnome(EnvSettings):
             '  background-color: rgba(127, 127, 127, 0.3);'
             '}')
 
-    def use_global_menu(self) -> bool:
-        """..."""
-        # TODO: auto
-        return False
-
     def icon_theme_name(self) -> str | None:
         """..."""
         icon_theme = self.cli.output_by_args(
@@ -341,7 +326,7 @@ class EnvSettingsXFCE(EnvSettingsGnome):
         super().__init__()
 
 
-class EnvSettingsMac(EnvSettings):
+class EnvSettingsMac(GlobalEnvSettings):
     """..."""
 
     def __init__(self):
@@ -349,7 +334,7 @@ class EnvSettingsMac(EnvSettings):
         super().__init__()
 
 
-class EnvSettingsWindows11(EnvSettings):
+class EnvSettingsWindows11(GlobalEnvSettings):
     """..."""
 
     def __init__(self):
@@ -386,11 +371,11 @@ class GuiEnv(object):
         self.__follow_platform = follow_platform
         self.__gui_env_settings = self.__get_gui_env_settings()
 
-    def settings(self) -> EnvSettings:
+    def settings(self) -> GlobalEnvSettings:
         """..."""
         return self.__gui_env_settings
 
-    def __get_gui_env_settings(self) -> EnvSettings:
+    def __get_gui_env_settings(self) -> GlobalEnvSettings:
         # ...
         if self.__follow_platform:
             if self.__operational_system == 'linux':
@@ -419,4 +404,4 @@ class GuiEnv(object):
 
                 return EnvSettingsWindows11()
 
-        return EnvSettings()
+        return GlobalEnvSettings()

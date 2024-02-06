@@ -4,6 +4,7 @@ from __feature__ import snake_case
 
 import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.platform import Platform
+from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 from PySideX.QtWidgetsX.modules.dynamicstyle import DynamicStyle
 
 
@@ -40,6 +41,15 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         self.__default_resize_border_size = 5
         self.__resize_border_size = self.__default_resize_border_size
 
+        palette = self.palette().color(QtGui.QPalette.Window)
+        self.__is_dark = color.is_dark(
+            (palette.red(), palette.green(), palette.blue()))
+
+        self.__gui_env = GuiEnv(
+            self.__platform.operational_system(),
+            self.__platform.desktop_environment(),
+            self.__follow_platform)
+
         # Layout
         self.__central_widget = QtWidgets.QWidget()
         self.set_central_widget(self.__central_widget)
@@ -72,17 +82,21 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         """Get QColor using a state_name key
 
         Available state_name keys are:
-            'accent', 'disabled-text', 'window-background', 'window-border'
+            'accent', 'disabled-text', 'text', 'window-background',
+            'window-border'
 
         :param state_name: state name keys string
         """
         # https://doc.qt.io/qtforpython-6/PySide6/QtGui/
         # QPalette.html#PySide6.QtGui.PySide6.QtGui.QPalette.ColorGroup
+
         colors_by_state = {
             'accent': self.palette().color(
                 QtGui.QPalette.Active, QtGui.QPalette.Highlight),
-            'disabled-text': self.palette().color(
-                QtGui.QPalette.Disabled, QtGui.QPalette.Text),
+            'disabled-text': self.__gui_env.settings(
+                ).color_of_disabled_text(self.__is_dark),
+            'text': self.palette().color(
+                QtGui.QPalette.Text),
             'window-background': self.palette().color(
                 QtGui.QPalette.Window),
             'window-border': self.palette().color(
