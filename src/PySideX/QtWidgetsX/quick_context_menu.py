@@ -15,16 +15,17 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class QQuickContextMenuSeparator(QtWidgets.QFrame):
     """..."""
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, color: QtGui.QColor = None, *args, **kwargs) -> None:
         """..."""
         super().__init__(*args, **kwargs)
-        self.__bd_color = self.palette().color(QtGui.QPalette.Window.Mid)
+        self.__color = color if color else QtGui.QPalette().color(
+                QtGui.QPalette.Window.Mid)
         self.set_frame_shape(QtWidgets.QFrame.HLine)
         self.set_frame_shadow(QtWidgets.QFrame.Plain)
         self.set_line_width(0)
         self.set_mid_line_width(3)
         self.set_contents_margins(0, 0, 0, 0)
-        self.set_color(color=QtGui.QColor(self.__bd_color))
+        self.set_color(self.__color)
 
     def set_color(self, color: QtGui.QColor) -> None:
         """..."""
@@ -207,15 +208,23 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__context_buttons_layout.append(ctx_btn_l)
         self.__context_buttons.append(ctx_btn)
 
-    def add_separator(self) -> None:
+    def add_separator(self, color: QtGui.QColor = None) -> None:
         """..."""
+        color = color if color else QtGui.QPalette().color(
+            QtGui.QPalette.Window.Mid)
+        if self.__gui_env.settings().context_menu_separator_color_type(
+                ) == 'disabled-text':
+            color = QtGui.QColor(
+                QtGui.QPalette().color(
+                    QtGui.QPalette.Disabled, QtGui.QPalette.Text))
+
         separator_layout = QtWidgets.QVBoxLayout()
 
         margin = self.__gui_env.settings().context_menu_separator_margin()
         separator_layout.set_contents_margins(
             margin[0], margin[1], margin[2], margin[3] + self.__spacing)
 
-        separator = QQuickContextMenuSeparator()
+        separator = QQuickContextMenuSeparator(color)
         separator_layout.add_widget(separator)
 
         self.__menu_context_layout.add_layout(separator_layout)

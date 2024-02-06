@@ -39,6 +39,11 @@ class EnvSettings(object):
         return 4
 
     @staticmethod
+    def context_menu_separator_color_type() -> str:
+        """window-border, disabled-text"""
+        return 'window-border'
+
+    @staticmethod
     def context_menu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
         return 0, 4, 0, 4
@@ -125,6 +130,11 @@ class EnvSettingsPlasma(EnvSettings):
     def context_menu_padding() -> int:
         """..."""
         return 4
+
+    @staticmethod
+    def context_menu_separator_color_type() -> str:
+        """window-border, disabled-text"""
+        return 'window-border'
 
     @staticmethod
     def context_menu_separator_margin() -> tuple:
@@ -243,9 +253,14 @@ class EnvSettingsGnome(EnvSettings):
         return 6
 
     @staticmethod
+    def context_menu_separator_color_type() -> str:
+        """window-border, disabled-text"""
+        return 'disabled-text'
+
+    @staticmethod
     def context_menu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
-        return 0, 6, 0, 6
+        return 8, 6, 8, 6
 
     @staticmethod
     def context_menu_spacing() -> int:
