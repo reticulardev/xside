@@ -125,7 +125,7 @@ class QHeaderBar(QtWidgets.QFrame):
             _50_percent_left = self.__50_percent_left_size(False)
 
             if self.__toplevel.is_maximized():
-                if self.__gui_env.settings().use_global_menu():
+                if self.__gui_env.settings().desktop_is_using_global_menu():
                     self.__left_ctrl_buttons.set_visible(False)
                     self.__right_ctrl_buttons.set_visible(False)
                     _50_percent_left = self.__50_percent_left_size(True)

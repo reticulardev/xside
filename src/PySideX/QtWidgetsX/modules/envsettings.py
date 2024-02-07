@@ -17,53 +17,22 @@ class GlobalEnvSettings(object):
     def __init__(self):
         self.pallete = QtGui.QPalette()
 
-    def color_of_accent(
-            self, window_is_dark: bool) -> QtGui.QColor:
-        """..."""
-        cor = self.pallete.color(
-            QtGui.QPalette.Active, QtGui.QPalette.Highlight)
-        if window_is_dark:
-            return cor
-        return cor
-
     @staticmethod
-    def color_of_contextmenu_separator(window_is_dark: bool) -> QtGui.QColor:
-        """..."""
-        if window_is_dark:
-            return QtGui.QColor(70, 70, 70, 255)
-        return QtGui.QColor(190, 190, 190, 255)
-
-    @staticmethod
-    def color_of_disabled_text(window_is_dark: bool) -> QtGui.QColor:
-        """..."""
-        if window_is_dark:
-            return QtGui.QColor(100, 100, 100, 255)
-        return QtGui.QColor(150, 150, 150, 255)
-
-    def color_of_selection(
-            self, window_is_dark: bool) -> QtGui.QColor:
-        """..."""
-        return self.color_of_accent(window_is_dark)
-
-    def color_of_window_border(
-            self, window_is_dark: bool) -> QtGui.QColor:
-        """..."""
-        return self.color_of_contextmenu_separator(window_is_dark)
-
-    @staticmethod
-    def contextmenu_alpha_color_value() -> float:
+    def contextmenu_bg_alpha() -> float:
         """..."""
         return 0.9
-
-    @staticmethod
-    def contextmenu_selection_alpha_color_value() -> float:
-        """..."""
-        return 0.2
 
     @staticmethod
     def contextmenu_padding() -> int:
         """..."""
         return 4
+
+    @staticmethod
+    def contextmenu_separator_color(window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        if window_is_dark:
+            return QtGui.QColor(70, 70, 70, 255)
+        return QtGui.QColor(190, 190, 190, 255)
 
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
@@ -76,7 +45,22 @@ class GlobalEnvSettings(object):
         return 0
 
     @staticmethod
-    def control_button_order() -> tuple:
+    def contextmenubutton_bg_hover_alpha() -> float:
+        """..."""
+        return 0.2
+
+    def contextmenubutton_bg_hover_color(
+            self, window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        return self.window_accent_color(window_is_dark)
+
+    @staticmethod
+    def contextmenubutton_padding() -> tuple:
+        """..."""
+        return 2, 2, 2, 2
+
+    @staticmethod
+    def controlbutton_order() -> tuple:
         """XAI M -> (2, 1, 0), (3,)
 
         Close     Max       Min       Icon      Above all
@@ -87,7 +71,7 @@ class GlobalEnvSettings(object):
         return (2, 1, 0), (3,)
 
     @staticmethod
-    def control_button_style(*args, **kwargs) -> str:
+    def controlbutton_style(*args, **kwargs) -> str:
         """..."""
         return (
             'QControlButton {'
@@ -99,6 +83,10 @@ class GlobalEnvSettings(object):
             'QControlButton:hover {'
             '  background-color: rgba(200, 200, 200, 0.2);'
             '}')
+
+    def desktop_is_using_global_menu(self) -> bool:
+        """..."""
+        return False
 
     @staticmethod
     def icon_theme_name() -> str:
@@ -112,9 +100,26 @@ class GlobalEnvSettings(object):
             return DesktopFile(url=file_url).content
         return {}
 
-    def use_global_menu(self) -> bool:
+    @staticmethod
+    def text_disabled_color(window_is_dark: bool) -> QtGui.QColor:
         """..."""
-        return False
+        if window_is_dark:
+            return QtGui.QColor(100, 100, 100, 255)
+        return QtGui.QColor(150, 150, 150, 255)
+
+    def window_accent_color(
+            self, window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        cor = self.pallete.color(
+            QtGui.QPalette.Active, QtGui.QPalette.Highlight)
+        if window_is_dark:
+            return cor
+        return cor
+
+    def window_border_color(
+            self, window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        return self.contextmenu_separator_color(window_is_dark)
 
     @staticmethod
     def window_border_radius() -> tuple:
@@ -141,7 +146,7 @@ class EnvSettingsPlasma(GlobalEnvSettings):
         self.__kde_globals = self.rc_file_content(
             os.path.join(os.environ['HOME'], '.config', 'kdeglobals'))
 
-    def color_of_contextmenu_separator(
+    def contextmenu_separator_color(
             self, window_is_dark: bool) -> QtGui.QColor:
         """..."""
         cor = self.pallete.color(QtGui.QPalette.Window.Mid)
@@ -149,29 +154,12 @@ class EnvSettingsPlasma(GlobalEnvSettings):
             return cor
         return QtGui.QColor(cor.red(), cor.green(), cor.blue(), 127)
 
-    def color_of_disabled_text(self, window_is_dark: bool):
-        """..."""
-        cor = self.pallete.color(
-            QtGui.QPalette.Disabled, QtGui.QPalette.Text)
-
-        if window_is_dark:
-            return cor
-        return cor
-
-    def color_of_window_border(
-            self, window_is_dark: bool) -> QtGui.QColor:
-        """..."""
-        cor = self.color_of_contextmenu_separator(window_is_dark)
-        if window_is_dark:
-            return cor
-        return cor
-
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
         return 8, 4, 8, 4
 
-    def control_button_order(self) -> tuple:
+    def controlbutton_order(self) -> tuple:
         """..."""
         right_buttons = 'IAX'  # X = close, A = max, I = min
         left_buttons = 'M'  # M = icon, F = above all
@@ -192,7 +180,7 @@ class EnvSettingsPlasma(GlobalEnvSettings):
             d[x] for x in right_buttons
             if x == 'X' or x == 'A' or x == 'I' or x == 'M')
 
-    def control_button_style(
+    def controlbutton_style(
             self, window_is_dark: bool,
             button_name: str,
             button_state: str) -> str:
@@ -234,6 +222,12 @@ class EnvSettingsPlasma(GlobalEnvSettings):
             f'background: url({url_icon}) center no-repeat;'
             '}')
 
+    def desktop_is_using_global_menu(self) -> bool:
+        """..."""
+        group, key = '[Windows]', 'BorderlessMaximizedWindows'
+        if group in self.__kwinrc and key in self.__kwinrc[group]:
+            return True if self.__kwinrc[group][key] == 'true' else False
+
     def icon_theme_name(self) -> str | None:
         """..."""
         group, key = '[Icons]', 'Theme'
@@ -241,11 +235,22 @@ class EnvSettingsPlasma(GlobalEnvSettings):
             return self.__kde_globals[group][key]
         return None
 
-    def use_global_menu(self) -> bool:
+    def text_disabled_color(self, window_is_dark: bool):
         """..."""
-        group, key = '[Windows]', 'BorderlessMaximizedWindows'
-        if group in self.__kwinrc and key in self.__kwinrc[group]:
-            return True if self.__kwinrc[group][key] == 'true' else False
+        cor = self.pallete.color(
+            QtGui.QPalette.Disabled, QtGui.QPalette.Text)
+
+        if window_is_dark:
+            return cor
+        return cor
+
+    def window_border_color(
+            self, window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        cor = self.contextmenu_separator_color(window_is_dark)
+        if window_is_dark:
+            return cor
+        return cor
 
     @staticmethod
     def window_border_radius() -> tuple:
@@ -260,21 +265,8 @@ class EnvSettingsGnome(GlobalEnvSettings):
         """..."""
         super().__init__()
 
-    def color_of_selection(
-            self, window_is_dark: bool) -> QtGui.QColor:
-        """..."""
-        cor = self.pallete.color(QtGui.QPalette.AlternateBase)
-        if window_is_dark:
-            return cor
-        return cor
-
     @staticmethod
-    def contextmenu_alpha_color_value() -> float:
-        """..."""
-        return 1.0
-
-    @staticmethod
-    def contextmenu_selection_alpha_color_value() -> float:
+    def contextmenu_bg_alpha() -> float:
         """..."""
         return 1.0
 
@@ -288,7 +280,25 @@ class EnvSettingsGnome(GlobalEnvSettings):
         """Left, top, right and bottom margins tuple"""
         return 8, 6, 8, 6
 
-    def control_button_order(self) -> tuple:
+    @staticmethod
+    def contextmenubutton_bg_hover_alpha() -> float:
+        """..."""
+        return 1.0
+
+    def contextmenubutton_bg_hover_color(
+            self, window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        cor = self.pallete.color(QtGui.QPalette.AlternateBase)
+        if window_is_dark:
+            return cor
+        return cor
+
+    @staticmethod
+    def contextmenubutton_padding() -> tuple:
+        """..."""
+        return 6, 8, 6, 8
+
+    def controlbutton_order(self) -> tuple:
         """XAI M -> (2, 1, 0), (3,)
 
         Close     Max       Min       Icon      Above all
@@ -321,7 +331,7 @@ class EnvSettingsGnome(GlobalEnvSettings):
         return tuple(left), tuple(right)
 
     @staticmethod
-    def control_button_style(*args, **kwargs) -> str:
+    def controlbutton_style(*args, **kwargs) -> str:
         """..."""
         return (
             'QControlButton {'

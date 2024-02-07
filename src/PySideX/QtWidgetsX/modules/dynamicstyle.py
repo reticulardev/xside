@@ -34,10 +34,12 @@ class DynamicStyle(object):
             self.__background_color.red(),
             self.__background_color.green(),
             self.__background_color.blue()))
-        self.__selection_color = self.__gui_env.settings().color_of_selection(
-            self.__is_dark)
+        self.__selection_color = self.__gui_env.settings(
+            ).contextmenubutton_bg_hover_color(self.__is_dark)
         self.__selection_alpha = self.__gui_env.settings(
-            ).contextmenu_selection_alpha_color_value()
+            ).contextmenubutton_bg_hover_alpha()
+        self.__ctxmenu_padding = self.__gui_env.settings(
+            ).contextmenubutton_padding()
 
     def build_style(self) -> str:
         """..."""
@@ -75,7 +77,7 @@ class DynamicStyle(object):
             f'{self.__background_color.red()},'
             f'{self.__background_color.green()},'
             f'{self.__background_color.blue()},'
-            f'{self.__gui_env.settings().contextmenu_alpha_color_value()});'
+            f'{self.__gui_env.settings().contextmenu_bg_alpha()});'
             'border: 1px solid rgba('
             f'{self.__border_color.red()},'
             f'{self.__border_color.green()},'
@@ -85,7 +87,11 @@ class DynamicStyle(object):
             '}'
             'QQuickContextMenuButton {'
             'background: transparent;'
-            'padding: 2px;'
+            'padding:'
+            f' {self.__ctxmenu_padding[0]}px'
+            f' {self.__ctxmenu_padding[1]}px'
+            f' {self.__ctxmenu_padding[2]}px'
+            f' {self.__ctxmenu_padding[3]}px;'
             'border: 1px solid rgba(0, 0, 0, 0.0);'
             'border-radius: 3px;'
             '}'

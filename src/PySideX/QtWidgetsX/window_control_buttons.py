@@ -47,7 +47,7 @@ class QWindowControlButtons(QtWidgets.QFrame):
             self.__toplevel.platform().operational_system(),
             self.__toplevel.platform().desktop_environment())
 
-        self.__env_btn_order = self.__gui_env.settings().control_button_order()
+        self.__env_btn_order = self.__gui_env.settings().controlbutton_order()
         self.__left_system_button_order = self.__env_btn_order[0]
         self.__right_system_button_order = self.__env_btn_order[1]
         self.__set_button_order()

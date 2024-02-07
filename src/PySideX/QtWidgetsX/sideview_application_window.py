@@ -350,7 +350,7 @@ class QSideViewApplicationWindow(QApplicationWindow):
 
     def __fullscreen_maximized_and_windowed_modes_adjusts(self) -> None:
         if self.is_maximized():
-            if self.__gui_env.settings().use_global_menu():
+            if self.__gui_env.settings().desktop_is_using_global_menu():
                 self.__sideview_headerbar.set_left_control_buttons_visible(
                     False)
                 self.__darken_sideview()

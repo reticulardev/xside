@@ -207,7 +207,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
 
         ctx_btn = QQuickContextMenuButton(
             self, text, receiver, icon, shortcut, self.__gui_env.settings(
-                ).color_of_disabled_text(self.__is_dark), self.__is_dark)
+                ).text_disabled_color(self.__is_dark), self.__is_dark)
         ctx_btn.set_style_sheet(self.__style_saved)
         ctx_btn_l.add_widget(ctx_btn)
 
@@ -219,7 +219,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
     def add_separator(self, color: QtGui.QColor = None) -> None:
         """..."""
         color = color if color else self.__gui_env.settings(
-            ).color_of_contextmenu_separator(self.__is_dark)
+            ).contextmenu_separator_color(self.__is_dark)
 
         separator_layout = QtWidgets.QVBoxLayout()
 

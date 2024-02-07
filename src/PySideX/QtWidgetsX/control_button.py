@@ -65,7 +65,7 @@ class QControlButton(QtWidgets.QToolButton):
                 ' "maximize" and "close" buttons respectively.')
 
         if self.__button_id == 0:
-            style = self.__gui_env.settings().control_button_style(
+            style = self.__gui_env.settings().controlbutton_style(
                 self.__is_dark, 'minimize', 'normal')
 
             self.set_style_sheet(style)
@@ -77,7 +77,7 @@ class QControlButton(QtWidgets.QToolButton):
                 lambda _: self.__toplevel.show_minimized())
 
         elif self.__button_id == 1:
-            style = self.__gui_env.settings().control_button_style(
+            style = self.__gui_env.settings().controlbutton_style(
                 self.__is_dark, 'maximize', 'normal')
 
             self.set_style_sheet(style)
@@ -85,7 +85,7 @@ class QControlButton(QtWidgets.QToolButton):
                 self.set_icon(
                     QtGui.QIcon.from_theme('window-maximize-symbolic'))
         else:
-            style = self.__gui_env.settings().control_button_style(
+            style = self.__gui_env.settings().controlbutton_style(
                 self.__is_dark, 'close', 'normal')
 
             self.set_style_sheet(style)
@@ -114,7 +114,7 @@ class QControlButton(QtWidgets.QToolButton):
                     self.__toplevel.is_full_screen()):
                 self.__maximize_or_restore_icon = 'restore'
 
-            maximize_style = self.__gui_env.settings().control_button_style(
+            maximize_style = self.__gui_env.settings().controlbutton_style(
                 self.__is_dark, self.__maximize_or_restore_icon, 'normal')
 
             self.set_style_sheet(maximize_style)
@@ -137,11 +137,11 @@ class QControlButton(QtWidgets.QToolButton):
     def enter_event(self, event: QtGui.QEnterEvent) -> None:
         if self.__button_id == 1:
             self.set_style_sheet(
-                self.__gui_env.settings().control_button_style(
+                self.__gui_env.settings().controlbutton_style(
                     self.__is_dark, self.__maximize_or_restore_icon, 'hover'))
         else:
             self.set_style_sheet(
-                self.__gui_env.settings().control_button_style(
+                self.__gui_env.settings().controlbutton_style(
                     self.__is_dark,
                     self.__buttons_schema[self.__button_id], 'hover'))
 
@@ -151,11 +151,11 @@ class QControlButton(QtWidgets.QToolButton):
     def leave_event(self, event: QtGui.QEnterEvent) -> None:
         if self.__button_id == 1:
             self.set_style_sheet(
-                self.__gui_env.settings().control_button_style(
+                self.__gui_env.settings().controlbutton_style(
                     self.__is_dark, self.__maximize_or_restore_icon, 'normal'))
         else:
             self.set_style_sheet(
-                self.__gui_env.settings().control_button_style(
+                self.__gui_env.settings().controlbutton_style(
                     self.__is_dark,
                     self.__buttons_schema[self.__button_id], 'normal'))
 

@@ -94,7 +94,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             'accent': self.palette().color(
                 QtGui.QPalette.Active, QtGui.QPalette.Highlight),
             'disabled-text': self.__gui_env.settings(
-                ).color_of_disabled_text(self.__is_dark),
+                ).text_disabled_color(self.__is_dark),
             'text': self.palette().color(
                 QtGui.QPalette.Text),
             'window-background': self.palette().color(
