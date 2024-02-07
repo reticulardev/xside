@@ -148,11 +148,11 @@ class QQuickContextMenu(QtWidgets.QFrame):
             self.__toplevel.platform().operational_system(),
             self.__toplevel.platform().desktop_environment())
 
-        self.__spacing = self.__gui_env.settings().context_menu_spacing()
-        self.__left_margin = self.__gui_env.settings().context_menu_padding()
-        self.__top_margin = self.__gui_env.settings().context_menu_padding()
-        self.__right_margin = self.__gui_env.settings().context_menu_padding()
-        self.__bottom_margin = self.__gui_env.settings().context_menu_padding()
+        self.__spacing = self.__gui_env.settings().contextmenu_spacing()
+        self.__left_margin = self.__gui_env.settings().contextmenu_padding()
+        self.__top_margin = self.__gui_env.settings().contextmenu_padding()
+        self.__right_margin = self.__gui_env.settings().contextmenu_padding()
+        self.__bottom_margin = self.__gui_env.settings().contextmenu_padding()
 
         palette = self.__toplevel.color_by_state_name('window-background')
         self.__is_dark = color.is_dark(
@@ -219,11 +219,11 @@ class QQuickContextMenu(QtWidgets.QFrame):
     def add_separator(self, color: QtGui.QColor = None) -> None:
         """..."""
         color = color if color else self.__gui_env.settings(
-            ).color_of_context_menu_separator(self.__is_dark)
+            ).color_of_contextmenu_separator(self.__is_dark)
 
         separator_layout = QtWidgets.QVBoxLayout()
 
-        margin = self.__gui_env.settings().context_menu_separator_margin()
+        margin = self.__gui_env.settings().contextmenu_separator_margin()
         separator_layout.set_contents_margins(
             margin[0], margin[1], margin[2], margin[3] + self.__spacing)
 

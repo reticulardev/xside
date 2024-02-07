@@ -37,7 +37,7 @@ class DynamicStyle(object):
         self.__selection_color = self.__gui_env.settings().color_of_selection(
             self.__is_dark)
         self.__selection_alpha = self.__gui_env.settings(
-            ).context_menu_selection_alpha_color_value()
+            ).contextmenu_selection_alpha_color_value()
 
     def build_style(self) -> str:
         """..."""
@@ -75,7 +75,7 @@ class DynamicStyle(object):
             f'{self.__background_color.red()},'
             f'{self.__background_color.green()},'
             f'{self.__background_color.blue()},'
-            f'{self.__gui_env.settings().context_menu_alpha_color_value()});'
+            f'{self.__gui_env.settings().contextmenu_alpha_color_value()});'
             'border: 1px solid rgba('
             f'{self.__border_color.red()},'
             f'{self.__border_color.green()},'

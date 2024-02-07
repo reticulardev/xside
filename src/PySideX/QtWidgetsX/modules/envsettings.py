@@ -27,7 +27,7 @@ class GlobalEnvSettings(object):
         return cor
 
     @staticmethod
-    def color_of_context_menu_separator(window_is_dark: bool) -> QtGui.QColor:
+    def color_of_contextmenu_separator(window_is_dark: bool) -> QtGui.QColor:
         """..."""
         if window_is_dark:
             return QtGui.QColor(70, 70, 70, 255)
@@ -48,42 +48,30 @@ class GlobalEnvSettings(object):
     def color_of_window_border(
             self, window_is_dark: bool) -> QtGui.QColor:
         """..."""
-        return self.color_of_context_menu_separator(window_is_dark)
+        return self.color_of_contextmenu_separator(window_is_dark)
 
     @staticmethod
-    def context_menu_alpha_color_value() -> float:
+    def contextmenu_alpha_color_value() -> float:
         """..."""
         return 0.9
 
     @staticmethod
-    def context_menu_selection_alpha_color_value() -> float:
+    def contextmenu_selection_alpha_color_value() -> float:
         """..."""
         return 0.2
 
     @staticmethod
-    def context_menu_border_color(window_is_dark: bool) -> tuple:
-        """RGBA tuple: (127, 127, 127, 0.8)"""
-        if window_is_dark:
-            return 127, 127, 127, 0.8
-        return 127, 127, 127, 0.8
-
-    @staticmethod
-    def context_menu_padding() -> int:
+    def contextmenu_padding() -> int:
         """..."""
         return 4
 
     @staticmethod
-    def context_menu_separator_color_type() -> str:
-        """window-border, disabled-text"""
-        return 'window-border'
-
-    @staticmethod
-    def context_menu_separator_margin() -> tuple:
+    def contextmenu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
         return 0, 4, 0, 4
 
     @staticmethod
-    def context_menu_spacing() -> int:
+    def contextmenu_spacing() -> int:
         """..."""
         return 0
 
@@ -153,13 +141,13 @@ class EnvSettingsPlasma(GlobalEnvSettings):
         self.__kde_globals = self.rc_file_content(
             os.path.join(os.environ['HOME'], '.config', 'kdeglobals'))
 
-    def color_of_context_menu_separator(
+    def color_of_contextmenu_separator(
             self, window_is_dark: bool) -> QtGui.QColor:
         """..."""
         cor = self.pallete.color(QtGui.QPalette.Window.Mid)
         if window_is_dark:
             return cor
-        return cor
+        return QtGui.QColor(cor.red(), cor.green(), cor.blue(), 127)
 
     def color_of_disabled_text(self, window_is_dark: bool):
         """..."""
@@ -173,13 +161,13 @@ class EnvSettingsPlasma(GlobalEnvSettings):
     def color_of_window_border(
             self, window_is_dark: bool) -> QtGui.QColor:
         """..."""
-        cor = self.color_of_context_menu_separator(window_is_dark)
+        cor = self.color_of_contextmenu_separator(window_is_dark)
         if window_is_dark:
             return cor
         return cor
 
     @staticmethod
-    def context_menu_separator_margin() -> tuple:
+    def contextmenu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
         return 8, 4, 8, 4
 
@@ -281,27 +269,22 @@ class EnvSettingsGnome(GlobalEnvSettings):
         return cor
 
     @staticmethod
-    def context_menu_alpha_color_value() -> float:
+    def contextmenu_alpha_color_value() -> float:
         """..."""
         return 1.0
 
     @staticmethod
-    def context_menu_selection_alpha_color_value() -> float:
+    def contextmenu_selection_alpha_color_value() -> float:
         """..."""
         return 1.0
 
     @staticmethod
-    def context_menu_padding() -> int:
+    def contextmenu_padding() -> int:
         """..."""
         return 6
 
     @staticmethod
-    def context_menu_separator_color_type() -> str:
-        """window-border, disabled-text"""
-        return 'disabled-text'
-
-    @staticmethod
-    def context_menu_separator_margin() -> tuple:
+    def contextmenu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
         return 8, 6, 8, 6
 
