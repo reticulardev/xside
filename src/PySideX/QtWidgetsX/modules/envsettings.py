@@ -57,7 +57,7 @@ class GlobalEnvSettings(object):
     @staticmethod
     def contextmenubutton_padding() -> tuple:
         """..."""
-        return 2, 2, 2, 2
+        return 4, 6, 4, 6
 
     @staticmethod
     def controlbutton_order() -> tuple:
@@ -158,6 +158,11 @@ class EnvSettingsPlasma(GlobalEnvSettings):
     def contextmenu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
         return 8, 4, 8, 4
+
+    @staticmethod
+    def contextmenubutton_padding() -> tuple:
+        """..."""
+        return 2, 6, 2, 6
 
     def controlbutton_order(self) -> tuple:
         """..."""
@@ -296,7 +301,7 @@ class EnvSettingsGnome(GlobalEnvSettings):
     @staticmethod
     def contextmenubutton_padding() -> tuple:
         """..."""
-        return 6, 8, 6, 8
+        return 6, 12, 6, 12
 
     def controlbutton_order(self) -> tuple:
         """XAI M -> (2, 1, 0), (3,)

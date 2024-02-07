@@ -29,7 +29,7 @@ class Platform(object):
             if (os.environ['DESKTOP_SESSION'] == 'plasma' or
                     os.environ['XDG_SESSION_DESKTOP'] == 'KDE' or
                     os.environ['XDG_CURRENT_DESKTOP'] == 'KDE'):
-                return 'gnome'
+                return 'plasma'
 
             # TODO: gnome, cinnamon, xfce
             return 'gnome'
