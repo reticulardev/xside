@@ -17,17 +17,48 @@ class GlobalEnvSettings(object):
     def __init__(self):
         self.pallete = QtGui.QPalette()
 
+    def color_of_accent(
+            self, window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        cor = self.pallete.color(
+            QtGui.QPalette.Active, QtGui.QPalette.Highlight)
+        if window_is_dark:
+            return cor
+        return cor
+
+    @staticmethod
+    def color_of_context_menu_separator(window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        if window_is_dark:
+            return QtGui.QColor(70, 70, 70, 255)
+        return QtGui.QColor(190, 190, 190, 255)
+
     @staticmethod
     def color_of_disabled_text(window_is_dark: bool) -> QtGui.QColor:
         """..."""
         if window_is_dark:
-            return QtGui.QColor(127, 127, 127)
-        return QtGui.QColor(127, 127, 127)
+            return QtGui.QColor(100, 100, 100, 255)
+        return QtGui.QColor(150, 150, 150, 255)
+
+    def color_of_selection(
+            self, window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        return self.color_of_accent(window_is_dark)
+
+    def color_of_window_border(
+            self, window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        return self.color_of_context_menu_separator(window_is_dark)
 
     @staticmethod
     def context_menu_alpha_color_value() -> float:
         """..."""
         return 0.9
+
+    @staticmethod
+    def context_menu_selection_alpha_color_value() -> float:
+        """..."""
+        return 0.2
 
     @staticmethod
     def context_menu_border_color(window_is_dark: bool) -> tuple:
@@ -122,11 +153,27 @@ class EnvSettingsPlasma(GlobalEnvSettings):
         self.__kde_globals = self.rc_file_content(
             os.path.join(os.environ['HOME'], '.config', 'kdeglobals'))
 
+    def color_of_context_menu_separator(
+            self, window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        cor = self.pallete.color(QtGui.QPalette.Window.Mid)
+        if window_is_dark:
+            return cor
+        return cor
+
     def color_of_disabled_text(self, window_is_dark: bool):
         """..."""
         cor = self.pallete.color(
             QtGui.QPalette.Disabled, QtGui.QPalette.Text)
 
+        if window_is_dark:
+            return cor
+        return cor
+
+    def color_of_window_border(
+            self, window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        cor = self.color_of_context_menu_separator(window_is_dark)
         if window_is_dark:
             return cor
         return cor
@@ -225,8 +272,21 @@ class EnvSettingsGnome(GlobalEnvSettings):
         """..."""
         super().__init__()
 
+    def color_of_selection(
+            self, window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        cor = self.pallete.color(QtGui.QPalette.AlternateBase)
+        if window_is_dark:
+            return cor
+        return cor
+
     @staticmethod
     def context_menu_alpha_color_value() -> float:
+        """..."""
+        return 1.0
+
+    @staticmethod
+    def context_menu_selection_alpha_color_value() -> float:
         """..."""
         return 1.0
 

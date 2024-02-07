@@ -18,9 +18,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="23.157747"
-     inkscape:cx="6.0454931"
-     inkscape:cy="8.7227829"
+     inkscape:zoom="65.5"
+     inkscape:cx="7.3587787"
+     inkscape:cy="8.4427481"
      inkscape:window-width="1366"
      inkscape:window-height="736"
      inkscape:window-x="0"
@@ -37,10 +37,8 @@
       }
       </style>
   </defs>
-  <circle
-     style="fill:#222528;fill-opacity:0.25;stroke-width:0.790293;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0.656086;paint-order:markers stroke fill"
+  <path
      id="path2"
-     cx="8"
-     cy="8"
-     r="2" />
+     style="fill:#222528;fill-opacity:0.30000001;stroke-width:0.790293;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0.656086;paint-order:markers stroke fill"
+     d="M 8 6 A 2 2 0 0 0 6 8 A 2 2 0 0 0 8 10 A 2 2 0 0 0 10 8 A 2 2 0 0 0 8 6 z M 8 6.5 A 1.5 1.5 0 0 1 9.5 8 A 1.5 1.5 0 0 1 8 9.5 A 1.5 1.5 0 0 1 6.5 8 A 1.5 1.5 0 0 1 8 6.5 z " />
 </svg>

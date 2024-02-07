@@ -5,6 +5,7 @@ import sys
 from PySide6 import QtGui, QtWidgets
 from __feature__ import snake_case
 
+import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -25,11 +26,18 @@ class DynamicStyle(object):
 
         # Properties
         self.__border_radius = self.__gui_env.settings().window_border_radius()
-        self.__accent_color = self.__toplevel.color_by_state_name('accent')
-        self.__background_color = self.__toplevel.color_by_state_name(
-            'window-background')
         self.__border_color = self.__toplevel.color_by_state_name(
             'window-border')
+        self.__background_color = self.__toplevel.color_by_state_name(
+            'window-background')
+        self.__is_dark = color.is_dark((
+            self.__background_color.red(),
+            self.__background_color.green(),
+            self.__background_color.blue()))
+        self.__selection_color = self.__gui_env.settings().color_of_selection(
+            self.__is_dark)
+        self.__selection_alpha = self.__gui_env.settings(
+            ).context_menu_selection_alpha_color_value()
 
     def build_style(self) -> str:
         """..."""
@@ -83,14 +91,15 @@ class DynamicStyle(object):
             '}'
             'QQuickContextMenuButton:hover {'
             'background-color: rgba('
-            f'{self.__accent_color.red()}, '
-            f'{self.__accent_color.green()}, '
-            f'{self.__accent_color.blue()}, 0.2);'
+            f'{self.__selection_color.red()}, '
+            f'{self.__selection_color.green()}, '
+            f'{self.__selection_color.blue()},'
+            f'{self.__selection_alpha});'
             'padding: 2px;'
             'border: 1px solid rgba('
-            f'{self.__accent_color.red()}, '
-            f'{self.__accent_color.green()}, '
-            f'{self.__accent_color.blue()}, 0.9);'
+            f'{self.__selection_color.red()}, '
+            f'{self.__selection_color.green()}, '
+            f'{self.__selection_color.blue()}, 0.9);'
             'border-radius: 3px;'
             '}')
 

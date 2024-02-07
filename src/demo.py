@@ -78,11 +78,11 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
         self.qcontext_menu = QtWidgetsX.QQuickContextMenu(self)
         self.qcontext_menu.add_action(
             'Copy', lambda: self.__context_menu_cal('Copy'),
-            icon=QtGui.QIcon.from_theme('edit-copy'),
+            icon=QtGui.QIcon.from_theme('edit-copy-symbolic'),
             shortcut=QtGui.QKeySequence('Ctrl+C'))
         self.qcontext_menu.add_action(
             'Paste', lambda: self.__context_menu_cal('Paste'),
-            icon=QtGui.QIcon.from_theme('edit-paste'),
+            icon=QtGui.QIcon.from_theme('edit-paste-symbolic'),
             shortcut=QtGui.QKeySequence('Ctrl+V'))
 
         self.qcontext_menu.add_separator()
