@@ -111,6 +111,7 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
         accent_color = "#{:02x}{:02x}{:02x}".format(
             color.red(), color.green(), color.blue())
         if self.set_style_button.text() == 'Set style':
+            self.set_sideview_color((0, 0, 0, 0.1))
             self.set_style_sheet(
                 'QApplicationWindow {'
                 '  background-color: rgba(44, 44, 50, 0.9);'
