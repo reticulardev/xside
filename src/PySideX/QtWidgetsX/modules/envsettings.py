@@ -3,6 +3,7 @@ import os
 import sys
 
 from PySide6 import QtGui
+from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.modules.parser import DesktopFile
 import PySideX.QtWidgetsX.modules.cli as cli
@@ -374,6 +375,48 @@ class EnvSettingsCinnamon(EnvSettingsGnome):
     def __init__(self):
         """..."""
         super().__init__()
+
+    def controlbutton_style(
+            self, window_is_dark: bool,
+            button_name: str,
+            button_state: str) -> str:
+        """..."""
+        if button_name == 'close':
+            accent = self.window_accent_color(window_is_dark)
+            return (
+                'QControlButton {'
+                '  border: 0px;'
+                '  border-radius: 10px;'
+                '  padding: 1px;'
+                '  background-color: rgba('
+                f' {accent.red()},'
+                f' {accent.green()},'
+                f' {accent.blue()},'
+                f' {accent.alpha_f()});'
+                '  margin: 5px 4px 5px 4px;'
+                '  padding: 2px 1px 1px 2px;'
+                '}'
+                'QControlButton:hover {'
+                '  background-color: rgba('
+                f' {accent.red() + 20},'
+                f' {accent.green() + 20},'
+                f' {accent.blue() + 20},'
+                f' {accent.alpha_f()});'
+                '}')
+        # if button_state == 'hover':
+        # if window_is_dark:
+        return (
+            'QControlButton {'
+            '  border: 0px;'
+            '  border-radius: 10px;'
+            '  padding: 1px;'
+            '  background-color: rgba(127, 127, 127, 0.2);'
+            '  margin: 5px 4px 5px 4px;'
+            '  padding: 2px 1px 1px 2px;'
+            '}'
+            'QControlButton:hover {'
+            '  background-color: rgba(127, 127, 127, 0.3);'
+            '}')
 
 
 class EnvSettingsXFCE(EnvSettingsGnome):

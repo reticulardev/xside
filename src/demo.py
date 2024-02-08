@@ -234,10 +234,6 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.context_menu_label.set_text(text)
 
     def on_set_style(self):
-        color = self.palette().color(
-            QtGui.QPalette.Active, QtGui.QPalette.Highlight)
-        accent_color = "#{:02x}{:02x}{:02x}".format(
-            color.red(), color.green(), color.blue())
         self.set_style_sheet(
             'QApplicationWindow {'
             '  background-color: rgba(59, 59, 59, 0.8);'
