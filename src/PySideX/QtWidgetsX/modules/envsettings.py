@@ -53,7 +53,9 @@ class GlobalEnvSettings(object):
     def contextmenubutton_bg_hover_color(
             self, window_is_dark: bool) -> QtGui.QColor:
         """..."""
-        return self.window_accent_color(window_is_dark)
+        if window_is_dark:
+            return self.window_accent_color()
+        return self.window_accent_color()
 
     @staticmethod
     def contextmenubutton_padding() -> tuple:
@@ -108,14 +110,10 @@ class GlobalEnvSettings(object):
             return QtGui.QColor(100, 100, 100, 255)
         return QtGui.QColor(150, 150, 150, 255)
 
-    def window_accent_color(
-            self, window_is_dark: bool) -> QtGui.QColor:
+    def window_accent_color(self) -> QtGui.QColor:
         """..."""
-        cor = self.pallete.color(
+        return self.pallete.color(
             QtGui.QPalette.Active, QtGui.QPalette.Highlight)
-        if window_is_dark:
-            return cor
-        return cor
 
     def window_border_color(
             self, window_is_dark: bool) -> QtGui.QColor:
@@ -382,12 +380,16 @@ class EnvSettingsCinnamon(EnvSettingsGnome):
             button_state: str) -> str:
         """..."""
         if button_name == 'close':
-            accent = self.window_accent_color(window_is_dark)
+            url_icon = os.path.join(
+                SRC_DIR, 'static', 'cinnamon-control-buttons',
+                'window-close.svg')
+            accent = self.window_accent_color()
             return (
                 'QControlButton {'
                 '  border: 0px;'
                 '  border-radius: 10px;'
                 '  padding: 1px;'
+                f' background: url({url_icon}) center no-repeat;'
                 '  background-color: rgba('
                 f' {accent.red()},'
                 f' {accent.green()},'
@@ -403,8 +405,6 @@ class EnvSettingsCinnamon(EnvSettingsGnome):
                 f' {accent.blue() + 20},'
                 f' {accent.alpha_f()});'
                 '}')
-        # if button_state == 'hover':
-        # if window_is_dark:
         return (
             'QControlButton {'
             '  border: 0px;'
