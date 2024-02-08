@@ -43,7 +43,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
         palette = self.palette().color(QtGui.QPalette.Window)
         self.__is_dark = color.is_dark(
-            (palette.red(), palette.green(), palette.blue()))
+            (palette.red(), palette.green(), palette.blue(), palette.alpha()))
 
         self.__gui_env = GuiEnv(
             self.__platform.operational_system(),
@@ -240,7 +240,8 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             if visible:
                 palette = self.color_by_state_name('window-background')
                 if color.is_dark(
-                        (palette.red(), palette.green(), palette.blue())):
+                        (palette.red(), palette.green(),
+                         palette.blue(), palette.alpha())):
                     self.__shadow_effect.set_color(
                         QtGui.QColor(10, 10, 10, 180))
 

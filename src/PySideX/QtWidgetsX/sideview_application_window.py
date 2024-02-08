@@ -119,7 +119,7 @@ class QOverlaySideView(QtWidgets.QFrame):
             'background: qlineargradient('
             '  x1:0 y1:0, x2:1 y2:0,'
             '  stop:0.0 rgba(0, 0, 0, 50),'
-            '  stop:0.5 rgba(0, 0, 0, 30),'
+            '  stop:0.4 rgba(0, 0, 0, 30),'
             '  stop:1.0 rgba(0, 0, 0, 30));'
             'border: 0px;'
             'border-top-left-radius: 0;'

@@ -33,7 +33,8 @@ class DynamicStyle(object):
         self.__is_dark = color.is_dark((
             self.__background_color.red(),
             self.__background_color.green(),
-            self.__background_color.blue()))
+            self.__background_color.blue(),
+            self.__background_color.alpha()))
         self.__selection_color = self.__gui_env.settings(
             ).contextmenubutton_bg_hover_color(self.__is_dark)
         self.__selection_alpha = self.__gui_env.settings(

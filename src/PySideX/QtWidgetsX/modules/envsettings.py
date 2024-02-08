@@ -7,6 +7,7 @@ from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.modules.parser import DesktopFile
 import PySideX.QtWidgetsX.modules.cli as cli
+import PySideX.QtWidgetsX.modules.color as color
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
@@ -383,12 +384,14 @@ class EnvSettingsCinnamon(EnvSettingsGnome):
             url_icon = os.path.join(
                 SRC_DIR, 'static', 'cinnamon-control-buttons',
                 'window-close.svg')
+
             accent = self.window_accent_color()
+            lighten_accent = color.lighten_rgba(
+                (accent.red(), accent.green(), accent.blue(), accent.alpha()))
             return (
                 'QControlButton {'
                 '  border: 0px;'
                 '  border-radius: 10px;'
-                '  padding: 0px;'
                 f' background: url({url_icon}) center no-repeat;'
                 '  background-color: rgba('
                 f' {accent.red()},'
@@ -400,16 +403,15 @@ class EnvSettingsCinnamon(EnvSettingsGnome):
                 '}'
                 'QControlButton:hover {'
                 '  background-color: rgba('
-                f' {accent.red() + 20},'
-                f' {accent.green() + 20},'
-                f' {accent.blue() + 20},'
-                f' {accent.alpha_f()});'
+                f' {lighten_accent[0]},'
+                f' {lighten_accent[1]},'
+                f' {lighten_accent[2]},'
+                f' {lighten_accent[3]});'
                 '}')
         return (
             'QControlButton {'
             '  border: 0px;'
             '  border-radius: 10px;'
-            '  padding: 0px;'
             '  background-color: rgba(127, 127, 127, 0.2);'
             '  margin: 5px 2px 5px 2px;'
             '  padding: 1px 0px 0px 1px;'

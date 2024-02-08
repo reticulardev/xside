@@ -99,7 +99,7 @@ class QControlButton(QtWidgets.QToolButton):
         # ...
         palette = self.__toplevel.color_by_state_name('window-background')
         self.__background_color = (
-            palette.red(), palette.green(), palette.blue())
+            palette.red(), palette.green(), palette.blue(), palette.alpha())
 
         return color.is_dark(self.__background_color)
 

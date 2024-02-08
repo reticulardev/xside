@@ -163,7 +163,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
 
         palette = self.__toplevel.color_by_state_name('window-background')
         self.__is_dark = color.is_dark(
-            (palette.red(), palette.green(), palette.blue()))
+            (palette.red(), palette.green(), palette.blue(), palette.alpha()))
 
         # Main
         self.set_contents_margins(0, 0, 0, 0)
