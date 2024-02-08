@@ -106,6 +106,10 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
         self.context_menu_label.set_text(text)
 
     def on_set_style_button(self) -> None:
+        color = self.palette().color(
+            QtGui.QPalette.Active, QtGui.QPalette.Highlight)
+        accent_color = "#{:02x}{:02x}{:02x}".format(
+            color.red(), color.green(), color.blue())
         if self.set_style_button.text() == 'Set style':
             self.set_style_sheet(
                 'QApplicationWindow {'
@@ -129,7 +133,7 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
                 'QPushButton {'
                 '  background-color: #363636;}'
                 'QPushButton:hover {'
-                '  background-color: #513258;}'
+                f' background-color: {accent_color};' + '}'
                 'QContextMenuButton {'
                 '  border: 1px solid rgba(77, 125, 77, 0.6);}')
             self.set_style_button.set_text('Reset style')
@@ -230,42 +234,46 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.context_menu_label.set_text(text)
 
     def on_set_style(self):
+        color = self.palette().color(
+            QtGui.QPalette.Active, QtGui.QPalette.Highlight)
+        accent_color = "#{:02x}{:02x}{:02x}".format(
+            color.red(), color.green(), color.blue())
         self.set_style_sheet(
             'QApplicationWindow {'
-            '   background-color: rgba(59, 59, 59, 0.8);'
-            '   border-radius: 10px;'
-            '   border: 1px solid #555;'
+            '  background-color: rgba(59, 59, 59, 0.8);'
+            '  border-radius: 10px;'
+            '  border: 1px solid #555;'
             '}'
             'QPushButton {'
-            '   background-color: #363636;}'
+            '  background-color: #363636;}'
             'QPushButton:hover {'
-            '   background-color: #513258;'
+            '  background-color: #513258;'
             '}'
             'QToolButton {'
-            '   background-color: rgba(80, 80, 80, 0.6);'
-            '   padding: 5px;'
-            '   border-radius: 5px;'
-            '   border: 0px;}'
+            '  background-color: rgba(80, 80, 80, 0.6);'
+            '  padding: 5px;'
+            '  border-radius: 5px;'
+            '  border: 0px;}'
             'QToolButton:hover {'
-            '   background: transparent;'
-            '   border: 0px;'
-            '   background-color: rgba(125, 77, 136, 0.6);'
+            '  background: transparent;'
+            '  border: 0px;'
+            '  background-color: rgba(125, 77, 136, 0.6);'
             '}'
             'QControlButton {'
-            '   padding: 0px;'
-            '   background: transparent;'
-            '   border-radius: 9px;}'
+            '  padding: 0px;'
+            '  background: transparent;'
+            '  border-radius: 9px;}'
             'QControlButton:hover {'
-            '   padding: 0px;'
-            '   background: transparent;'
-            '   border-radius: 9px;'
-            '   background-color: rgba(100, 100, 100, 0.5);'
+            '  padding: 0px;'
+            '  background: transparent;'
+            '  border-radius: 9px;'
+            '  background-color: rgba(100, 100, 100, 0.5);'
             '}'
             'QQuickContextMenu {'
-            'border: 1px solid rgba(125, 77, 136, 0.6);'
+            '  border: 1px solid rgba(125, 77, 136, 0.6);'
             '}'
             'QQuickContextMenuButton {'
-            'border: 1px solid rgba(77, 125, 77, 0.6);'
+            '  border: 1px solid rgba(77, 125, 77, 0.6);'
             '}')
 
     def on_reset_style(self):

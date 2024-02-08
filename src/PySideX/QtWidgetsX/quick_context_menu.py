@@ -105,11 +105,18 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
                                      f'context-menu-item{symbolic}.svg')
             self.__icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
 
-    def mouse_press_event(self, event):
+    def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
+        """..."""
+        # if self.under_mouse():
+        #     self.__receiver()
+        pass
+
+    def mouse_release_event(self, event: QtGui.QMouseEvent) -> None:
         """..."""
         logging.info(event)
-        self.__receiver()
-        self.__context_menu.close()
+        if self.under_mouse():
+            self.__receiver()
+            self.__context_menu.close()
 
 
 class QQuickContextMenu(QtWidgets.QFrame):

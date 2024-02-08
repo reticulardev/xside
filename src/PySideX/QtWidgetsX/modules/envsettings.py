@@ -32,7 +32,7 @@ class GlobalEnvSettings(object):
         """..."""
         if window_is_dark:
             return QtGui.QColor(70, 70, 70, 255)
-        return QtGui.QColor(190, 190, 190, 255)
+        return QtGui.QColor(220, 220, 220, 255)
 
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
