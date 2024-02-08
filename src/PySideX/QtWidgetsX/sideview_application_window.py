@@ -7,6 +7,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
+import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
 from PySideX.QtWidgetsX.header_bar import QHeaderBar
 
@@ -148,23 +149,23 @@ class QSideViewApplicationWindow(QApplicationWindow):
         Initialize class attributes
         """
         super().__init__(*args, **kwargs)
-        # Flags
+        # Properties
+        self.__gui_env = GuiEnv(
+            self.platform().operational_system(),
+            self.platform().desktop_environment())
         self.__minimum_width = 350
         self.__minimum_height = 200
         self.__border_size = 12
         self.__is_sideview_open = False
-        self.__sideview_width = 250
-        self.__sideview_color = (0, 0, 0, 0.05)
         self.__adaptive_mode_toggle_width = 650
         self.__is_adaptive_mode = False
         self.__is_sideview_headerbar_left_control_set_as_visible = True
         self.__is_sideview_close_button_set_as_visible = False
+        self.__sideview_width = 250
+        self.__sideview_color = color.darken_rgba(color.qcolor_to_rgba(
+            self.__gui_env.settings().window_background_color()), 2)
 
         # Settings
-        self.__gui_env = GuiEnv(
-            self.platform().operational_system(),
-            self.platform().desktop_environment())
-
         self.set_window_title('MPX Application Window')
         self.set_minimum_width(self.__minimum_width)
         self.set_minimum_height(self.__minimum_height)

@@ -116,6 +116,10 @@ class GlobalEnvSettings(object):
         return self.pallete.color(
             QtGui.QPalette.Active, QtGui.QPalette.Highlight)
 
+    def window_background_color(self) -> QtGui.QColor:
+        """..."""
+        return self.pallete.color(QtGui.QPalette.Window)
+
     def window_border_color(
             self, window_is_dark: bool) -> QtGui.QColor:
         """..."""
@@ -386,8 +390,7 @@ class EnvSettingsCinnamon(EnvSettingsGnome):
                 'window-close.svg')
 
             accent = self.window_accent_color()
-            lighten_accent = color.lighten_rgba(
-                (accent.red(), accent.green(), accent.blue(), accent.alpha()))
+            accent_light = color.lighten_rgba(color.qcolor_to_rgba(accent), 20)
             return (
                 'QControlButton {'
                 '  border: 0px;'
@@ -403,10 +406,10 @@ class EnvSettingsCinnamon(EnvSettingsGnome):
                 '}'
                 'QControlButton:hover {'
                 '  background-color: rgba('
-                f' {lighten_accent[0]},'
-                f' {lighten_accent[1]},'
-                f' {lighten_accent[2]},'
-                f' {lighten_accent[3]});'
+                f' {accent_light[0]},'
+                f' {accent_light[1]},'
+                f' {accent_light[2]},'
+                f' {accent_light[3]});'
                 '}')
         return (
             'QControlButton {'

@@ -29,7 +29,7 @@ class Platform(object):
             if (os.environ['DESKTOP_SESSION'] == 'plasma' or  # cinnamon
                     os.environ['XDG_SESSION_DESKTOP'] == 'KDE' or  # cinnamon
                     os.environ['XDG_CURRENT_DESKTOP'] == 'KDE'):  # X-Cinnamon
-                return 'cinnamon'
+                return 'plasma'
 
             if (os.environ['DESKTOP_SESSION'] == 'cinnamon' or
                     os.environ['XDG_SESSION_DESKTOP'] == 'cinnamon' or
