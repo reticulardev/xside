@@ -22,27 +22,30 @@ class DynamicStyle(object):
             self.__toplevel.platform().desktop_environment(),
             self.__toplevel.follow_platform())
 
-        self.__border_radius = self.__gui_env.settings(
-            ).window_border_radius()
-        self.__background_color = self.__gui_env.settings(
+        self.__win_is_dark = self.__gui_env.settings(
+            ).window_is_dark()
+        self.__win_background_color = self.__gui_env.settings(
             ).window_background_color()
-        self.__is_dark = color.is_dark(
-            color.qcolor_to_rgba(self.__background_color))
-        self.__border_color = self.__gui_env.settings(
+        self.__win_border_radius = self.__gui_env.settings(
+            ).window_border_radius()
+        self.__win_border_color = self.__gui_env.settings(
             ).window_border_color()
-        self.__selection_color = self.__gui_env.settings(
-            ).contextmenubutton_bg_hover_color()
-        self.__selection_alpha = self.__gui_env.settings(
-            ).contextmenubutton_bg_hover_alpha()
-        self.__ctxmenubutton_bd_color = self.__gui_env.settings(
+
+        self.__ctxmenu_background_color = self.__gui_env.settings(
+            ).contextmenu_background_color()
+        self.__ctxmenu_border_color = self.__gui_env.settings(
             ).contextmenu_border_color()
-        self.__ctxmenu_bd_radius = self.__gui_env.settings(
+        self.__ctxmenu_border_radius = self.__gui_env.settings(
             ).contextmenu_border_radius()
+
+        self.__ctxmenubutton_background_hover_color = self.__gui_env.settings(
+            ).contextmenubutton_background_hover_color()
+        self.__ctxmenubutton_border_hover_color = self.__gui_env.settings(
+            ).contextmenubutton_border_hover_color()
+        self.__ctxmenubutton_border_radius = self.__gui_env.settings(
+            ).contextmenubutton_border_radius()
         self.__ctxmenubutton_padding = self.__gui_env.settings(
             ).contextmenubutton_padding()
-        self.__ctxmenubutton_bd_radius = (
-            self.__ctxmenu_bd_radius - 4 if self.__ctxmenu_bd_radius > 4 else
-            self.__ctxmenu_bd_radius)
 
     def build_style(self) -> str:
         """..."""
@@ -50,43 +53,43 @@ class DynamicStyle(object):
             window_style = (
                 '#QApplicationWindow {'
                 'background-color: rgba('
-                f'{self.__background_color.red()},'
-                f'{self.__background_color.green()},'
-                f'{self.__background_color.blue()},'
-                f'{self.__background_color.alpha_f()});'
+                f'{self.__win_background_color.red()},'
+                f'{self.__win_background_color.green()},'
+                f'{self.__win_background_color.blue()},'
+                f'{self.__win_background_color.alpha_f()});'
                 '}')
         else:
             window_style = (
                 '#QApplicationWindow {'
                 'background-color: rgba('
-                f'{self.__background_color.red()},'
-                f'{self.__background_color.green()},'
-                f'{self.__background_color.blue()},'
-                f'{self.__background_color.alpha_f()});'
+                f'{self.__win_background_color.red()},'
+                f'{self.__win_background_color.green()},'
+                f'{self.__win_background_color.blue()},'
+                f'{self.__win_background_color.alpha_f()});'
                 'border: 1px solid rgba('
-                f'{self.__border_color.red()},'
-                f'{self.__border_color.green()},'
-                f'{self.__border_color.blue()},'
-                f'{self.__border_color.alpha_f()});'
-                f'border-top-left-radius: {self.__border_radius[0]};'
-                f'border-top-right-radius: {self.__border_radius[1]};'
-                f'border-bottom-right-radius: {self.__border_radius[2]};'
-                f'border-bottom-left-radius: {self.__border_radius[3]};'
+                f'{self.__win_border_color.red()},'
+                f'{self.__win_border_color.green()},'
+                f'{self.__win_border_color.blue()},'
+                f'{self.__win_border_color.alpha_f()});'
+                f'border-top-left-radius: {self.__win_border_radius[0]};'
+                f'border-top-right-radius: {self.__win_border_radius[1]};'
+                f'border-bottom-right-radius: {self.__win_border_radius[2]};'
+                f'border-bottom-left-radius: {self.__win_border_radius[3]};'
                 '}')
 
         context_menu_style = (
             '#QQuickContextMenu {'
             'background-color: rgba('
-            f'{self.__background_color.red()},'
-            f'{self.__background_color.green()},'
-            f'{self.__background_color.blue()},'
-            f'{self.__gui_env.settings().contextmenu_bg_alpha()});'
+            f'{self.__ctxmenu_background_color.red()},'
+            f'{self.__ctxmenu_background_color.green()},'
+            f'{self.__ctxmenu_background_color.blue()},'
+            f'{self.__ctxmenu_background_color.alpha()});'
             'border: 1px solid rgba('
-            f'{self.__ctxmenubutton_bd_color.red()},'
-            f'{self.__ctxmenubutton_bd_color.green()},'
-            f'{self.__ctxmenubutton_bd_color.blue()},'
-            f'{self.__ctxmenubutton_bd_color.alpha_f()});'
-            f'border-radius: {self.__ctxmenu_bd_radius}px;'
+            f'{self.__ctxmenu_border_color.red()},'
+            f'{self.__ctxmenu_border_color.green()},'
+            f'{self.__ctxmenu_border_color.blue()},'
+            f'{self.__ctxmenu_border_color.alpha_f()});'
+            f'border-radius: {self.__ctxmenu_border_radius}px;'
             '}'
             'QQuickContextMenuButton {'
             'background: transparent;'
@@ -96,18 +99,19 @@ class DynamicStyle(object):
             f' {self.__ctxmenubutton_padding[2]}px'
             f' {self.__ctxmenubutton_padding[3]}px;'
             'border: 1px solid rgba(0, 0, 0, 0.0);'
-            f'border-radius: {self.__ctxmenubutton_bd_radius}px;'
+            f'border-radius: {self.__ctxmenubutton_border_radius}px;'
             '}'
             'QQuickContextMenuButton:hover {'
             'background-color: rgba('
-            f'{self.__selection_color.red()},'
-            f'{self.__selection_color.green()},'
-            f'{self.__selection_color.blue()},'
-            f'{self.__selection_alpha});'
+            f'{self.__ctxmenubutton_background_hover_color.red()},'
+            f'{self.__ctxmenubutton_background_hover_color.green()},'
+            f'{self.__ctxmenubutton_background_hover_color.blue()},'
+            f'{self.__ctxmenubutton_background_hover_color.alpha()});'
             'border: 1px solid rgba('
-            f'{self.__selection_color.red()},'
-            f'{self.__selection_color.green()},'
-            f'{self.__selection_color.blue()}, 0.9);'
+            f'{self.__ctxmenubutton_border_hover_color.red()},'
+            f'{self.__ctxmenubutton_border_hover_color.green()},'
+            f'{self.__ctxmenubutton_border_hover_color.blue()},'
+            f'{self.__ctxmenubutton_border_hover_color.alpha()});'
             '}')
 
         style_path = os.path.join(SRC_DIR, 'static', 'style.qss')

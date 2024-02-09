@@ -19,10 +19,9 @@ class GlobalEnvSettings(object):
     def __init__(self):
         self.pallete = QtGui.QPalette()
 
-    @staticmethod
-    def contextmenu_bg_alpha() -> float:
+    def contextmenu_background_color(self) -> QtGui.QColor:
         """..."""
-        return 0.9
+        return self.window_background_color()
 
     def contextmenu_border_color(self) -> QtGui.QColor:
         """..."""
@@ -51,16 +50,18 @@ class GlobalEnvSettings(object):
         """..."""
         return 0
 
-    @staticmethod
-    def contextmenubutton_bg_hover_alpha() -> float:
+    def contextmenubutton_background_hover_color(self) -> QtGui.QColor:
         """..."""
-        return 0.2
-
-    def contextmenubutton_bg_hover_color(self) -> QtGui.QColor:
-        """..."""
-        if self.window_is_dark():
-            return self.window_accent_color()
         return self.window_accent_color()
+
+    def contextmenubutton_border_hover_color(self) -> QtGui.QColor:
+        """..."""
+        return self.window_accent_color()
+
+    def contextmenubutton_border_radius(self) -> int:
+        """..."""
+        contextmenu_bdr = self.contextmenu_border_radius()
+        return contextmenu_bdr - 4 if contextmenu_bdr > 4 else contextmenu_bdr
 
     @staticmethod
     def contextmenubutton_padding() -> tuple:
@@ -172,10 +173,23 @@ class EnvSettingsPlasma(GlobalEnvSettings):
         self.__kde_globals = (
             DesktopFile(url=filerc).content if os.path.isfile(filerc) else {})
 
+    def contextmenu_background_color(self) -> QtGui.QColor:
+        """..."""
+        return self.window_background_color()
+
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
         return 8, 4, 8, 4
+
+    def contextmenubutton_background_hover_color(self) -> QtGui.QColor:
+        """..."""
+        cor = self.window_accent_color()
+        return QtGui.QColor(cor.red(), cor.green(), cor.blue(), 100)
+
+    def contextmenubutton_border_hover_color(self) -> QtGui.QColor:
+        """..."""
+        return self.window_accent_color()
 
     @staticmethod
     def contextmenubutton_padding() -> tuple:
@@ -296,12 +310,13 @@ class EnvSettingsGnome(GlobalEnvSettings):
         """..."""
         return 1.0
 
-    def contextmenubutton_bg_hover_color(self) -> QtGui.QColor:
+    def contextmenubutton_background_hover_color(self) -> QtGui.QColor:
         """..."""
-        cor = self.pallete.color(QtGui.QPalette.AlternateBase)
-        if self.window_is_dark():
-            return cor
-        return cor
+        return self.pallete.color(QtGui.QPalette.AlternateBase)
+
+    def contextmenubutton_border_hover_color(self) -> QtGui.QColor:
+        """..."""
+        return self.contextmenubutton_background_hover_color()
 
     @staticmethod
     def contextmenubutton_padding() -> tuple:
@@ -439,8 +454,13 @@ class EnvSettingsXFCE(GlobalEnvSettings):
     def contextmenu_border_color(self) -> QtGui.QColor:
         """..."""
         if self.window_is_dark():
-            return QtGui.QColor(35, 35, 35, 255)
+            return QtGui.QColor(50, 50, 50, 255)
         return QtGui.QColor(180, 180, 180, 255)
+
+    def contextmenubutton_border_hover_color(self) -> QtGui.QColor:
+        """..."""
+        return color.rgba_to_qcolor(color.darken_rgba(color.qcolor_to_rgba(
+            self.window_accent_color()), 50))
 
     def contextmenu_border_radius(self) -> int:
         """..."""
@@ -453,12 +473,14 @@ class EnvSettingsXFCE(GlobalEnvSettings):
 
     def contextmenu_separator_color(self) -> QtGui.QColor:
         """..."""
-        return self.contextmenu_border_color()
+        if self.window_is_dark():
+            return QtGui.QColor(50, 50, 50, 255)
+        return QtGui.QColor(180, 180, 180, 255)
 
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
-        return 0, 0, 0, 0
+        return 1, 0, 1, 0
 
     @staticmethod
     def contextmenubutton_bg_hover_alpha() -> float:
