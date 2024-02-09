@@ -154,13 +154,6 @@ class EnvSettingsPlasma(GlobalEnvSettings):
         self.__kde_globals = self.rc_file_content(
             os.path.join(os.environ['HOME'], '.config', 'kdeglobals'))
 
-    # def contextmenu_separator_color(
-    #         self, window_is_dark: bool) -> QtGui.QColor:
-    #     """..."""
-    #     cor = self.pallete.color(QtGui.QPalette.Window.Mid)
-    #     if window_is_dark:
-    #         return cor
-    #     return QtGui.QColor(cor.red(), cor.green(), cor.blue(), 127)
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
@@ -418,7 +411,7 @@ class EnvSettingsCinnamon(EnvSettingsGnome):
             '}')
 
 
-class EnvSettingsXFCE(EnvSettingsGnome):
+class EnvSettingsXFCE(GlobalEnvSettings):
     """..."""
 
     def __init__(self):
@@ -448,6 +441,11 @@ class EnvSettingsXFCE(EnvSettingsGnome):
             'QControlButton:hover {'
             '  background-color: rgba(127, 127, 127, 0.2);'
             '}')
+
+    @staticmethod
+    def window_border_radius() -> tuple:
+        """..."""
+        return 4, 4, 0, 0
 
 
 class EnvSettingsMac(GlobalEnvSettings):
