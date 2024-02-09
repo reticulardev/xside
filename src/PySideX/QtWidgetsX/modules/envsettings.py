@@ -24,6 +24,10 @@ class GlobalEnvSettings(object):
         """..."""
         return 0.9
 
+    def contextmenu_border_radius(self) -> int:
+        """..."""
+        return self.window_border_radius()[0]
+
     @staticmethod
     def contextmenu_padding() -> int:
         """..."""
@@ -418,6 +422,30 @@ class EnvSettingsXFCE(GlobalEnvSettings):
         """..."""
         super().__init__()
 
+    def contextmenu_border_radius(self) -> int:
+        """..."""
+        return 0
+
+    @staticmethod
+    def contextmenu_padding() -> int:
+        """..."""
+        return 1
+
+    @staticmethod
+    def contextmenu_separator_margin() -> tuple:
+        """Left, top, right and bottom margins tuple"""
+        return 0, 0, 0, 0
+
+    @staticmethod
+    def contextmenubutton_bg_hover_alpha() -> float:
+        """..."""
+        return 1.0
+
+    @staticmethod
+    def contextmenubutton_padding() -> tuple:
+        """..."""
+        return 2, 4, 2, 4
+
     def controlbutton_order(self) -> tuple:
         """XAI M -> (2, 1, 0), (3,)
 
@@ -435,12 +463,23 @@ class EnvSettingsXFCE(GlobalEnvSettings):
             'QControlButton {'
             '  border: 0px;'
             '  border-radius: 3px;'
-            '  margin: 1px 1px 1px 1px;'
-            '  padding: 2px 1px 1px 2px;'
+            '  margin: 0px;'
+            '  padding: 1px;'
             '}'
             'QControlButton:hover {'
             '  background-color: rgba(127, 127, 127, 0.2);'
             '}')
+
+    def window_border_color(
+            self, window_is_dark: bool) -> QtGui.QColor:
+        """..."""
+        if window_is_dark:
+            return color.rgba_to_qcolor(
+                color.lighten_rgba(color.qcolor_to_rgba(
+                    self.pallete.color(QtGui.QPalette.Window)), 30))
+
+        return color.rgba_to_qcolor(color.darken_rgba(color.qcolor_to_rgba(
+            self.pallete.color(QtGui.QPalette.Window)), 60))
 
     @staticmethod
     def window_border_radius() -> tuple:
