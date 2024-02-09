@@ -33,10 +33,9 @@ class GlobalEnvSettings(object):
         """..."""
         return 4
 
-    def contextmenu_separator_color(
-            self, window_is_dark: bool) -> QtGui.QColor:
+    def contextmenu_separator_color(self) -> QtGui.QColor:
         """..."""
-        return self.window_border_color(window_is_dark)
+        return self.window_border_color()
 
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
@@ -53,10 +52,9 @@ class GlobalEnvSettings(object):
         """..."""
         return 0.2
 
-    def contextmenubutton_bg_hover_color(
-            self, window_is_dark: bool) -> QtGui.QColor:
+    def contextmenubutton_bg_hover_color(self) -> QtGui.QColor:
         """..."""
-        if window_is_dark:
+        if self.window_is_dark():
             return self.window_accent_color()
         return self.window_accent_color()
 
@@ -99,17 +97,9 @@ class GlobalEnvSettings(object):
         """..."""
         return 'hicolor'
 
-    @staticmethod
-    def rc_file_content(file_url: str) -> dict:
+    def text_disabled_color(self) -> QtGui.QColor:
         """..."""
-        if os.path.isfile(file_url):
-            return DesktopFile(url=file_url).content
-        return {}
-
-    @staticmethod
-    def text_disabled_color(window_is_dark: bool) -> QtGui.QColor:
-        """..."""
-        if window_is_dark:
+        if self.window_is_dark():
             return QtGui.QColor(100, 100, 100, 255)
         return QtGui.QColor(150, 150, 150, 255)
 
@@ -122,16 +112,20 @@ class GlobalEnvSettings(object):
         """..."""
         return self.pallete.color(QtGui.QPalette.Window)
 
-    def window_border_color(
-            self, window_is_dark: bool) -> QtGui.QColor:
+    def window_border_color(self) -> QtGui.QColor:
         """..."""
-        if window_is_dark:
+        if self.window_is_dark():
             return color.rgba_to_qcolor(
                 color.lighten_rgba(color.qcolor_to_rgba(
                     self.pallete.color(QtGui.QPalette.Window)), 15))
 
         return color.rgba_to_qcolor(color.darken_rgba(color.qcolor_to_rgba(
             self.pallete.color(QtGui.QPalette.Window)), 30))
+
+    def window_is_dark(self) -> bool:
+        """..."""
+        return color.is_dark(color.qcolor_to_rgba(
+            self.window_background_color()))
 
     @staticmethod
     def window_border_radius() -> tuple:
@@ -150,13 +144,17 @@ class EnvSettingsPlasma(GlobalEnvSettings):
     def __init__(self):
         """..."""
         super().__init__()
+        filerc = os.path.join(os.environ['HOME'], '.config', 'kwinrc')
+        self.__kwinrc = (
+            DesktopFile(url=filerc).content if os.path.isfile(filerc) else {})
 
-        self.__kwinrc = self.rc_file_content(
-            os.path.join(os.environ['HOME'], '.config', 'kwinrc'))
-        self.__breezerc = self.rc_file_content(
-            os.path.join(os.environ['HOME'], '.config', 'breezerc'))
-        self.__kde_globals = self.rc_file_content(
-            os.path.join(os.environ['HOME'], '.config', 'kdeglobals'))
+        filerc = os.path.join(os.environ['HOME'], '.config', 'breezerc')
+        self.__breezerc = (
+            DesktopFile(url=filerc).content if os.path.isfile(filerc) else {})
+
+        filerc = os.path.join(os.environ['HOME'], '.config', 'kdeglobals')
+        self.__kde_globals = (
+            DesktopFile(url=filerc).content if os.path.isfile(filerc) else {})
 
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
@@ -244,14 +242,10 @@ class EnvSettingsPlasma(GlobalEnvSettings):
             return self.__kde_globals[group][key]
         return None
 
-    def text_disabled_color(self, window_is_dark: bool):
+    def text_disabled_color(self) -> QtGui.QColor:
         """..."""
-        cor = self.pallete.color(
+        return self.pallete.color(
             QtGui.QPalette.Disabled, QtGui.QPalette.Text)
-
-        if window_is_dark:
-            return cor
-        return cor
 
     @staticmethod
     def window_border_radius() -> tuple:
@@ -286,11 +280,10 @@ class EnvSettingsGnome(GlobalEnvSettings):
         """..."""
         return 1.0
 
-    def contextmenubutton_bg_hover_color(
-            self, window_is_dark: bool) -> QtGui.QColor:
+    def contextmenubutton_bg_hover_color(self) -> QtGui.QColor:
         """..."""
         cor = self.pallete.color(QtGui.QPalette.AlternateBase)
-        if window_is_dark:
+        if self.window_is_dark():
             return cor
         return cor
 
@@ -470,10 +463,9 @@ class EnvSettingsXFCE(GlobalEnvSettings):
             '  background-color: rgba(127, 127, 127, 0.2);'
             '}')
 
-    def window_border_color(
-            self, window_is_dark: bool) -> QtGui.QColor:
+    def window_border_color(self) -> QtGui.QColor:
         """..."""
-        if window_is_dark:
+        if self.window_is_dark():
             return color.rgba_to_qcolor(
                 color.lighten_rgba(color.qcolor_to_rgba(
                     self.pallete.color(QtGui.QPalette.Window)), 30))

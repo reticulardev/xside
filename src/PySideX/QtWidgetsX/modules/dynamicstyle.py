@@ -29,9 +29,9 @@ class DynamicStyle(object):
         self.__is_dark = color.is_dark(
             color.qcolor_to_rgba(self.__background_color))
         self.__border_color = self.__gui_env.settings(
-            ).window_border_color(self.__is_dark)
+            ).window_border_color()
         self.__selection_color = self.__gui_env.settings(
-            ).contextmenubutton_bg_hover_color(self.__is_dark)
+            ).contextmenubutton_bg_hover_color()
         self.__selection_alpha = self.__gui_env.settings(
             ).contextmenubutton_bg_hover_alpha()
         self.__ctxmenu_bd_radius = self.__gui_env.settings(
