@@ -29,12 +29,10 @@ class GlobalEnvSettings(object):
         """..."""
         return 4
 
-    @staticmethod
-    def contextmenu_separator_color(window_is_dark: bool) -> QtGui.QColor:
+    def contextmenu_separator_color(
+            self, window_is_dark: bool) -> QtGui.QColor:
         """..."""
-        if window_is_dark:
-            return QtGui.QColor(70, 70, 70, 255)
-        return QtGui.QColor(220, 220, 220, 255)
+        return self.window_border_color(window_is_dark)
 
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
@@ -123,7 +121,13 @@ class GlobalEnvSettings(object):
     def window_border_color(
             self, window_is_dark: bool) -> QtGui.QColor:
         """..."""
-        return self.contextmenu_separator_color(window_is_dark)
+        if window_is_dark:
+            return color.rgba_to_qcolor(
+                color.lighten_rgba(color.qcolor_to_rgba(
+                    self.pallete.color(QtGui.QPalette.Window)), 15))
+
+        return color.rgba_to_qcolor(color.darken_rgba(color.qcolor_to_rgba(
+            self.pallete.color(QtGui.QPalette.Window)), 30))
 
     @staticmethod
     def window_border_radius() -> tuple:
@@ -150,14 +154,13 @@ class EnvSettingsPlasma(GlobalEnvSettings):
         self.__kde_globals = self.rc_file_content(
             os.path.join(os.environ['HOME'], '.config', 'kdeglobals'))
 
-    def contextmenu_separator_color(
-            self, window_is_dark: bool) -> QtGui.QColor:
-        """..."""
-        cor = self.pallete.color(QtGui.QPalette.Window.Mid)
-        if window_is_dark:
-            return cor
-        return QtGui.QColor(cor.red(), cor.green(), cor.blue(), 127)
-
+    # def contextmenu_separator_color(
+    #         self, window_is_dark: bool) -> QtGui.QColor:
+    #     """..."""
+    #     cor = self.pallete.color(QtGui.QPalette.Window.Mid)
+    #     if window_is_dark:
+    #         return cor
+    #     return QtGui.QColor(cor.red(), cor.green(), cor.blue(), 127)
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
@@ -249,14 +252,6 @@ class EnvSettingsPlasma(GlobalEnvSettings):
         cor = self.pallete.color(
             QtGui.QPalette.Disabled, QtGui.QPalette.Text)
 
-        if window_is_dark:
-            return cor
-        return cor
-
-    def window_border_color(
-            self, window_is_dark: bool) -> QtGui.QColor:
-        """..."""
-        cor = self.contextmenu_separator_color(window_is_dark)
         if window_is_dark:
             return cor
         return cor
@@ -451,7 +446,7 @@ class EnvSettingsXFCE(EnvSettingsGnome):
             '  padding: 2px 1px 1px 2px;'
             '}'
             'QControlButton:hover {'
-            '  background-color: rgba(127, 127, 127, 0.3);'
+            '  background-color: rgba(127, 127, 127, 0.2);'
             '}')
 
 

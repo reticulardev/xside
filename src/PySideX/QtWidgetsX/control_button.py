@@ -35,18 +35,15 @@ class QControlButton(QtWidgets.QToolButton):
             2 is the close button
         """
         super().__init__(*args, **kwargs)
-        # Param
         self.__toplevel = toplevel
         self.__button_id = button_id
 
-        # Flags
-        self.__buttons_schema = {0: 'minimize', 1: 'maximize', 2: 'close'}
-        self.__background_color = None
-        self.__is_dark = self.__is_dark_tone()
         self.__gui_env = GuiEnv(
             self.__toplevel.platform().operational_system(),
             self.__toplevel.platform().desktop_environment())
-
+        self.__buttons_schema = {0: 'minimize', 1: 'maximize', 2: 'close'}
+        self.__background_color = None
+        self.__is_dark = self.__is_dark_tone()
         self.__maximize_or_restore_icon = 'maximize'
         self.__toplevel.resize_event_signal.connect(
             self.__check_maximize_and_restore_icon)
@@ -97,11 +94,8 @@ class QControlButton(QtWidgets.QToolButton):
 
     def __is_dark_tone(self) -> bool:
         # ...
-        palette = self.__toplevel.color_by_state_name('window-background')
-        self.__background_color = (
-            palette.red(), palette.green(), palette.blue(), palette.alpha())
-
-        return color.is_dark(self.__background_color)
+        return color.is_dark(color.qcolor_to_rgba(
+            self.__gui_env.settings().window_background_color()))
 
     def __check_maximize_and_restore_icon(
             self, event: QtGui.QResizeEvent) -> None:

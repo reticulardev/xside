@@ -53,3 +53,8 @@ def rgba_to_hex(color: tuple) -> str:
     """..."""
     return "#{:02x}{:02x}{:02x}{:02x}".format(
         color[0], color[1], color[2], color[3])
+
+
+def rgba_to_qcolor(rgba: tuple) -> QtGui.QColor:
+    """..."""
+    return QtGui.QColor(rgba[0], rgba[1], rgba[2], rgba[3])

@@ -14,27 +14,22 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 class DynamicStyle(object):
     """..."""
     def __init__(self, toplevel: QtWidgets.QMainWindow) -> None:
-        """...self.__gui_env.settings().control_button_style("""
-        # Param
+        """..."""
         self.__toplevel = toplevel
 
-        # Settings
         self.__gui_env = GuiEnv(
             self.__toplevel.platform().operational_system(),
             self.__toplevel.platform().desktop_environment(),
             self.__toplevel.follow_platform())
 
-        # Properties
-        self.__border_radius = self.__gui_env.settings().window_border_radius()
-        self.__border_color = self.__toplevel.color_by_state_name(
-            'window-border')
-        self.__background_color = self.__toplevel.color_by_state_name(
-            'window-background')
-        self.__is_dark = color.is_dark((
-            self.__background_color.red(),
-            self.__background_color.green(),
-            self.__background_color.blue(),
-            self.__background_color.alpha()))
+        self.__border_radius = self.__gui_env.settings(
+            ).window_border_radius()
+        self.__background_color = self.__gui_env.settings(
+            ).window_background_color()
+        self.__is_dark = color.is_dark(
+            color.qcolor_to_rgba(self.__background_color))
+        self.__border_color = self.__gui_env.settings(
+            ).window_border_color(self.__is_dark)
         self.__selection_color = self.__gui_env.settings(
             ).contextmenubutton_bg_hover_color(self.__is_dark)
         self.__selection_alpha = self.__gui_env.settings(
@@ -101,13 +96,13 @@ class DynamicStyle(object):
             '}'
             'QQuickContextMenuButton:hover {'
             'background-color: rgba('
-            f'{self.__selection_color.red()}, '
-            f'{self.__selection_color.green()}, '
+            f'{self.__selection_color.red()},'
+            f'{self.__selection_color.green()},'
             f'{self.__selection_color.blue()},'
             f'{self.__selection_alpha});'
             'border: 1px solid rgba('
-            f'{self.__selection_color.red()}, '
-            f'{self.__selection_color.green()}, '
+            f'{self.__selection_color.red()},'
+            f'{self.__selection_color.green()},'
             f'{self.__selection_color.blue()}, 0.9);'
             '}')
 

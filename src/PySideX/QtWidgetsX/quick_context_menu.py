@@ -160,12 +160,10 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__top_margin = self.__gui_env.settings().contextmenu_padding()
         self.__right_margin = self.__gui_env.settings().contextmenu_padding()
         self.__bottom_margin = self.__gui_env.settings().contextmenu_padding()
+        self.__is_dark = color.is_dark(color.qcolor_to_rgba(
+            self.__gui_env.settings().window_background_color()))
 
-        palette = self.__toplevel.color_by_state_name('window-background')
-        self.__is_dark = color.is_dark(
-            (palette.red(), palette.green(), palette.blue(), palette.alpha()))
-
-        # Main
+        # Main layout
         self.set_contents_margins(0, 0, 0, 0)
         self.__main_layout = QtWidgets.QHBoxLayout()
         self.__main_layout.set_contents_margins(5, 5, 5, 5)
