@@ -26,9 +26,9 @@ class Platform(object):
     def __de(self) -> str:
         # ...
         if self.__operational_system == 'linux':
-            if (os.environ['DESKTOP_SESSION'] == 'plasma' or  # cinnamon
-                    os.environ['XDG_SESSION_DESKTOP'] == 'KDE' or  # cinnamon
-                    os.environ['XDG_CURRENT_DESKTOP'] == 'KDE'):  # X-Cinnamon
+            if (os.environ['DESKTOP_SESSION'] == 'plasma' or
+                    os.environ['XDG_SESSION_DESKTOP'] == 'KDE' or
+                    os.environ['XDG_CURRENT_DESKTOP'] == 'KDE'):
                 return 'plasma'
 
             if (os.environ['DESKTOP_SESSION'] == 'cinnamon' or
@@ -36,7 +36,11 @@ class Platform(object):
                     os.environ['XDG_CURRENT_DESKTOP'] == 'X-Cinnamon'):
                 return 'cinnamon'
 
-            # TODO: gnome, xfce
+            if (os.environ['DESKTOP_SESSION'] == 'xubuntu' or
+                    os.environ['XDG_SESSION_DESKTOP'] == 'xubuntu' or
+                    os.environ['XDG_CURRENT_DESKTOP'] == 'XFCE'):
+                return 'xfce'
+
             return 'gnome'
 
         elif self.__operational_system == 'windows':

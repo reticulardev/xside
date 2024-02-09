@@ -346,7 +346,6 @@ class EnvSettingsGnome(GlobalEnvSettings):
             'QControlButton {'
             '  border: 0px;'
             '  border-radius: 10px;'
-            '  padding: 1px;'
             '  background-color: rgba(127, 127, 127, 0.2);'
             '  margin: 5px 4px 5px 4px;'
             '  padding: 2px 1px 1px 2px;'
@@ -430,6 +429,30 @@ class EnvSettingsXFCE(EnvSettingsGnome):
     def __init__(self):
         """..."""
         super().__init__()
+
+    def controlbutton_order(self) -> tuple:
+        """XAI M -> (2, 1, 0), (3,)
+
+        Close     Max       Min       Icon      Above all
+        X = 2     A = 1     I = 0     M = 3     F = 4
+
+        (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
+        """
+        return (3,), (0, 1, 2)
+
+    @staticmethod
+    def controlbutton_style(*args, **kwargs) -> str:
+        """..."""
+        return (
+            'QControlButton {'
+            '  border: 0px;'
+            '  border-radius: 3px;'
+            '  margin: 1px 1px 1px 1px;'
+            '  padding: 2px 1px 1px 2px;'
+            '}'
+            'QControlButton:hover {'
+            '  background-color: rgba(127, 127, 127, 0.3);'
+            '}')
 
 
 class EnvSettingsMac(GlobalEnvSettings):
