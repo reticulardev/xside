@@ -24,6 +24,10 @@ class GlobalEnvSettings(object):
         """..."""
         return 0.9
 
+    def contextmenu_border_color(self) -> QtGui.QColor:
+        """..."""
+        return self.window_border_color()
+
     def contextmenu_border_radius(self) -> int:
         """..."""
         return self.window_border_radius()[0]
@@ -100,8 +104,8 @@ class GlobalEnvSettings(object):
     def text_disabled_color(self) -> QtGui.QColor:
         """..."""
         if self.window_is_dark():
-            return QtGui.QColor(100, 100, 100, 255)
-        return QtGui.QColor(150, 150, 150, 255)
+            return QtGui.QColor(170, 170, 170, 255)
+        return QtGui.QColor(120, 120, 120, 255)
 
     def window_accent_color(self) -> QtGui.QColor:
         """..."""
@@ -111,6 +115,18 @@ class GlobalEnvSettings(object):
     def window_background_color(self) -> QtGui.QColor:
         """..."""
         return self.pallete.color(QtGui.QPalette.Window)
+
+    def window_background_darker_color(self) -> QtGui.QColor:
+        """..."""
+        step = 4 if self.window_is_dark() else 10
+        return color.rgba_to_qcolor(color.darken_rgba(
+            color.qcolor_to_rgba(self.window_background_color()), step))
+
+    def window_background_lighter_color(self) -> QtGui.QColor:
+        """..."""
+        step = 4 if self.window_is_dark() else 5
+        return color.rgba_to_qcolor(color.lighten_rgba(
+            color.qcolor_to_rgba(self.window_background_color()), step))
 
     def window_border_color(self) -> QtGui.QColor:
         """..."""
@@ -415,6 +431,17 @@ class EnvSettingsXFCE(GlobalEnvSettings):
         """..."""
         super().__init__()
 
+    @staticmethod
+    def contextmenu_bg_alpha() -> float:
+        """..."""
+        return 1.0
+
+    def contextmenu_border_color(self) -> QtGui.QColor:
+        """..."""
+        if self.window_is_dark():
+            return QtGui.QColor(35, 35, 35, 255)
+        return QtGui.QColor(180, 180, 180, 255)
+
     def contextmenu_border_radius(self) -> int:
         """..."""
         return 0
@@ -423,6 +450,10 @@ class EnvSettingsXFCE(GlobalEnvSettings):
     def contextmenu_padding() -> int:
         """..."""
         return 1
+
+    def contextmenu_separator_color(self) -> QtGui.QColor:
+        """..."""
+        return self.contextmenu_border_color()
 
     @staticmethod
     def contextmenu_separator_margin() -> tuple:

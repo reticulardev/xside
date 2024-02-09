@@ -34,6 +34,8 @@ class DynamicStyle(object):
             ).contextmenubutton_bg_hover_color()
         self.__selection_alpha = self.__gui_env.settings(
             ).contextmenubutton_bg_hover_alpha()
+        self.__ctxmenubutton_bd_color = self.__gui_env.settings(
+            ).contextmenu_border_color()
         self.__ctxmenu_bd_radius = self.__gui_env.settings(
             ).contextmenu_border_radius()
         self.__ctxmenubutton_padding = self.__gui_env.settings(
@@ -80,10 +82,10 @@ class DynamicStyle(object):
             f'{self.__background_color.blue()},'
             f'{self.__gui_env.settings().contextmenu_bg_alpha()});'
             'border: 1px solid rgba('
-            f'{self.__border_color.red()},'
-            f'{self.__border_color.green()},'
-            f'{self.__border_color.blue()},'
-            f'{self.__border_color.alpha_f()});'
+            f'{self.__ctxmenubutton_bd_color.red()},'
+            f'{self.__ctxmenubutton_bd_color.green()},'
+            f'{self.__ctxmenubutton_bd_color.blue()},'
+            f'{self.__ctxmenubutton_bd_color.alpha_f()});'
             f'border-radius: {self.__ctxmenu_bd_radius}px;'
             '}'
             'QQuickContextMenuButton {'
