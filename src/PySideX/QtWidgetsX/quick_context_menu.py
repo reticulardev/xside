@@ -32,30 +32,41 @@ class QQuickContextMenuSeparator(QtWidgets.QFrame):
         self.set_palette(palette)
 
 
+class QQuickContextMenuButtonLabel(QtWidgets.QLabel):
+    """..."""
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        """..."""
+
+
 class QQuickContextMenuButton(QtWidgets.QFrame):
     """..."""
     def __init__(
             self,
+            toplevel: QApplicationWindow,
             context_menu: QtWidgets.QWidget,
             text: str,
             receiver: callable,
             icon: QtGui.QIcon | None = None,
             shortcut: QtGui.QKeySequence | None = None,
-            shortcut_color: QtGui.QColor | None = None,
-            is_dark: bool = False,
+            gui_env=None,
             *args, **kwargs) -> None:
         """..."""
         super().__init__(*args, **kwargs)
         self.set_contents_margins(0, 0, 0, 0)
 
+        self.__toplevel = toplevel
         self.__context_menu = context_menu
         self.__text = text
         self.__receiver = receiver
         self.__icon = icon
         self.__shortcut = shortcut
-        self.__shortcut_color = shortcut_color
-        self.__is_dark = is_dark
+        self.__gui_env = gui_env
 
+        self.__shortcut_color = self.__gui_env.settings().text_disabled_color()
+        self.__is_dark = self.__gui_env.settings().window_is_dark()
+        self.__normal_style = self.__get_normal_style()
+        self.__hover_style = self.__get_hover_style()
         self.__main_layout = QtWidgets.QHBoxLayout()
         self.__main_layout.set_contents_margins(0, 0, 0, 0)
         self.__main_layout.set_spacing(0)
@@ -72,9 +83,9 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         icon_label.set_alignment(QtCore.Qt.AlignLeft)
         self.__left_layout.add_widget(icon_label)
 
-        text_label = QtWidgets.QLabel(self.__text)
-        text_label.set_alignment(QtCore.Qt.AlignLeft)
-        self.__left_layout.add_widget(text_label)
+        self.__text_label = QQuickContextMenuButtonLabel(self.__text)
+        self.__text_label.set_alignment(QtCore.Qt.AlignLeft)
+        self.__left_layout.add_widget(self.__text_label)
 
         txt_shortcut = self.__shortcut.to_string() if self.__shortcut else ' '
         shortcut_label = QtWidgets.QLabel(txt_shortcut)
@@ -105,6 +116,35 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
                                      f'context-menu-item{symbolic}.svg')
             self.__icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
 
+    def __get_hover_style(self):
+        style = '; '.join(
+            [x.replace('QQuickContextMenuButtonLabel', '').replace(
+                '{', '').replace('hover', '').strip(':').strip()
+             for x in self.__toplevel.style_sheet().split('}')
+             if 'QQuickContextMenuButtonLabel' in x and 'hover' in x]
+            [-1].split(';'))
+        if style:
+            return style
+
+        fg = self.__gui_env.settings(
+            ).contextmenubutton_foreground_hover_color()
+        return (
+            'color: rgba'
+            f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
+
+    def __get_normal_style(self):
+        style = [x.replace('QQuickContextMenuButtonLabel', '').replace(
+                '{', '').replace('hover', '').replace(':', '').strip()
+             for x in self.__toplevel.style_sheet().split('}')
+             if 'QQuickContextMenuButtonLabel' in x and 'hover' not in x]
+        if style:
+            return '; '.join(style[-1].split(';'))
+
+        fg = self.__gui_env.settings().window_foreground_color()
+        return (
+            'color: rgba'
+            f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
+
     def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
         """..."""
         # if self.under_mouse():
@@ -117,6 +157,14 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         if self.under_mouse():
             self.__receiver()
             self.__context_menu.close()
+
+    def enter_event(self, event: QtGui.QEnterEvent) -> None:
+        logging.info(event)
+        self.__text_label.set_style_sheet(self.__hover_style)
+
+    def leave_event(self, event: QtGui.QEnterEvent) -> None:
+        logging.info(event)
+        self.__text_label.set_style_sheet(self.__normal_style)
 
 
 class QQuickContextMenu(QtWidgets.QFrame):
@@ -160,8 +208,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__top_margin = self.__gui_env.settings().contextmenu_padding()
         self.__right_margin = self.__gui_env.settings().contextmenu_padding()
         self.__bottom_margin = self.__gui_env.settings().contextmenu_padding()
-        self.__is_dark = color.is_dark(color.qcolor_to_rgba(
-            self.__gui_env.settings().window_background_color()))
+        self.__is_dark = self.__gui_env.settings().window_is_dark()
 
         # Main layout
         self.set_contents_margins(0, 0, 0, 0)
@@ -211,8 +258,8 @@ class QQuickContextMenu(QtWidgets.QFrame):
                 self.__left_margin, 0, self.__right_margin, self.__spacing)
 
         ctx_btn = QQuickContextMenuButton(
-            self, text, receiver, icon, shortcut, self.__gui_env.settings(
-                ).text_disabled_color(), self.__is_dark)
+            self.__toplevel, self, text, receiver, icon, shortcut,
+            self.__gui_env)
         ctx_btn.set_style_sheet(self.__style_saved)
         ctx_btn_l.add_widget(ctx_btn)
 

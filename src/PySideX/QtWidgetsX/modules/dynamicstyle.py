@@ -17,34 +17,36 @@ class DynamicStyle(object):
         """..."""
         self.__toplevel = toplevel
 
-        self.__gui_env = GuiEnv(
+        self.__env = GuiEnv(
             self.__toplevel.platform().operational_system(),
             self.__toplevel.platform().desktop_environment(),
             self.__toplevel.follow_platform())
 
-        self.__win_is_dark = self.__gui_env.settings(
+        self.__win_is_dark = self.__env.settings(
             ).window_is_dark()
-        self.__win_background_color = self.__gui_env.settings(
+        self.__win_background_color = self.__env.settings(
             ).window_background_color()
-        self.__win_border_radius = self.__gui_env.settings(
+        self.__win_border_radius = self.__env.settings(
             ).window_border_radius()
-        self.__win_border_color = self.__gui_env.settings(
+        self.__win_border_color = self.__env.settings(
             ).window_border_color()
 
-        self.__ctxmenu_background_color = self.__gui_env.settings(
+        self.__ctxmenu_background_color = self.__env.settings(
             ).contextmenu_background_color()
-        self.__ctxmenu_border_color = self.__gui_env.settings(
+        self.__ctxmenu_border_color = self.__env.settings(
             ).contextmenu_border_color()
-        self.__ctxmenu_border_radius = self.__gui_env.settings(
+        self.__ctxmenu_border_radius = self.__env.settings(
             ).contextmenu_border_radius()
 
-        self.__ctxmenubutton_background_hover_color = self.__gui_env.settings(
+        self.__ctxmenubutton_background_hover_color = self.__env.settings(
             ).contextmenubutton_background_hover_color()
-        self.__ctxmenubutton_border_hover_color = self.__gui_env.settings(
+        self.__ctxmenubutton_border_hover_color = self.__env.settings(
             ).contextmenubutton_border_hover_color()
-        self.__ctxmenubutton_border_radius = self.__gui_env.settings(
+        self.__ctxmenubutton_border_radius = self.__env.settings(
             ).contextmenubutton_border_radius()
-        self.__ctxmenubutton_padding = self.__gui_env.settings(
+        self.__ctxtmenubutton_foreground_hover_color = self.__env.settings(
+            ).contextmenubutton_foreground_hover_color()
+        self.__ctxmenubutton_padding = self.__env.settings(
             ).contextmenubutton_padding()
 
     def build_style(self) -> str:
@@ -102,6 +104,11 @@ class DynamicStyle(object):
             f'border-radius: {self.__ctxmenubutton_border_radius}px;'
             '}'
             'QQuickContextMenuButton:hover {'
+            'color: rgba('
+            f'{self.__ctxtmenubutton_foreground_hover_color.red()},'
+            f'{self.__ctxtmenubutton_foreground_hover_color.green()},'
+            f'{self.__ctxtmenubutton_foreground_hover_color.blue()},'
+            f'{self.__ctxtmenubutton_foreground_hover_color.alpha()});'
             'background-color: rgba('
             f'{self.__ctxmenubutton_background_hover_color.red()},'
             f'{self.__ctxmenubutton_background_hover_color.green()},'
@@ -112,6 +119,13 @@ class DynamicStyle(object):
             f'{self.__ctxmenubutton_border_hover_color.green()},'
             f'{self.__ctxmenubutton_border_hover_color.blue()},'
             f'{self.__ctxmenubutton_border_hover_color.alpha()});'
+            '}'
+            'QQuickContextMenuButtonLabel:hover {'
+            'color: rgba('
+            f'{self.__ctxtmenubutton_foreground_hover_color.red()},'
+            f'{self.__ctxtmenubutton_foreground_hover_color.green()},'
+            f'{self.__ctxtmenubutton_foreground_hover_color.blue()},'
+            f'{self.__ctxtmenubutton_foreground_hover_color.alpha()});'
             '}')
 
         style_path = os.path.join(SRC_DIR, 'static', 'style.qss')

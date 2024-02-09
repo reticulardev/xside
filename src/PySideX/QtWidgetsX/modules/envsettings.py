@@ -63,6 +63,10 @@ class GlobalEnvSettings(object):
         contextmenu_bdr = self.contextmenu_border_radius()
         return contextmenu_bdr - 4 if contextmenu_bdr > 4 else contextmenu_bdr
 
+    def contextmenubutton_foreground_hover_color(self) -> QtGui.QColor:
+        """..."""
+        return self.window_foreground_color()
+
     @staticmethod
     def contextmenubutton_padding() -> tuple:
         """..."""
@@ -138,6 +142,11 @@ class GlobalEnvSettings(object):
 
         return color.rgba_to_qcolor(color.darken_rgba(color.qcolor_to_rgba(
             self.pallete.color(QtGui.QPalette.Window)), 30))
+
+    def window_foreground_color(self) -> QtGui.QColor:
+        """..."""
+        return self.pallete.color(
+            QtGui.QPalette.Active, QtGui.QPalette.WindowText)
 
     def window_is_dark(self) -> bool:
         """..."""
@@ -462,6 +471,10 @@ class EnvSettingsXFCE(GlobalEnvSettings):
         return color.rgba_to_qcolor(color.darken_rgba(color.qcolor_to_rgba(
             self.window_accent_color()), 50))
 
+    def contextmenubutton_foreground_hover_color(self) -> QtGui.QColor:
+        """..."""
+        return QtGui.QColor(255, 255, 255, 255)
+
     def contextmenu_border_radius(self) -> int:
         """..."""
         return 0
@@ -529,7 +542,7 @@ class EnvSettingsXFCE(GlobalEnvSettings):
     @staticmethod
     def window_border_radius() -> tuple:
         """..."""
-        return 4, 4, 0, 0
+        return 8, 8, 0, 0
 
 
 class EnvSettingsMac(GlobalEnvSettings):
