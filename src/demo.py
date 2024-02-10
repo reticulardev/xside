@@ -126,17 +126,19 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
                 'QToolButton:hover {'
                 '  background: transparent;'
                 '  background-color: rgba(100, 100, 100, 0.3);}'
-                'QContextMenu {'
+                'QQuickContextMenu {'
                 '  background-color: rgba(44, 44, 50, 0.9);'
                 '  border: 1px solid #283690;}'
-                'QContextMenu {'
-                '  border: 1px solid rgba(125, 77, 136, 0.6);}'
+                'QQuickContextMenuButton:hover {'
+                f' background-color: {accent_color};' + '}'
+                'QQuickContextMenuButtonLabel {'
+                '  color: white;}'
+                'QQuickContextMenuButtonLabel:hover {'
+                '  color: yellow;}'
                 'QPushButton {'
                 '  background-color: #363636;}'
                 'QPushButton:hover {'
-                f' background-color: {accent_color};' + '}'
-                'QContextMenuButton {'
-                '  border: 1px solid rgba(77, 125, 77, 0.6);}')
+                f' background-color: {accent_color};' + '}')
             self.set_style_button.set_text('Reset style')
         else:
             self.reset_style()
@@ -267,11 +269,12 @@ class Window(QtWidgetsX.QApplicationWindow):
             '  background-color: rgba(100, 100, 100, 0.5);'
             '}'
             'QQuickContextMenu {'
-            '  border: 1px solid rgba(125, 77, 136, 0.6);'
+            '  border: 1px solid #0000FF;'
             '}'
             'QQuickContextMenuButton {'
-            '  border: 1px solid rgba(77, 125, 77, 0.6);'
-            '}')
+            '  border: 1px solid #FF0000;'
+            '}'
+            'QQuickContextMenuButtonLabel {color: #FF0000;}')
 
     def on_reset_style(self):
         self.reset_style()

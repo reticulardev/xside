@@ -65,6 +65,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 
         self.__shortcut_color = self.__gui_env.settings().text_disabled_color()
         self.__is_dark = self.__gui_env.settings().window_is_dark()
+
         self.__normal_style = self.__get_normal_style()
         self.__hover_style = self.__get_hover_style()
         self.__main_layout = QtWidgets.QHBoxLayout()
@@ -100,6 +101,9 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         shortcut_label.set_contents_margins(20, 0, 0, 0)
         shortcut_label.set_alignment(QtCore.Qt.AlignRight)
         self.__main_layout.add_widget(shortcut_label)
+
+        self.__toplevel.set_style_signal.connect(self.__set_style_signal)
+        self.__toplevel.reset_style_signal.connect(self.__set_style_signal)
 
     def text(self) -> str:
         """..."""
@@ -157,6 +161,11 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         if self.under_mouse():
             self.__receiver()
             self.__context_menu.close()
+
+    def __set_style_signal(self) -> None:
+        self.__normal_style = self.__get_normal_style()
+        self.__hover_style = self.__get_hover_style()
+        self.__text_label.set_style_sheet(self.__normal_style)
 
     def enter_event(self, event: QtGui.QEnterEvent) -> None:
         logging.info(event)
@@ -361,8 +370,8 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__style_saved = self.__toplevel.style_sheet()
 
     def __style(self) -> str:
-        if self.__style_saved:
-            return self.__style_saved.replace(
-                '#QQuickContextMenu', 'QQuickContextMenu').replace(
-                'QQuickContextMenu', '#QQuickContextMenu')
-        return self.__toplevel.style_sheet()
+        if not self.__style_saved:
+            self.__style_saved = self.__toplevel.style_sheet()
+        return self.__style_saved.replace(
+            '#QQuickContextMenu', 'QQuickContextMenu').replace(
+            'QQuickContextMenu', ' #QQuickContextMenu')
