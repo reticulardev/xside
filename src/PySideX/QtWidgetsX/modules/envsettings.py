@@ -555,7 +555,7 @@ class EnvSettingsMate(EnvSettingsXFCE):
     def contextmenu_border_color(self) -> QtGui.QColor:
         """..."""
         if self.window_is_dark():
-            return QtGui.QColor(100, 100, 100, 255)
+            return QtGui.QColor(80, 80, 80, 255)
         return QtGui.QColor(180, 180, 180, 255)
 
     def contextmenu_border_radius(self) -> int:
@@ -565,7 +565,7 @@ class EnvSettingsMate(EnvSettingsXFCE):
     def contextmenu_separator_color(self) -> QtGui.QColor:
         """..."""
         if self.window_is_dark():
-            return QtGui.QColor(100, 100, 100, 255)
+            return QtGui.QColor(80, 80, 80, 255)
         return QtGui.QColor(200, 200, 200, 255)
 
     def contextmenubutton_background_hover_color(self) -> QtGui.QColor:
@@ -594,8 +594,8 @@ class EnvSettingsMate(EnvSettingsXFCE):
             '  border: 0px;'
             '  border-radius: 10px;'
             '  background-color: rgba(127, 127, 127, 0.2);'
-            '  margin: 5px 4px 5px 4px;'
-            '  padding: 2px 1px 1px 2px;'
+            '  margin: 2px 4px 2px 4px;'
+            '  padding: 1px;'
             '}'
             'QControlButton:hover {'
             '  background-color: rgba(127, 127, 127, 0.3);'
