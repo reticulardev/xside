@@ -32,9 +32,9 @@ class GlobalEnvSettings(object):
         return self.window_border_radius()[0]
 
     @staticmethod
-    def contextmenu_padding() -> int:
+    def contextmenu_padding() -> tuple:
         """..."""
-        return 4
+        return 4, 4, 4, 4
 
     def contextmenu_separator_color(self) -> QtGui.QColor:
         """..."""
@@ -305,9 +305,9 @@ class EnvSettingsGnome(GlobalEnvSettings):
         return 1.0
 
     @staticmethod
-    def contextmenu_padding() -> int:
+    def contextmenu_padding() -> tuple:
         """..."""
-        return 6
+        return 6, 6, 6, 6
 
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
@@ -480,9 +480,9 @@ class EnvSettingsXFCE(GlobalEnvSettings):
         return 0
 
     @staticmethod
-    def contextmenu_padding() -> int:
+    def contextmenu_padding() -> tuple:
         """..."""
-        return 1
+        return 1, 6, 1, 6
 
     def contextmenu_separator_color(self) -> QtGui.QColor:
         """..."""
@@ -552,6 +552,22 @@ class EnvSettingsMate(EnvSettingsXFCE):
         """..."""
         super().__init__()
 
+    def contextmenu_border_color(self) -> QtGui.QColor:
+        """..."""
+        if self.window_is_dark():
+            return QtGui.QColor(100, 100, 100, 255)
+        return QtGui.QColor(180, 180, 180, 255)
+
+    def contextmenu_border_radius(self) -> int:
+        """..."""
+        return self.window_border_radius()[0]
+
+    def contextmenu_separator_color(self) -> QtGui.QColor:
+        """..."""
+        if self.window_is_dark():
+            return QtGui.QColor(100, 100, 100, 255)
+        return QtGui.QColor(200, 200, 200, 255)
+
     def contextmenubutton_background_hover_color(self) -> QtGui.QColor:
         """..."""
         if self.window_is_dark():
@@ -561,6 +577,10 @@ class EnvSettingsMate(EnvSettingsXFCE):
     def contextmenubutton_border_hover_color(self) -> QtGui.QColor:
         """..."""
         return self.contextmenubutton_background_hover_color()
+
+    def contextmenubutton_border_radius(self) -> int:
+        """..."""
+        return 0
 
     def contextmenubutton_foreground_hover_color(self) -> QtGui.QColor:
         """..."""

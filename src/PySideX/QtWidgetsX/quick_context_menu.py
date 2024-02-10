@@ -213,10 +213,11 @@ class QQuickContextMenu(QtWidgets.QFrame):
             self.__toplevel.platform().desktop_environment())
 
         self.__spacing = self.__gui_env.settings().contextmenu_spacing()
-        self.__left_margin = self.__gui_env.settings().contextmenu_padding()
-        self.__top_margin = self.__gui_env.settings().contextmenu_padding()
-        self.__right_margin = self.__gui_env.settings().contextmenu_padding()
-        self.__bottom_margin = self.__gui_env.settings().contextmenu_padding()
+        self.__padding = self.__gui_env.settings().contextmenu_padding()
+        self.__left_margin = self.__padding[0]
+        self.__top_margin = self.__padding[1]
+        self.__right_margin = self.__padding[2]
+        self.__bottom_margin = self.__padding[3]
         self.__is_dark = self.__gui_env.settings().window_is_dark()
 
         # Main layout
