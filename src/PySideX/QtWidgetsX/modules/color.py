@@ -44,11 +44,6 @@ def lighten_hex(color: str, step: int = 10) -> str:
         rgba_light[0], rgba_light[1], rgba_light[2], rgba_light[3])
 
 
-def qcolor_to_rgba(qcolor: QtGui.QColor, alpha_float: bool = False) -> tuple:
-    alpha = qcolor.alpha_f() if alpha_float else qcolor.alpha()
-    return qcolor.red(), qcolor.green(), qcolor.blue(), alpha
-
-
 def rgba_to_hex(color: tuple) -> str:
     """..."""
     return "#{:02x}{:02x}{:02x}{:02x}".format(

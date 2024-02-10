@@ -17,7 +17,7 @@ class GlobalEnvSettings(object):
     """Base environment settings"""
 
     def __init__(self):
-        self.pallete = QtGui.QPalette()
+        self.palette = QtGui.QPalette()
 
     def contextmenu_background_color(self) -> QtGui.QColor:
         """..."""
@@ -114,18 +114,18 @@ class GlobalEnvSettings(object):
 
     def window_accent_color(self) -> QtGui.QColor:
         """..."""
-        return self.pallete.color(
+        return self.palette.color(
             QtGui.QPalette.Active, QtGui.QPalette.Highlight)
 
     def window_background_color(self) -> QtGui.QColor:
         """..."""
-        return self.pallete.color(QtGui.QPalette.Window)
+        return self.palette.color(QtGui.QPalette.Window)
 
     def window_background_darker_color(self) -> QtGui.QColor:
         """..."""
         step = 4 if self.window_is_dark() else 10
         return color.rgba_to_qcolor(color.darken_rgba(
-            color.qcolor_to_rgba(self.window_background_color()), step))
+            self.window_background_color().to_tuple(), step))
 
     def window_background_lighter_color(self) -> QtGui.QColor:
         """..."""
@@ -137,21 +137,20 @@ class GlobalEnvSettings(object):
         """..."""
         if self.window_is_dark():
             return color.rgba_to_qcolor(
-                color.lighten_rgba(color.qcolor_to_rgba(
-                    self.pallete.color(QtGui.QPalette.Window)), 15))
+                color.lighten_rgba(
+                    self.palette.color(QtGui.QPalette.Window).to_tuple(), 15))
 
         return color.rgba_to_qcolor(color.darken_rgba(color.qcolor_to_rgba(
-            self.pallete.color(QtGui.QPalette.Window)), 30))
+            self.palette.color(QtGui.QPalette.Window)), 30))
 
     def window_foreground_color(self) -> QtGui.QColor:
         """..."""
-        return self.pallete.color(
+        return self.palette.color(
             QtGui.QPalette.Active, QtGui.QPalette.WindowText)
 
     def window_is_dark(self) -> bool:
         """..."""
-        return color.is_dark(color.qcolor_to_rgba(
-            self.window_background_color()))
+        return color.is_dark(self.window_background_color().to_tuple())
 
     @staticmethod
     def window_border_radius() -> tuple:
@@ -184,7 +183,8 @@ class EnvSettingsPlasma(GlobalEnvSettings):
 
     def contextmenu_background_color(self) -> QtGui.QColor:
         """..."""
-        return self.window_background_color()
+        cor = self.window_background_color()
+        return QtGui.QColor(cor.red(), cor.green(), cor.blue(), 225)
 
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
@@ -283,7 +283,7 @@ class EnvSettingsPlasma(GlobalEnvSettings):
 
     def text_disabled_color(self) -> QtGui.QColor:
         """..."""
-        return self.pallete.color(
+        return self.palette.color(
             QtGui.QPalette.Disabled, QtGui.QPalette.Text)
 
     @staticmethod
@@ -321,7 +321,7 @@ class EnvSettingsGnome(GlobalEnvSettings):
 
     def contextmenubutton_background_hover_color(self) -> QtGui.QColor:
         """..."""
-        return self.pallete.color(QtGui.QPalette.AlternateBase)
+        return self.palette.color(QtGui.QPalette.AlternateBase)
 
     def contextmenubutton_border_hover_color(self) -> QtGui.QColor:
         """..."""
@@ -414,7 +414,7 @@ class EnvSettingsCinnamon(EnvSettingsGnome):
                 'window-close.svg')
 
             accent = self.window_accent_color()
-            accent_light = color.lighten_rgba(color.qcolor_to_rgba(accent), 20)
+            accent_light = color.lighten_rgba(accent.to_tuple(), 20)
             return (
                 'QControlButton {'
                 '  border: 0px;'
@@ -468,8 +468,8 @@ class EnvSettingsXFCE(GlobalEnvSettings):
 
     def contextmenubutton_border_hover_color(self) -> QtGui.QColor:
         """..."""
-        return color.rgba_to_qcolor(color.darken_rgba(color.qcolor_to_rgba(
-            self.window_accent_color()), 50))
+        return color.rgba_to_qcolor(
+            color.darken_rgba(self.window_accent_color().to_tuple(), 50))
 
     def contextmenubutton_foreground_hover_color(self) -> QtGui.QColor:
         """..."""
@@ -533,11 +533,11 @@ class EnvSettingsXFCE(GlobalEnvSettings):
         """..."""
         if self.window_is_dark():
             return color.rgba_to_qcolor(
-                color.lighten_rgba(color.qcolor_to_rgba(
-                    self.pallete.color(QtGui.QPalette.Window)), 30))
+                color.lighten_rgba(
+                    self.palette.color(QtGui.QPalette.Window).to_tuple(), 30))
 
         return color.rgba_to_qcolor(color.darken_rgba(color.qcolor_to_rgba(
-            self.pallete.color(QtGui.QPalette.Window)), 60))
+            self.palette.color(QtGui.QPalette.Window)), 60))
 
     @staticmethod
     def window_border_radius() -> tuple:

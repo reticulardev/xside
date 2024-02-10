@@ -46,8 +46,8 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__platform.desktop_environment(),
             self.__follow_platform)
 
-        self.__is_dark = color.is_dark(color.qcolor_to_rgba(
-            self.__gui_env.settings().window_background_color()))
+        self.__is_dark = color.is_dark(
+            self.__gui_env.settings().window_background_color().to_tuple())
 
         # Layout
         self.__central_widget = QtWidgets.QWidget()
@@ -208,8 +208,8 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__resize_border_size = self.__default_resize_border_size
         else:
             if visible:
-                if color.is_dark(color.qcolor_to_rgba(
-                        self.__gui_env.settings().window_background_color())):
+                if color.is_dark(self.__gui_env.settings(
+                        ).window_background_color().to_tuple()):
 
                     self.__shadow_effect.set_color(
                         QtGui.QColor(10, 10, 10, 180))

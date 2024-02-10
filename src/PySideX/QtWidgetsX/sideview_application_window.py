@@ -162,8 +162,8 @@ class QSideViewApplicationWindow(QApplicationWindow):
         self.__is_sideview_headerbar_left_control_set_as_visible = True
         self.__is_sideview_close_button_set_as_visible = False
         self.__sideview_width = 250
-        self.__sideview_color = color.qcolor_to_rgba(self.__gui_env.settings(
-            ).window_background_darker_color())
+        self.__sideview_color = self.__gui_env.settings(
+            ).window_background_darker_color().to_tuple()
 
         # Settings
         self.set_window_title('MPX Application Window')

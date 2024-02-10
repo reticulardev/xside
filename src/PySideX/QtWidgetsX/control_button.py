@@ -94,8 +94,8 @@ class QControlButton(QtWidgets.QToolButton):
 
     def __is_dark_tone(self) -> bool:
         # ...
-        return color.is_dark(color.qcolor_to_rgba(
-            self.__gui_env.settings().window_background_color()))
+        return color.is_dark(
+            self.__gui_env.settings().window_background_color().to_tuple())
 
     def __check_maximize_and_restore_icon(
             self, event: QtGui.QResizeEvent) -> None:
