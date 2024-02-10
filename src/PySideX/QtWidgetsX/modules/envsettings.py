@@ -131,7 +131,7 @@ class GlobalEnvSettings(object):
         """..."""
         step = 4 if self.window_is_dark() else 5
         return color.rgba_to_qcolor(color.lighten_rgba(
-            color.qcolor_to_rgba(self.window_background_color()), step))
+            self.window_background_color().to_tuple(), step))
 
     def window_border_color(self) -> QtGui.QColor:
         """..."""
@@ -140,8 +140,8 @@ class GlobalEnvSettings(object):
                 color.lighten_rgba(
                     self.palette.color(QtGui.QPalette.Window).to_tuple(), 15))
 
-        return color.rgba_to_qcolor(color.darken_rgba(color.qcolor_to_rgba(
-            self.palette.color(QtGui.QPalette.Window)), 30))
+        return color.rgba_to_qcolor(color.darken_rgba(
+            self.palette.color(QtGui.QPalette.Window).to_tuple(), 30))
 
     def window_foreground_color(self) -> QtGui.QColor:
         """..."""
@@ -536,13 +536,50 @@ class EnvSettingsXFCE(GlobalEnvSettings):
                 color.lighten_rgba(
                     self.palette.color(QtGui.QPalette.Window).to_tuple(), 30))
 
-        return color.rgba_to_qcolor(color.darken_rgba(color.qcolor_to_rgba(
-            self.palette.color(QtGui.QPalette.Window)), 60))
+        return color.rgba_to_qcolor(color.darken_rgba(
+            self.palette.color(QtGui.QPalette.Window).to_tuple(), 60))
 
     @staticmethod
     def window_border_radius() -> tuple:
         """..."""
         return 8, 8, 0, 0
+
+
+class EnvSettingsMate(EnvSettingsXFCE):
+    """..."""
+
+    def __init__(self):
+        """..."""
+        super().__init__()
+
+    def contextmenubutton_background_hover_color(self) -> QtGui.QColor:
+        """..."""
+        if self.window_is_dark():
+            return QtGui.QColor(62, 62, 62, 255)
+        return QtGui.QColor(222, 222, 222, 255)
+
+    def contextmenubutton_border_hover_color(self) -> QtGui.QColor:
+        """..."""
+        return self.contextmenubutton_background_hover_color()
+
+    def contextmenubutton_foreground_hover_color(self) -> QtGui.QColor:
+        """..."""
+        return self.window_foreground_color()
+
+    @staticmethod
+    def controlbutton_style(*args, **kwargs) -> str:
+        """..."""
+        return (
+            'QControlButton {'
+            '  border: 0px;'
+            '  border-radius: 10px;'
+            '  background-color: rgba(127, 127, 127, 0.2);'
+            '  margin: 5px 4px 5px 4px;'
+            '  padding: 2px 1px 1px 2px;'
+            '}'
+            'QControlButton:hover {'
+            '  background-color: rgba(127, 127, 127, 0.3);'
+            '}')
 
 
 class EnvSettingsMac(GlobalEnvSettings):
@@ -607,6 +644,9 @@ class GuiEnv(object):
 
                 if self.__desktop_environment == 'xfce':
                     return EnvSettingsXFCE()
+
+                if self.__desktop_environment == 'mate':
+                    return EnvSettingsMate()
 
                 return EnvSettingsGnome()
 

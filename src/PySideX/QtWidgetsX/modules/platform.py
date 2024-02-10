@@ -41,6 +41,11 @@ class Platform(object):
                     os.environ['XDG_CURRENT_DESKTOP'] == 'XFCE'):
                 return 'xfce'
 
+            if (os.environ['DESKTOP_SESSION'] == 'mate' or
+                    os.environ['XDG_SESSION_DESKTOP'] == 'mate' or
+                    os.environ['XDG_CURRENT_DESKTOP'] == 'MATE'):
+                return 'mate'
+
             return 'gnome'
 
         elif self.__operational_system == 'windows':
