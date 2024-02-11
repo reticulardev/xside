@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import re
 import sys
 
 from PySide6 import QtGui, QtWidgets
@@ -9,6 +10,48 @@ import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+class StyleParser(object):
+    """..."""
+    def __init__(self, style: str) -> None:
+        self.__style = style
+        self.__scopes = self.__split_scopes()
+
+    def scopes(self) -> dict:
+        return self.__scopes
+
+    def widget_scope(self, widget_name: str, propertie: str = None) -> str:
+        """..."""
+        for key, value in self.__scopes.items():
+            if widget_name in key and not propertie:
+                return value
+
+            if widget_name in key and propertie:
+                if propertie in key:
+                    return value
+        return ''
+
+    def __split_scopes(self) -> dict:
+        clean = re.sub(r'(/\*.+\*/)|(^#.+$)', r'', self.__style)
+
+        scopes = {}
+        for item in clean.replace('\n', '').replace('  ', ' ').split('}'):
+            if '{' in item:
+                key, value = item.split('{')
+                keys = key.split(',')
+                for k in keys:
+                    scopes[k.replace(' ', '').strip()] = value.replace(
+                        ';', '; ').replace(',', ', ').replace(
+                        ':', ': ').replace('  ', ' ').strip()
+
+        return scopes
+
+
+class StyleScopeParser(object):
+    """..."""
+    def __init__(self, scope_style: str) -> None:
+        self.__scope = scope_style
 
 
 class DynamicStyle(object):

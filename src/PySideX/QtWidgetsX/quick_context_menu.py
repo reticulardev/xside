@@ -8,6 +8,7 @@ from __feature__ import snake_case
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 import PySideX.QtWidgetsX.modules.color as color
+import PySideX.QtWidgetsX.modules.dynamicstyle as dynamicstyle
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -195,7 +196,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.set_window_flags(
             QtCore.Qt.FramelessWindowHint | QtCore.Qt.Popup)
 
-        # Flags
+        # Properties
         self.set_minimum_width(50)
         self.set_minimum_height(35)
 
@@ -204,6 +205,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__context_buttons = []
 
         self.__style_saved = None
+        self.__style_parser = None
         self.__point_x = None
         self.__point_y = None
 
@@ -369,10 +371,20 @@ class QQuickContextMenu(QtWidgets.QFrame):
 
     def __set_style_signal(self) -> None:
         self.__style_saved = self.__toplevel.style_sheet()
+        # self.__style_parser = dynamicstyle.StyleParser(self.__style_saved)
+        #
+        # print(self.__style_parser.widget_scope('QQuickContextMenuButton'))
+        # print(self.__style_parser.widget_scope(
+        #     'QQuickContextMenuButton', 'hover'))
+        # print('---')
 
     def __style(self) -> str:
         if not self.__style_saved:
             self.__style_saved = self.__toplevel.style_sheet()
-        return self.__style_saved.replace(
-            '#QQuickContextMenu', 'QQuickContextMenu').replace(
-            'QQuickContextMenu', ' #QQuickContextMenu')
+            self.__style_parser = dynamicstyle.StyleParser(self.__style_saved)
+
+        # return self.__style_saved.replace(
+        #     '#QQuickContextMenu', 'QQuickContextMenu').replace(
+        #     'QQuickContextMenu', ' #QQuickContextMenu')
+        return '#QQuickContextMenu {' + self.__style_parser.widget_scope(
+            'QQuickContextMenu') + '}'
