@@ -163,10 +163,11 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
     def __set_edge_position(self, event: QtCore.QEvent) -> None:
         # Saves the position of the window where the mouse cursor is
+        resize_area = self.__shadow_size - 3
         pos = event.position().to_point()  # QtGui.QHoverEvent(ev.clone())
         window_area = [
-            self.__shadow_size < pos.x() < self.width() - self.__shadow_size,
-            self.__shadow_size < pos.y() < self.height() - self.__shadow_size]
+            resize_area < pos.x() < self.width() - resize_area,
+            resize_area < pos.y() < self.height() - resize_area]
         if self.__shadow_is_disabled:
             window_area = [pos.x() < self.width(), pos.y() < self.height()]
 

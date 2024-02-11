@@ -72,7 +72,7 @@ class DynamicStyle(object):
                 f'{self.__win_border_color.red()},'
                 f'{self.__win_border_color.green()},'
                 f'{self.__win_border_color.blue()},'
-                f'{self.__win_border_color.alpha_f()});'
+                f'{self.__win_border_color.alpha()});'
                 f'border-top-left-radius: {self.__win_border_radius[0]};'
                 f'border-top-right-radius: {self.__win_border_radius[1]};'
                 f'border-bottom-right-radius: {self.__win_border_radius[2]};'

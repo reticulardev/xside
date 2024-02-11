@@ -60,11 +60,18 @@ class QWindowControlButtons(QtWidgets.QFrame):
             margin[0], margin[1], margin[2], margin[3])
 
         self.__layout = QtWidgets.QHBoxLayout(self)
-        self.__layout.set_contents_margins(2, 0, 2, 0)
+        self.__layout.set_spacing(
+            self.__gui_env.settings().windowcontrolbutton_spacing())
+        wmrg = self.__gui_env.settings().windowcontrolbutton_margin()
+        self.__layout.set_contents_margins(wmrg[0], wmrg[1], wmrg[2], wmrg[3])
 
+        m = self.__gui_env.settings().controlbutton_margin()
         self.__minimize_button = QControlButton(self.__toplevel, 0)
+        self.__minimize_button.set_contents_margins(m[0], m[1], m[2], m[3])
         self.__maximize_button = QControlButton(self.__toplevel, 1)
+        self.__maximize_button.set_contents_margins(m[0], m[1], m[2], m[3])
         self.__close_button = QControlButton(self.__toplevel, 2)
+        self.__close_button.set_contents_margins(m[0], m[1], m[2], m[3])
 
         self.__add_buttons_in_order()
 

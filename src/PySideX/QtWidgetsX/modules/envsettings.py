@@ -73,6 +73,11 @@ class GlobalEnvSettings(object):
         return 4, 6, 4, 6
 
     @staticmethod
+    def controlbutton_margin() -> tuple:
+        """..."""
+        return 2, 0, 2, 0
+
+    @staticmethod
     def controlbutton_order() -> tuple:
         """XAI M -> (2, 1, 0), (3,)
 
@@ -102,6 +107,11 @@ class GlobalEnvSettings(object):
         return False
 
     @staticmethod
+    def headerbar_margin() -> tuple:
+        """..."""
+        return 4, 4, 4, 4
+
+    @staticmethod
     def icon_theme_name() -> str:
         """..."""
         return 'hicolor'
@@ -111,6 +121,16 @@ class GlobalEnvSettings(object):
         if self.window_is_dark():
             return QtGui.QColor(170, 170, 170, 255)
         return QtGui.QColor(120, 120, 120, 255)
+
+    @staticmethod
+    def windowcontrolbutton_margin() -> tuple:
+        """..."""
+        return 2, 0, 2, 0
+
+    @staticmethod
+    def windowcontrolbutton_spacing() -> int:
+        """..."""
+        return 6
 
     def window_accent_color(self) -> QtGui.QColor:
         """..."""
@@ -617,6 +637,97 @@ class EnvSettingsWindows11(GlobalEnvSettings):
         """..."""
         super().__init__()
 
+    @staticmethod
+    def controlbutton_margin() -> tuple:
+        """..."""
+        return 0, 0, 0, 0
+
+    @staticmethod
+    def controlbutton_order() -> tuple:
+        """XAI M -> (2, 1, 0), (3,)
+
+        Close     Max       Min       Icon      Above all
+        X = 2     A = 1     I = 0     M = 3     F = 4
+
+        (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
+        """
+        return (3,), (0, 1, 2)
+
+    def controlbutton_style(
+            self, window_is_dark: bool,
+            button_name: str,
+            button_state: str) -> str:
+        """..."""
+        # window_is_dark: True or False
+        # button_name: 'minimize', 'maximize', 'restore' or 'close'
+        # button_state: 'normal', 'hover', 'inactive'
+
+        if button_name == 'minimize':
+            button_name = 'go-down'
+        elif button_name == 'maximize':
+            button_name = 'go-up'
+        elif button_name == 'restore':
+            button_name = 'window-restore'
+        else:
+            button_name = 'window-close'
+
+        if button_state == 'hover':
+            button_name += '-hover'
+        if button_state == 'inactive':
+            button_name += '-inactive'
+
+        if window_is_dark:
+            button_name += '-symbolic'
+
+        url_icon = os.path.join(
+            SRC_DIR, 'static',
+            'windows-11-control-buttons', button_name + '.svg')
+
+        return (
+            'QControlButton {'
+            f'background: url({url_icon}) center no-repeat;'
+            f'width: {44 if "close" in button_name else 42}px;'
+            'height: 26px;'
+            'border-radius: 0px;'
+            'border: 0px;'
+            'margin: 0px;'
+            '}')
+
+    @staticmethod
+    def headerbar_margin() -> tuple:
+        """..."""
+        return 0, 1, 0, 0
+
+    @staticmethod
+    def windowcontrolbutton_margin() -> tuple:
+        """..."""
+        return 0, 0, 0, 0
+
+    @staticmethod
+    def windowcontrolbutton_spacing() -> int:
+        """..."""
+        return 0
+
+    def window_border_color(self) -> QtGui.QColor:
+        """..."""
+        if self.window_is_dark():
+            return color.rgba_to_qcolor(
+                color.lighten_rgba(
+                    self.palette.color(QtGui.QPalette.Window).to_tuple(), 15))
+
+        return color.rgba_to_qcolor(color.darken_rgba(
+            self.palette.color(QtGui.QPalette.Window).to_tuple(), 50))
+
+    @staticmethod
+    def window_border_radius() -> tuple:
+        """..."""
+        return 8, 8, 0, 0
+
+    @staticmethod
+    def window_icon_margin() -> tuple:
+        """..."""
+        return 5, 2, 5, 2
+
 
 class EnvSettingsWindows10(EnvSettingsWindows11):
     """..."""
@@ -657,7 +768,7 @@ class GuiEnv(object):
             if self.__operational_system == 'linux':
 
                 if self.__desktop_environment == 'plasma':
-                    return EnvSettingsPlasma()
+                    return EnvSettingsWindows11()  # EnvSettingsPlasma()
 
                 if self.__desktop_environment == 'cinnamon':
                     return EnvSettingsCinnamon()
