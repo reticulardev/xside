@@ -768,7 +768,8 @@ class GuiEnv(object):
             if self.__operational_system == 'linux':
 
                 if self.__desktop_environment == 'plasma':
-                    return EnvSettingsWindows11()  # EnvSettingsPlasma()
+                    # EnvSettingsWindows11()  # EnvSettingsPlasma()
+                    return EnvSettingsPlasma()
 
                 if self.__desktop_environment == 'cinnamon':
                     return EnvSettingsCinnamon()
