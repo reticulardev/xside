@@ -21,31 +21,74 @@ class StyleParser(object):
     def scopes(self) -> dict:
         return self.__scopes
 
+    def style_sheet(self) -> str:
+        sheet = ''
+        for k, v in self.__scopes.items():
+            sheet += k + ' {' + v + '} '
+        return sheet
+
     def widget_scope(self, widget_name: str, propertie: str = None) -> str:
         """..."""
         for key, value in self.__scopes.items():
-            if widget_name in key and not propertie:
-                return value
-
-            if widget_name in key and propertie:
-                if propertie in key:
+            if not propertie:
+                if widget_name == key:
+                    return value
+            else:
+                if widget_name in key and propertie in key:
                     return value
         return ''
 
     def __split_scopes(self) -> dict:
-        clean = re.sub(r'(/\*.+\*/)|(^#.+$)', r'', self.__style)
+        sub = re.sub(r'(/\*.+\*/)|(^#.+$)', r'', self.__style)
+        clean = sub if sub else self.__style
 
         scopes = {}
-        for item in clean.replace('\n', '').replace('  ', ' ').split('}'):
-            if '{' in item:
-                key, value = item.split('{')
-                keys = key.split(',')
-                for k in keys:
-                    scopes[k.replace(' ', '').strip()] = value.replace(
-                        ';', '; ').replace(',', ', ').replace(
-                        ':', ': ').replace('  ', ' ').strip()
-
+        all_scopes = clean.replace('\n', '').replace('  ', ' ').split('}')
+        for scope in all_scopes:
+            if '{' in scope:
+                key, value = scope.split('{')
+                for k in key.split(','):
+                    k = self.__cleark(k)
+                    if k and k in scopes:
+                        value = self.__mesclar_iguais(value, scopes[k])
+                    scopes[k] = self.__clearv(value)
         return scopes
+
+    def __mesclar_iguais(self, new: str, old: str) -> str:
+        new_values = [self.__clearv(x) for x in new.split(';') if x]
+        old_values = [self.__clearv(x) for x in old.split(';') if x]
+        # new_keys = [self.__cleark(x.split(':')[0]) for x in new_values]
+        new_keys = [self.__cleark(self.__clearv(x).split(':')[0])
+                    for x in new.split(';') if x]
+
+        for old_value in old_values:
+            old_key = self.__cleark(old_value.split(':')[0])
+            if not self.__valores_equivalentes(old_key, new_keys):
+                if old_key not in new_keys:
+                    new_values.append(old_value)
+
+        return ' '.join(new_values)
+
+    @staticmethod
+    def __valores_equivalentes(key, keys):
+        for item in ['border', 'margin', 'padding']:
+            if key.startswith(item):
+                for nk in keys:
+                    if nk.startswith(item):
+                        return True
+                break
+        return False
+
+    @staticmethod
+    def __clearv(value: str) -> str:
+        return value.strip().strip(';').strip().replace(
+            ',', ', ').replace(' ;', ';').replace('; ', ';').replace(
+            ';', '; ').replace('  ', ' ').strip().replace(
+            ';;', ';') + ';'
+
+    @staticmethod
+    def __cleark(value: str) -> str:
+        return value.lstrip('#').replace(' ', '').strip()
 
 
 class StyleScopeParser(object):
@@ -96,7 +139,7 @@ class DynamicStyle(object):
         """..."""
         if self.__toplevel.is_server_side_decorated():
             window_style = (
-                '#QApplicationWindow {'
+                'QApplicationWindow {'
                 'background-color: rgba('
                 f'{self.__win_background_color.red()},'
                 f'{self.__win_background_color.green()},'
@@ -105,7 +148,7 @@ class DynamicStyle(object):
                 '}')
         else:
             window_style = (
-                '#QApplicationWindow {'
+                'QApplicationWindow {'
                 'background-color: rgba('
                 f'{self.__win_background_color.red()},'
                 f'{self.__win_background_color.green()},'
@@ -123,7 +166,7 @@ class DynamicStyle(object):
                 '}')
 
         context_menu_style = (
-            '#QQuickContextMenu {'
+            'QQuickContextMenu {'
             'background-color: rgba('
             f'{self.__ctxmenu_background_color.red()},'
             f'{self.__ctxmenu_background_color.green()},'
@@ -180,9 +223,9 @@ class DynamicStyle(object):
     @staticmethod
     def fullscreen_adapted_style(style: str) -> str:
         # ...
-        central_widget = [
-            x for x in style.split('}') if
-            x.strip().startswith(f'#QApplicationWindow')][-1]
-
-        return style.replace(
-            central_widget, central_widget + 'border-radius: 0px; border: 0px')
+        styleparser = StyleParser(style)
+        central_widget = styleparser.widget_scope('QApplicationWindow')
+        return (
+            'QApplicationWindow {'
+            f'{central_widget}'
+            'border-radius: 0px; border: 0px;}')

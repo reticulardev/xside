@@ -8,6 +8,7 @@ from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 import PySideX.QtWidgetsX.modules.color as color
+from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
 from PySideX.QtWidgetsX.header_bar import QHeaderBar
 
@@ -95,10 +96,8 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.move(0, 0)
 
     def __update_style(self) -> None:
-        parse_base_style = '; '.join(
-            [x.replace('#QApplicationWindow', '').replace('{', '').strip()
-             for x in self.__toplevel.style_sheet().split('}')
-             if 'QApplicationWindow' in x][-1].split(';'))
+        styleparser = StyleParser(self.__toplevel.style_sheet())
+        parse_base_style = styleparser.widget_scope('QApplicationWindow')
 
         self.__sideview_background.set_style_sheet(
             f'{self.__toplevel.style_sheet()}'
@@ -355,14 +354,12 @@ class QSideViewApplicationWindow(QApplicationWindow):
 
     def __color_sideview(self) -> None:
         """..."""
-        application_style_sheet = '; '.join(
-            [x.replace('#QApplicationWindow', '').replace('{', '').strip()
-             for x in self.style_sheet().split('}')
-             if 'QApplicationWindow' in x][-1].split(';'))
+        styleparser = StyleParser(self.style_sheet())
+        style_sheet = styleparser.widget_scope('QApplicationWindow')
 
         sideview_style_sheet = (
             '#__panelwidthstyle {'
-            f'{application_style_sheet}'
+            f'{style_sheet}'
             'background-color: rgba('
             f'{self.__sideview_color[0]}, {self.__sideview_color[1]}, '
             f'{self.__sideview_color[2]}, {self.__sideview_color[3]});'

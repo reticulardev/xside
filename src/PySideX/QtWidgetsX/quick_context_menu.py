@@ -7,8 +7,9 @@ from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
+from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 import PySideX.QtWidgetsX.modules.color as color
-import PySideX.QtWidgetsX.modules.dynamicstyle as dynamicstyle
+
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -111,10 +112,12 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         return self.__text
 
     def __configure_shortcut_color(self):
+        # ...
         if not self.__shortcut_color:
             self.__shortcut_color = QtGui.QColor(127, 127, 127, 127)
 
     def __configure_icon(self):
+        # ...
         if not self.__icon:
             symbolic = '-symbolic' if self.__is_dark else ''
             icon_path = os.path.join(SRC_DIR, 'modules', 'static',
@@ -122,12 +125,10 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
             self.__icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
 
     def __get_hover_style(self):
-        style = '; '.join(
-            [x.replace('QQuickContextMenuButtonLabel', '').replace(
-                '{', '').replace('hover', '').strip(':').strip()
-             for x in self.__toplevel.style_sheet().split('}')
-             if 'QQuickContextMenuButtonLabel' in x and 'hover' in x]
-            [-1].split(';'))
+        # ...
+        style_parser = StyleParser(self.__toplevel.style_sheet())
+        style = style_parser.widget_scope(
+            'QQuickContextMenuButtonLabel', 'hover')
         if style:
             return style
 
@@ -138,23 +139,16 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
             f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
 
     def __get_normal_style(self):
-        style = [x.replace('QQuickContextMenuButtonLabel', '').replace(
-                '{', '').replace('hover', '').replace(':', '').strip()
-             for x in self.__toplevel.style_sheet().split('}')
-             if 'QQuickContextMenuButtonLabel' in x and 'hover' not in x]
+        # ...
+        style_parser = StyleParser(self.__toplevel.style_sheet())
+        style = style_parser.widget_scope('QQuickContextMenuButtonLabel')
         if style:
-            return '; '.join(style[-1].split(';'))
+            return style
 
         fg = self.__gui_env.settings().window_foreground_color()
         return (
             'color: rgba'
             f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
-
-    def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
-        """..."""
-        # if self.under_mouse():
-        #     self.__receiver()
-        pass
 
     def mouse_release_event(self, event: QtGui.QMouseEvent) -> None:
         """..."""
@@ -205,7 +199,6 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__context_buttons = []
 
         self.__style_saved = None
-        self.__style_parser = None
         self.__point_x = None
         self.__point_y = None
 
@@ -302,7 +295,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__point_x = point.x()
         self.__point_y = point.y()
 
-        self.__main_widget.set_style_sheet(self.__style())
+        self.__main_widget.set_style_sheet(self.__set_style())
         for btn in self.__context_buttons:
             btn.set_style_sheet(self.__style_saved)
 
@@ -370,21 +363,13 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.move(x, y)
 
     def __set_style_signal(self) -> None:
+        # ...
         self.__style_saved = self.__toplevel.style_sheet()
-        # self.__style_parser = dynamicstyle.StyleParser(self.__style_saved)
-        #
-        # print(self.__style_parser.widget_scope('QQuickContextMenuButton'))
-        # print(self.__style_parser.widget_scope(
-        #     'QQuickContextMenuButton', 'hover'))
-        # print('---')
 
-    def __style(self) -> str:
+    def __set_style(self) -> str:
         if not self.__style_saved:
-            self.__style_saved = self.__toplevel.style_sheet()
-            self.__style_parser = dynamicstyle.StyleParser(self.__style_saved)
+            self.__set_style_signal()
 
-        # return self.__style_saved.replace(
-        #     '#QQuickContextMenu', 'QQuickContextMenu').replace(
-        #     'QQuickContextMenu', ' #QQuickContextMenu')
-        return '#QQuickContextMenu {' + self.__style_parser.widget_scope(
-            'QQuickContextMenu') + '}'
+        style_parser = StyleParser(self.__style_saved)
+        return ('#QQuickContextMenu {'
+                f'{style_parser.widget_scope("QQuickContextMenu")}' '}')

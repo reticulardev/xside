@@ -6,6 +6,7 @@ import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.platform import Platform
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 from PySideX.QtWidgetsX.modules.dynamicstyle import DynamicStyle
+from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 
 
 class QApplicationWindow(QtWidgets.QMainWindow):
@@ -57,8 +58,13 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         # Style
         self.__dynamic_style = DynamicStyle(self)
         self.__style_sheet = self.__dynamic_style.build_style()
+
+        styleparser = StyleParser(self.__style_sheet)
+        self.__style_sheet = styleparser.style_sheet()
+
         self.__style_sheet_fullscreen = (
-            self.__dynamic_style.fullscreen_adapted_style(self.__style_sheet))
+            self.__dynamic_style.fullscreen_adapted_style(
+                self.__style_sheet))
 
         self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
         self.__shadow_effect.set_blur_radius(self.__shadow_size)
@@ -95,9 +101,11 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
         if self.is_maximized() or self.is_full_screen():
             self.__central_widget.set_style_sheet(
-                self.__style_sheet_fullscreen)
+                self.__style_sheet_fullscreen.replace(
+                    'QApplicationWindow', '#QApplicationWindow'))
         else:
-            self.__central_widget.set_style_sheet(self.__style_sheet)
+            self.__central_widget.set_style_sheet(self.__style_sheet.replace(
+                'QApplicationWindow', '#QApplicationWindow'))
         self.reset_style_signal.emit(0)
 
     def set_shadow_size(self, size: int) -> None:
@@ -112,26 +120,24 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
         :param style: string containing 'qss' style
         """
-        if 'QApplicationWindow' in style:
-            if '#QApplicationWindow' not in style:
-                style = style.replace(
-                    'QApplicationWindow', '#QApplicationWindow')
-
-        self.__reset_style_properties()
-        self.__style_sheet += style
+        styleparser = StyleParser(self.__style_sheet + style)
+        self.__style_sheet = styleparser.style_sheet()
 
         self.__style_sheet_fullscreen = (
-            self.__dynamic_style.fullscreen_adapted_style(self.__style_sheet))
+            self.__dynamic_style.fullscreen_adapted_style(
+                self.__style_sheet))
 
         if self.__is_server_side_decorated:
             self.__style_sheet = self.__style_sheet_fullscreen
 
         if self.is_maximized() or self.is_full_screen():
             self.__central_widget.set_style_sheet(
-                self.__style_sheet_fullscreen)
+                self.__style_sheet_fullscreen.replace(
+                    'QApplicationWindow', '#QApplicationWindow'))
         else:
             self.__central_widget.set_style_sheet(
-                self.__style_sheet)
+                self.__style_sheet.replace(
+                    'QApplicationWindow', '#QApplicationWindow'))
 
         self.set_style_signal.emit(0)
 
@@ -257,7 +263,8 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         self.event_filter_signal.emit(event)
 
         if self.__is_server_side_decorated:
-            self.__central_widget.set_style_sheet(self.__style_sheet)
+            self.__central_widget.set_style_sheet(self.__style_sheet.replace(
+                'QApplicationWindow', '#QApplicationWindow'))
             if event.type() == QtCore.QEvent.Resize:
                 self.resize_event_signal.emit(event)
         else:
@@ -279,10 +286,13 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
                 if self.is_maximized() or self.is_full_screen():
                     self.__central_widget.set_style_sheet(
-                        self.__style_sheet_fullscreen)
+                        self.__style_sheet_fullscreen.replace(
+                            'QApplicationWindow', '#QApplicationWindow'))
                     self.__window_shadow_visible(False)
                 else:
-                    self.__central_widget.set_style_sheet(self.__style_sheet)
+                    self.__central_widget.set_style_sheet(
+                        self.__style_sheet.replace(
+                            'QApplicationWindow', '#QApplicationWindow'))
                     self.__window_shadow_visible(True)
 
         return QtWidgets.QMainWindow.event_filter(self, watched, event)
