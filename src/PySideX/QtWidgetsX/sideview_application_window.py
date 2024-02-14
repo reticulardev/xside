@@ -97,7 +97,7 @@ class QOverlaySideView(QtWidgets.QFrame):
 
     def __update_style(self) -> None:
         styleparser = StyleParser(self.__toplevel.style_sheet())
-        parse_base_style = styleparser.widget_scope('QApplicationWindow')
+        parse_base_style = styleparser.widget_scope('QMainWindow')
 
         self.__sideview_background.set_style_sheet(
             f'{self.__toplevel.style_sheet()}'
@@ -249,7 +249,6 @@ class QSideViewApplicationWindow(QApplicationWindow):
         self.resize_event_signal.connect(self.__resize_event)
         self.set_style_signal.connect(lambda _: self.__color_sideview())
         self.reset_style_signal.connect(lambda _: self.__color_sideview())
-        self.reset_style_signal.connect(self.__reset_style)
 
     def close_sideview(self) -> None:
         """..."""
@@ -355,7 +354,7 @@ class QSideViewApplicationWindow(QApplicationWindow):
     def __color_sideview(self) -> None:
         """..."""
         styleparser = StyleParser(self.style_sheet())
-        style_sheet = styleparser.widget_scope('QApplicationWindow')
+        style_sheet = styleparser.widget_scope('QMainWindow')
 
         sideview_style_sheet = (
             '#__panelwidthstyle {'
@@ -446,10 +445,6 @@ class QSideViewApplicationWindow(QApplicationWindow):
         if self.__is_sideview_open:
             self.close_sideview()
             self.__sideview_width_area.set_visible(True)
-
-    def __reset_style(self, event) -> None:
-        logging.info(event)
-        self.__color_sideview()
 
     def __resize_event(self, event: QtGui.QResizeEvent) -> None:
         logging.info(event)

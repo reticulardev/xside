@@ -114,7 +114,7 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
         if self.set_style_button.text() == 'Set style':
             self.set_sideview_color((0, 0, 0, 0.1))
             self.set_style_sheet(
-                'QApplicationWindow {'
+                'QMainWindow {'
                 '  background-color: rgba(44, 44, 50, 0.9);'
                 '  border: 1px solid #283690;'
                 '  border-radius: 10px;}'
@@ -240,7 +240,7 @@ class Window(QtWidgetsX.QApplicationWindow):
 
     def on_set_style(self):
         self.set_style_sheet(
-            'QApplicationWindow {'
+            'QMainWindow {'
             '  background-color: rgba(59, 59, 59, 0.8);'
             '  border-radius: 10px;'
             '  border: 1px solid #555;'

@@ -9,6 +9,16 @@ from PySideX.QtWidgetsX.modules.dynamicstyle import DynamicStyle
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 
 
+class QMainWindow(QtWidgets.QFrame):
+    """..."""
+    def __init__(self, *args, **kwargs):
+        """Class constructor
+
+        Initialize class attributes
+        """
+        super().__init__(*args, **kwargs)
+
+
 class QApplicationWindow(QtWidgets.QMainWindow):
     """Application main window prepared to use CSD
 
@@ -51,9 +61,8 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__gui_env.settings().window_background_color().to_tuple())
 
         # Layout
-        self.__central_widget = QtWidgets.QWidget()
+        self.__central_widget = QMainWindow()
         self.set_central_widget(self.__central_widget)
-        self.__central_widget.set_object_name('QApplicationWindow')
 
         # Style
         self.__dynamic_style = DynamicStyle(self)
@@ -101,11 +110,10 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
         if self.is_maximized() or self.is_full_screen():
             self.__central_widget.set_style_sheet(
-                self.__style_sheet_fullscreen.replace(
-                    'QApplicationWindow', '#QApplicationWindow'))
+                self.__style_sheet_fullscreen)
         else:
-            self.__central_widget.set_style_sheet(self.__style_sheet.replace(
-                'QApplicationWindow', '#QApplicationWindow'))
+            self.__central_widget.set_style_sheet(self.__style_sheet)
+
         self.reset_style_signal.emit(0)
 
     def set_shadow_size(self, size: int) -> None:
@@ -132,12 +140,9 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
         if self.is_maximized() or self.is_full_screen():
             self.__central_widget.set_style_sheet(
-                self.__style_sheet_fullscreen.replace(
-                    'QApplicationWindow', '#QApplicationWindow'))
+                self.__style_sheet_fullscreen)
         else:
-            self.__central_widget.set_style_sheet(
-                self.__style_sheet.replace(
-                    'QApplicationWindow', '#QApplicationWindow'))
+            self.__central_widget.set_style_sheet(self.__style_sheet)
 
         self.set_style_signal.emit(0)
 
@@ -263,8 +268,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         self.event_filter_signal.emit(event)
 
         if self.__is_server_side_decorated:
-            self.__central_widget.set_style_sheet(self.__style_sheet.replace(
-                'QApplicationWindow', '#QApplicationWindow'))
+            self.__central_widget.set_style_sheet(self.__style_sheet)
             if event.type() == QtCore.QEvent.Resize:
                 self.resize_event_signal.emit(event)
         else:
@@ -286,13 +290,11 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
                 if self.is_maximized() or self.is_full_screen():
                     self.__central_widget.set_style_sheet(
-                        self.__style_sheet_fullscreen.replace(
-                            'QApplicationWindow', '#QApplicationWindow'))
+                        self.__style_sheet_fullscreen)
+
                     self.__window_shadow_visible(False)
                 else:
-                    self.__central_widget.set_style_sheet(
-                        self.__style_sheet.replace(
-                            'QApplicationWindow', '#QApplicationWindow'))
+                    self.__central_widget.set_style_sheet(self.__style_sheet)
                     self.__window_shadow_visible(True)
 
         return QtWidgets.QMainWindow.event_filter(self, watched, event)

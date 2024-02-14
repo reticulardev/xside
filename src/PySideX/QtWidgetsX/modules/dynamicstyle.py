@@ -136,7 +136,7 @@ class DynamicStyle(object):
         """..."""
         if self.__toplevel.is_server_side_decorated():
             window_style = (
-                'QApplicationWindow {'
+                'QMainWindow {'
                 'background-color: rgba('
                 f'{self.__win_background_color.red()},'
                 f'{self.__win_background_color.green()},'
@@ -145,7 +145,7 @@ class DynamicStyle(object):
                 '}')
         else:
             window_style = (
-                'QApplicationWindow {'
+                'QMainWindow {'
                 'background-color: rgba('
                 f'{self.__win_background_color.red()},'
                 f'{self.__win_background_color.green()},'
@@ -221,7 +221,7 @@ class DynamicStyle(object):
     def fullscreen_adapted_style(style: str) -> str:
         # ...
         styleparser = StyleParser(style)
-        style = styleparser.widget_scope('QApplicationWindow')
+        style = styleparser.widget_scope('QMainWindow')
         return (
-            'QApplicationWindow {' f'{style}'
+            'QMainWindow {' f'{style}'
             'border-radius: 0px; border: 0px;}')
