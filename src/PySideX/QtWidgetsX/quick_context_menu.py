@@ -73,6 +73,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__shortcut_color = self.__gui_env.settings().text_disabled_color()
         self.__is_dark = self.__gui_env.settings().window_is_dark()
 
+        self.__style_parser = StyleParser(self.__toplevel.style_sheet())
         self.__normal_style = self.__get_normal_style()
         self.__hover_style = self.__get_hover_style()
         self.__main_layout = QtWidgets.QHBoxLayout()
@@ -125,8 +126,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 
     def __get_hover_style(self) -> str:
         # ...
-        style_parser = StyleParser(self.__toplevel.style_sheet())
-        style = style_parser.widget_scope(
+        style = self.__style_parser.widget_scope(
             'QQuickContextMenuButtonLabel', 'hover')
 
         if not style:
@@ -140,8 +140,8 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 
     def __get_normal_style(self) -> str:
         # ...
-        style_parser = StyleParser(self.__toplevel.style_sheet())
-        style = style_parser.widget_scope('QQuickContextMenuButtonLabel')
+        style = self.__style_parser.widget_scope(
+            'QQuickContextMenuButtonLabel')
 
         if not style:
             fg = self.__gui_env.settings().window_foreground_color()
@@ -153,6 +153,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 
     def __set_style_signal(self) -> None:
         # ...
+        self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
         self.__normal_style = self.__get_normal_style()
         self.__hover_style = self.__get_hover_style()
         self.__text_label.set_style_sheet(self.__normal_style)

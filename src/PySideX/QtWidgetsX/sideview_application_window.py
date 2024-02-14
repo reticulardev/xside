@@ -28,6 +28,7 @@ class QOverlaySideView(QtWidgets.QFrame):
         # Properties
         self.__sideview_widget_box = self.__sideview_widget.parent().layout()
         self.__toplevel = self.__sideview_widget.parent().window()
+        self.__style_parser = StyleParser(self.__toplevel.style_sheet())
 
         # Settings
         self.set_contents_margins(
@@ -96,20 +97,21 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.move(0, 0)
 
     def __update_style(self) -> None:
-        styleparser = StyleParser(self.__toplevel.style_sheet())
-        parse_base_style = styleparser.widget_scope('QMainWindow')
+        # ...
+        self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
+        base_style = self.__style_parser.widget_scope('QMainWindow')
 
         self.__sideview_background.set_style_sheet(
             f'{self.__toplevel.style_sheet()}'
             '#__sideviewbgstyle {'
-            f'{parse_base_style}'
+            f'{base_style}'
             'border-right: 0px; '
             'border-top-right-radius: 0;'
             'border-bottom-right-radius: 0;}')
 
         self.__close_view_background.set_style_sheet(
             '#__closeviewbgtyle {'
-            f'{parse_base_style}'
+            f'{base_style}'
             # 'background-color: rgba(0, 0, 0, 0.1);'
             # 'color: qlineargradient('
             # '  spread:pad, '
@@ -353,12 +355,10 @@ class QSideViewApplicationWindow(QApplicationWindow):
 
     def __color_sideview(self) -> None:
         """..."""
-        styleparser = StyleParser(self.style_sheet())
-        style_sheet = styleparser.widget_scope('QMainWindow')
-
+        basestyle = StyleParser(self.style_sheet()).widget_scope('QMainWindow')
         sideview_style_sheet = (
             '#__panelwidthstyle {'
-            f'{style_sheet}'
+            f'{basestyle}'
             'background-color: rgba('
             f'{self.__sideview_color[0]}, {self.__sideview_color[1]}, '
             f'{self.__sideview_color[2]}, {self.__sideview_color[3]});'

@@ -68,8 +68,8 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         self.__dynamic_style = DynamicStyle(self)
         self.__style_sheet = self.__dynamic_style.build_style()
 
-        styleparser = StyleParser(self.__style_sheet)
-        self.__style_sheet = styleparser.style_sheet()
+        self.__style_parser = StyleParser(self.__style_sheet)
+        self.__style_sheet = self.__style_parser.style_sheet()
 
         self.__style_sheet_fullscreen = (
             self.__dynamic_style.fullscreen_adapted_style(
@@ -128,8 +128,8 @@ class QApplicationWindow(QtWidgets.QMainWindow):
 
         :param style: string containing 'qss' style
         """
-        styleparser = StyleParser(self.__style_sheet + style)
-        self.__style_sheet = styleparser.style_sheet()
+        self.__style_parser.set_style_sheet(self.__style_sheet + style)
+        self.__style_sheet = self.__style_parser.style_sheet()
 
         self.__style_sheet_fullscreen = (
             self.__dynamic_style.fullscreen_adapted_style(

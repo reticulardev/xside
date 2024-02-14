@@ -14,21 +14,29 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class StyleParser(object):
     """..."""
-    def __init__(self, style: str) -> None:
+    def __init__(self, style_sheet: str) -> None:
         """..."""
-        self.__style = style
+        self.__stylesheet_arg = style_sheet
         self.__scopes = self.__split_widgets_scops()
+        self.__stylesheet = None
 
     def scopes(self) -> dict:
         """..."""
         return self.__scopes
 
-    def style_sheet(self) -> str:
+    def set_style_sheet(self, style_sheet: str) -> None:
         """..."""
-        style_sheet = ''
-        for scope_key, scope_value in self.__scopes.items():
-            style_sheet += scope_key + ' {' + scope_value + '} '
-        return style_sheet
+        self.__stylesheet_arg = style_sheet
+        self.__scopes = self.__split_widgets_scops()
+        self.__stylesheet = None
+
+    def style_sheet(self, update: bool = False) -> str:
+        """..."""
+        if not self.__stylesheet or update:
+            self.__stylesheet = ''
+            for scope_key, scope_value in self.__scopes.items():
+                self.__stylesheet += scope_key + ' {' + scope_value + '} '
+        return self.__stylesheet
 
     def widget_scope(
             self, widget_class_name: str, propertie: str = None) -> str:
@@ -44,7 +52,7 @@ class StyleParser(object):
 
     def __split_widgets_scops(self) -> dict:
         # ...
-        cleanstyle = re.sub(r'(/\*.+\*/)|(^#.+$)', r'', self.__style)
+        cleanstyle = re.sub(r'(/\*.+\*/)|(^#.+$)', r'', self.__stylesheet_arg)
 
         scopes = {}
         all_scopes = cleanstyle.replace('\n', '').replace('  ', ' ').split('}')
