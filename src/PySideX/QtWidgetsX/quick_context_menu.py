@@ -43,6 +43,11 @@ class QQuickContextMenuButtonLabel(QtWidgets.QLabel):
 
 class QQuickContextMenuButton(QtWidgets.QFrame):
     """..."""
+    enter_event_signal = QtCore.Signal(object)
+    leave_event_signal = QtCore.Signal(object)
+    mouse_press_event_signal = QtCore.Signal(object)
+    mouse_release_event_signal = QtCore.Signal(object)
+
     def __init__(
             self,
             toplevel: QApplicationWindow,
@@ -124,7 +129,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
                                      f'context-menu-item{symbolic}.svg')
             self.__icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
 
-    def __get_hover_style(self):
+    def __get_hover_style(self) -> str:
         # ...
         style_parser = StyleParser(self.__toplevel.style_sheet())
         style = style_parser.widget_scope(
@@ -138,7 +143,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
             'color: rgba'
             f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
 
-    def __get_normal_style(self):
+    def __get_normal_style(self) -> str:
         # ...
         style_parser = StyleParser(self.__toplevel.style_sheet())
         style = style_parser.widget_scope('QQuickContextMenuButtonLabel')
@@ -150,25 +155,31 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
             'color: rgba'
             f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
 
-    def mouse_release_event(self, event: QtGui.QMouseEvent) -> None:
-        """..."""
-        logging.info(event)
-        if self.under_mouse():
-            self.__receiver()
-            self.__context_menu.close()
-
     def __set_style_signal(self) -> None:
+        # ...
         self.__normal_style = self.__get_normal_style()
         self.__hover_style = self.__get_hover_style()
         self.__text_label.set_style_sheet(self.__normal_style)
 
     def enter_event(self, event: QtGui.QEnterEvent) -> None:
-        logging.info(event)
+        """..."""
+        self.enter_event_signal.emit(event)
         self.__text_label.set_style_sheet(self.__hover_style)
 
     def leave_event(self, event: QtGui.QEnterEvent) -> None:
-        logging.info(event)
+        """..."""
+        self.leave_event_signal.emit(event)
         self.__text_label.set_style_sheet(self.__normal_style)
+
+    def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
+        self.mouse_press_event_signal.emit(event)
+
+    def mouse_release_event(self, event: QtGui.QMouseEvent) -> None:
+        """..."""
+        self.mouse_release_event_signal.emit(event)
+        if self.under_mouse():
+            self.__receiver()
+            self.__context_menu.close()
 
 
 class QQuickContextMenu(QtWidgets.QFrame):
@@ -348,6 +359,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
                 item.set_contents_margins(margins)
 
     def __set_dynamic_positioning(self) -> None:
+        # ...
         x = self.geometry().x()
         y = self.geometry().y()
 
@@ -367,6 +379,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__style_saved = self.__toplevel.style_sheet()
 
     def __set_style(self) -> str:
+        # ...
         if not self.__style_saved:
             self.__set_style_signal()
 

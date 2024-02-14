@@ -15,79 +15,78 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 class StyleParser(object):
     """..."""
     def __init__(self, style: str) -> None:
+        """..."""
         self.__style = style
-        self.__scopes = self.__split_scopes()
+        self.__scopes = self.__split_widgets_scops()
 
     def scopes(self) -> dict:
+        """..."""
         return self.__scopes
 
     def style_sheet(self) -> str:
+        """..."""
         sheet = ''
-        for k, v in self.__scopes.items():
-            sheet += k + ' {' + v + '} '
+        for scope_key, scope_value in self.__scopes.items():
+            sheet += scope_key + ' {' + scope_value + '} '
         return sheet
 
-    def widget_scope(self, widget_name: str, propertie: str = None) -> str:
+    def widget_scope(
+            self, widget_class_name: str, propertie: str = None) -> str:
         """..."""
-        for key, value in self.__scopes.items():
+        for scope_key, scope_value in self.__scopes.items():
             if not propertie:
-                if widget_name == key:
-                    return value
+                if widget_class_name == scope_key:
+                    return scope_value
             else:
-                if widget_name in key and propertie in key:
-                    return value
+                if widget_class_name in scope_key and propertie in scope_key:
+                    return scope_value
         return ''
 
-    def __split_scopes(self) -> dict:
-        sub = re.sub(r'(/\*.+\*/)|(^#.+$)', r'', self.__style)
-        clean = sub if sub else self.__style
+    def __split_widgets_scops(self) -> dict:
+        # ...
+        cleanstyle = re.sub(r'(/\*.+\*/)|(^#.+$)', r'', self.__style)
 
         scopes = {}
-        all_scopes = clean.replace('\n', '').replace('  ', ' ').split('}')
+        all_scopes = cleanstyle.replace('\n', '').replace('  ', ' ').split('}')
         for scope in all_scopes:
             if '{' in scope:
-                key, value = scope.split('{')
-                for k in key.split(','):
-                    k = self.__cleark(k)
-                    if k and k in scopes:
-                        value = self.__mesclar_iguais(value, scopes[k])
-                    scopes[k] = self.__clearv(value)
+                scope_keys, scope_value = scope.split('{')
+
+                for scope_key in scope_keys.split(','):
+                    scope_key = self.__clean_key(scope_key)
+                    if scope_key and scope_key in scopes:
+                        scope_value = self.__join_duplicate_values(
+                            scope_value, scopes[scope_key])
+
+                    scopes[scope_key] = self.__clean_value(scope_value)
         return scopes
 
-    def __mesclar_iguais(self, new: str, old: str) -> str:
-        new_values = [self.__clearv(x) for x in new.split(';') if x]
-        old_values = [self.__clearv(x) for x in old.split(';') if x]
+    def __join_duplicate_values(self, new_value: str, old: str) -> str:
+        # ...
+        new_values = [self.__clean_value(x) for x in new_value.split(';') if x]
+        old_values = [self.__clean_value(x) for x in old.split(';') if x]
         # new_keys = [self.__cleark(x.split(':')[0]) for x in new_values]
-        new_keys = [self.__cleark(self.__clearv(x).split(':')[0])
-                    for x in new.split(';') if x]
+        new_keys = [self.__clean_key(self.__clean_value(x).split(':')[0])
+                    for x in new_value.split(';') if x]
 
         for old_value in old_values:
-            old_key = self.__cleark(old_value.split(':')[0])
-            if not self.__valores_equivalentes(old_key, new_keys):
-                if old_key not in new_keys:
-                    new_values.append(old_value)
+            old_key = self.__clean_key(old_value.split(':')[0])
+            if old_key not in new_keys:
+                new_values.insert(0, old_value)
 
         return ' '.join(new_values)
 
     @staticmethod
-    def __valores_equivalentes(key, keys):
-        for item in ['border', 'margin', 'padding']:
-            if key.startswith(item):
-                for nk in keys:
-                    if nk.startswith(item):
-                        return True
-                break
-        return False
-
-    @staticmethod
-    def __clearv(value: str) -> str:
+    def __clean_value(value: str) -> str:
+        # ...
         return value.strip().strip(';').strip().replace(
             ',', ', ').replace(' ;', ';').replace('; ', ';').replace(
             ';', '; ').replace('  ', ' ').strip().replace(
             ';;', ';') + ';'
 
     @staticmethod
-    def __cleark(value: str) -> str:
+    def __clean_key(value: str) -> str:
+        # ...
         return value.lstrip('#').replace(' ', '').strip()
 
 
