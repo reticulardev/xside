@@ -98,7 +98,6 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         txt_shortcut = self.__shortcut.to_string() if self.__shortcut else ' '
         shortcut_label = QtWidgets.QLabel(txt_shortcut)
 
-        self.__configure_shortcut_color()
         shortcut_label.set_style_sheet(
             'color: rgba('
             f'{self.__shortcut_color.red()},'
@@ -116,17 +115,12 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         """..."""
         return self.__text
 
-    def __configure_shortcut_color(self):
-        # ...
-        if not self.__shortcut_color:
-            self.__shortcut_color = QtGui.QColor(127, 127, 127, 127)
-
     def __configure_icon(self):
         # ...
         if not self.__icon:
-            symbolic = '-symbolic' if self.__is_dark else ''
-            icon_path = os.path.join(SRC_DIR, 'modules', 'static',
-                                     f'context-menu-item{symbolic}.svg')
+            symblc = '-symbolic' if self.__is_dark else ''
+            icon_path = os.path.join(
+                SRC_DIR, 'modules', 'static', f'context-menu-item{symblc}.svg')
             self.__icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
 
     def __get_hover_style(self) -> str:
@@ -134,26 +128,28 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         style_parser = StyleParser(self.__toplevel.style_sheet())
         style = style_parser.widget_scope(
             'QQuickContextMenuButtonLabel', 'hover')
-        if style:
-            return style
 
-        fg = self.__gui_env.settings(
-            ).contextmenubutton_foreground_hover_color()
-        return (
-            'color: rgba'
-            f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
+        if not style:
+            fg = self.__gui_env.settings(
+                ).contextmenubutton_foreground_hover_color()
+            return (
+                'color: rgba'
+                f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
+
+        return style
 
     def __get_normal_style(self) -> str:
         # ...
         style_parser = StyleParser(self.__toplevel.style_sheet())
         style = style_parser.widget_scope('QQuickContextMenuButtonLabel')
-        if style:
-            return style
 
-        fg = self.__gui_env.settings().window_foreground_color()
-        return (
-            'color: rgba'
-            f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
+        if not style:
+            fg = self.__gui_env.settings().window_foreground_color()
+            return (
+                'color: rgba'
+                f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
+
+        return style
 
     def __set_style_signal(self) -> None:
         # ...

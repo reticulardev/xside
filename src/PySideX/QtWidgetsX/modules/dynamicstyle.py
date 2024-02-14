@@ -25,10 +25,10 @@ class StyleParser(object):
 
     def style_sheet(self) -> str:
         """..."""
-        sheet = ''
+        style_sheet = ''
         for scope_key, scope_value in self.__scopes.items():
-            sheet += scope_key + ' {' + scope_value + '} '
-        return sheet
+            style_sheet += scope_key + ' {' + scope_value + '} '
+        return style_sheet
 
     def widget_scope(
             self, widget_class_name: str, propertie: str = None) -> str:
@@ -65,7 +65,6 @@ class StyleParser(object):
         # ...
         new_values = [self.__clean_value(x) for x in new_value.split(';') if x]
         old_values = [self.__clean_value(x) for x in old.split(';') if x]
-        # new_keys = [self.__cleark(x.split(':')[0]) for x in new_values]
         new_keys = [self.__clean_key(self.__clean_value(x).split(':')[0])
                     for x in new_value.split(';') if x]
 
@@ -79,9 +78,8 @@ class StyleParser(object):
     @staticmethod
     def __clean_value(value: str) -> str:
         # ...
-        return value.strip().strip(';').strip().replace(
-            ',', ', ').replace(' ;', ';').replace('; ', ';').replace(
-            ';', '; ').replace('  ', ' ').strip().replace(
+        return value.strip().strip(';').strip().replace(',', ', ').replace(
+            ' ;', ';').replace(';', '; ').replace('  ', ' ').strip().replace(
             ';;', ';') + ';'
 
     @staticmethod
@@ -223,8 +221,7 @@ class DynamicStyle(object):
     def fullscreen_adapted_style(style: str) -> str:
         # ...
         styleparser = StyleParser(style)
-        central_widget = styleparser.widget_scope('QApplicationWindow')
+        style = styleparser.widget_scope('QApplicationWindow')
         return (
-            'QApplicationWindow {'
-            f'{central_widget}'
+            'QApplicationWindow {' f'{style}'
             'border-radius: 0px; border: 0px;}')
