@@ -179,6 +179,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.mouse_release_event_signal.emit(event)
         if self.under_mouse():
             self.__receiver()
+            self.__text_label.set_style_sheet(self.__normal_style)
             self.__context_menu.close()
 
 
