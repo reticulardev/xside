@@ -12,6 +12,14 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
 
 
+class CSDWindow(QtWidgetsX.CSDWindow):
+    """..."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        """..."""
+        super().__init__(*args, **kwargs)
+
+
 class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
     """..."""
 
@@ -295,14 +303,16 @@ class Application(object):
         self.sideview_window = SideViewWindow(
             server_side_decoration=False, follow_platform=True)
         self.window = Window()
+        self.appwindow = CSDWindow()
 
     def main(self) -> None:
         """Start the app
 
         Sets basic window details and starts the application.
         """
-        self.sideview_window.show()
+        # self.sideview_window.show()
         # self.window.show()
+        self.appwindow.show()
         sys.exit(self.application.exec())
 
 

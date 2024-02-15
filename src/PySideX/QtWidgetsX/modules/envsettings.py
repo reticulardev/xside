@@ -686,7 +686,7 @@ class EnvSettingsWindows11(GlobalEnvSettings):
         return (
             'QControlButton {'
             f'background: url({url_icon}) center no-repeat;'
-            f'width: {44 if "close" in button_name else 42}px;'
+            f'width: 42px;'
             'height: 26px;'
             'border-radius: 0px;'
             'border: 0px;'
@@ -696,7 +696,7 @@ class EnvSettingsWindows11(GlobalEnvSettings):
     @staticmethod
     def headerbar_margin() -> tuple:
         """..."""
-        return 0, 1, 0, 0
+        return 0, 0, 0, 0
 
     @staticmethod
     def windowcontrolbutton_margin() -> tuple:

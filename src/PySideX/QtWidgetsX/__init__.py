@@ -1,3 +1,4 @@
+from PySideX.QtWidgetsX.csdwindow import CSDWindow
 from PySideX.QtWidgetsX.application_window import QApplicationWindow
 from PySideX.QtWidgetsX.control_button import QControlButton
 from PySideX.QtWidgetsX.header_bar import QHeaderBar

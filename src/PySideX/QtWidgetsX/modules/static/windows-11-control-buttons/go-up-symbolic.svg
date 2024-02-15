@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   viewBox="0 0 45 29"
+   viewBox="0 0 46 29"
    version="1.1"
    id="svg5"
    sodipodi:docname="go-up-symbolic.svg"
-   width="45"
+   width="46"
    height="29"
    inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
    xml:space="preserve"
@@ -221,7 +221,7 @@
       }
       </style></defs><sodipodi:namedview
      id="namedview7"
-     pagecolor="#ffffff"
+     pagecolor="#000000"
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:showpageshadow="2"
@@ -229,9 +229,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      showgrid="true"
-     inkscape:zoom="32"
-     inkscape:cx="20.40625"
-     inkscape:cy="14.6875"
+     inkscape:zoom="5.6568543"
+     inkscape:cx="25.102291"
+     inkscape:cy="29.521708"
      inkscape:window-width="1366"
      inkscape:window-height="736"
      inkscape:window-x="0"
@@ -497,8 +497,8 @@
      id="g9"
      transform="translate(-13,-1)"><path
        id="path3"
-       style="fill:#e5e5e5;fill-opacity:0.40000001;stroke-width:0.793856;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
-       d="M 32 10 C 30.892001 10 30 10.892001 30 12 L 30 19 C 30 20.107999 30.892001 21 32 21 L 39 21 C 40.107999 21 41 20.107999 41 19 L 41 12 C 41 10.892001 40.107999 10 39 10 L 32 10 z M 32 12 L 39 12 L 39 19 L 32 19 L 32 12 z " /><path
+       style="fill:#e5e5e5;fill-opacity:0.4;stroke-width:0.793856;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       d="m 32,10 c -1.107999,0 -2,0.892001 -2,2 v 7 c 0,1.107999 0.892001,2 2,2 h 7 c 1.107999,0 2,-0.892001 2,-2 v -7 c 0,-1.107999 -0.892001,-2 -2,-2 z m 0,2 h 7 v 7 h -7 z" /><path
        id="rect2"
        style="fill:#e5e5e5;fill-opacity:1;stroke-width:0.793856;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
-       d="M 31 11 L 31 20 L 40 20 L 40 11 L 31 11 z M 32 12 L 39 12 L 39 19 L 32 19 L 32 12 z " /></g></svg>
+       d="m 31,11 v 9 h 9 v -9 z m 1,1 h 7 v 7 h -7 z" /></g></svg>

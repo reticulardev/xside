@@ -207,7 +207,8 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__context_buttons_layout = []
         self.__context_buttons = []
 
-        self.__style_saved = None
+        self.__style_saved = self.__toplevel.style_sheet()
+        self.__style_parser = StyleParser(self.__style_saved)
         self.__point_x = None
         self.__point_y = None
 
@@ -375,12 +376,21 @@ class QQuickContextMenu(QtWidgets.QFrame):
     def __set_style_signal(self) -> None:
         # ...
         self.__style_saved = self.__toplevel.style_sheet()
+        self.__style_parser.set_style_sheet(self.__style_saved)
+
+        # Parser
+        # self.__spacing = self.__gui_env.settings().contextmenu_spacing()
+        # self.__padding = self.__gui_env.settings().contextmenu_padding()
+        # self.__left_margin = self.__padding[0]
+        # self.__top_margin = self.__padding[1]
+        # self.__right_margin = self.__padding[2]
+        # self.__bottom_margin = self.__padding[3]
+        # self.__is_dark = self.__gui_env.settings().window_is_dark()
 
     def __set_style(self) -> str:
         # ...
         if not self.__style_saved:
             self.__set_style_signal()
 
-        style_parser = StyleParser(self.__style_saved)
         return ('#QQuickContextMenu {'
-                f'{style_parser.widget_scope("QQuickContextMenu")}' '}')
+                f'{self.__style_parser.widget_scope("QQuickContextMenu")}' '}')
