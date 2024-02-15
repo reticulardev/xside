@@ -36,6 +36,10 @@ class CentralW(QtWidgets.QFrame):
         self.__main_box.add_widget(self.__btn2)
         self.__btn2.clicked.connect(lambda: self.__toplevel.add_shadow())
 
+        self.__btn3 = QtWidgets.QPushButton('Close')
+        self.__main_box.add_widget(self.__btn3)
+        self.__btn3.clicked.connect(lambda: self.__toplevel.close())
+
 
 class Shadow(QtWidgets.QFrame):
     """..."""
@@ -47,14 +51,15 @@ class Shadow(QtWidgets.QFrame):
         # palette = self.palette()
         # palette.set_color(QtGui.QPalette.Window, QtGui.QColor(color))
         # self.set_palette(palette)
-        self.__shadow_color = 'rgba(0, 0, 0, 50)'
+        self.__shadow_color = 'rgba(0, 0, 0, 20)'
+        self.__corner_shadow_color = 'rgba(0, 0, 0, 15)'
         end_color = 'rgba(0, 0, 0, 0)'
         if position == 'top-left':
             self.set_style_sheet(
                 'background:'
                 '  qradialgradient('
-                '  cx: 0.5, cy: 0.5, radius: 2, fx: 1.0, fy: 1.0,'
-                f' stop: 0.0 {self.__shadow_color},'
+                '  cx: 0.7, cy: 0.7, radius: 2, fx: 1.0, fy: 1.0,'
+                f' stop: 0.0 {self.__corner_shadow_color},'
                 f' stop: 0.4 {end_color}'
                 ');')
 
@@ -69,8 +74,8 @@ class Shadow(QtWidgets.QFrame):
             self.set_style_sheet(
                 'background:'
                 '  qradialgradient('
-                '  cx: 0.5, cy: 0.5, radius: 2, fx: 0.0, fy: 1.0,'
-                f' stop: 0.0 {self.__shadow_color},'
+                '  cx: 0.3, cy: 0.7, radius: 2, fx: 0.0, fy: 1.0,'
+                f' stop: 0.0 {self.__corner_shadow_color},'
                 f' stop: 0.4 {end_color}'
                 ');')
 
@@ -92,8 +97,8 @@ class Shadow(QtWidgets.QFrame):
             self.set_style_sheet(
                 'background:'
                 '  qradialgradient('
-                '  cx: 0.5, cy: 0.5, radius: 2, fx: 1.0, fy: 0.0,'
-                f' stop: 0.0 {self.__shadow_color},'
+                '  cx: 0.7, cy: 0.3, radius: 2, fx: 1.0, fy: 0.0,'
+                f' stop: 0.0 {self.__corner_shadow_color},'
                 f' stop: 0.4 {end_color}'
                 ');')
 
@@ -108,8 +113,8 @@ class Shadow(QtWidgets.QFrame):
             self.set_style_sheet(
                 'background:'
                 '  qradialgradient('
-                '  cx: 0.5, cy: 0.5, radius: 2, fx: 0.0, fy: 0.0,'
-                f' stop: 0.0 {self.__shadow_color},'
+                '  cx: 0.3, cy: 0.3, radius: 2, fx: 0.0, fy: 0.0,'
+                f' stop: 0.0 {self.__corner_shadow_color},'
                 f' stop: 0.4 {end_color}'
                 ');')
         else:
@@ -131,10 +136,10 @@ class CSDWindow(QtWidgets.QMainWindow):
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_window_flags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window)
 
-        self.__border_radius = (20, 20, 0, 0)
+        self.__border_radius = (10, 10, 0, 0)
         self.__width = 500
         self.__height = 500
-        self.__shadow_size = 20
+        self.__shadow_size = 8
         self.__base_shadow_size = self.__shadow_size
         # self.__base_shadow_size = 0 + self.__border_radius[0]  # desco maior
 
@@ -266,8 +271,7 @@ class CSDWindow(QtWidgets.QMainWindow):
     def event_filter(
             self, watched: QtCore.QObject, event: QtCore.QEvent) -> bool:
         if event.type() == QtCore.QEvent.Resize:
-            self.__center_shadow.set_minimum_height(100)
-            self.__center_shadow.set_minimum_width(100)
+            pass
 
         elif event.type() == QtCore.QEvent.HoverMove:
             pass
