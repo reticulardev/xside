@@ -29,8 +29,8 @@ class QWindowMoveArea(QtWidgets.QFrame):
         self.__layout.set_contents_margins(0, 0, 0, 0)
         self.__enable = True
 
+        self.__is_shadow_has_removed = False
         self.__timer = QtCore.QTimer()
-        # self.__timer.timeout.connect(self.__shadow_on_release)
 
     def set_enable(self, enable: bool) -> None:
         """Enable or disable the window moving area.
@@ -46,8 +46,10 @@ class QWindowMoveArea(QtWidgets.QFrame):
             self.__toplevel.y() + self.__toplevel.height() != self.__screen_h,
             self.__toplevel.x() != 0, self.__toplevel.y() != 0]
         if any(sides):
-            if not self.__toplevel.is_shadow_visible():
-                self.__toplevel.set_shadow_visible(True)
+            if (self.__is_shadow_has_removed and not
+                    self.__toplevel.is_shadow_visible):
+                self.__toplevel.set_shadow_as_hidden(False)
+                self.__is_shadow_has_removed = False
         self.__timer.stop()
 
     def __shadow_on_release(self):
@@ -56,10 +58,13 @@ class QWindowMoveArea(QtWidgets.QFrame):
             self.__toplevel.y() + self.__toplevel.height() == self.__screen_h,
             self.__toplevel.x() == 0, self.__toplevel.y() == 0]
         if any(sides):
-            self.__toplevel.set_shadow_visible(False)
+            self.__toplevel.set_shadow_as_hidden(True)
+            self.__is_shadow_has_removed = True
         else:
-            if not self.__toplevel.is_shadow_visible():
-                self.__toplevel.set_shadow_visible(True)
+            if (self.__is_shadow_has_removed and not
+                    self.__toplevel.is_shadow_visible):
+                self.__toplevel.set_shadow_as_hidden(False)
+                self.__is_shadow_has_removed = False
         self.__timer.stop()
 
     def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
