@@ -5,13 +5,10 @@
 PySide eXtras is a collection of extra resources for pyside with a focus on CSD 
 ([Client-side decoration](https://en.wikipedia.org/wiki/Client-side_decoration)).
 
-See the [documentation](https://reticulardev.github.io/pysidex) for details.
-
 ![Image](data/screen.png "screenshot")
 
-* **QApplicationWindow**: A CSD (Client-side decoration) window without 
-server-side decoration (SSD). It is resizable in all corners and has a shadow 
-(optional).
+* **QApplicationWindow**: A CSD (Client-side decoration) window. It is 
+resizable in all corners, contains shadows and customizable borders.
 
 
 * **QControlButton**: A Window control button. It could be the "close", 
@@ -32,4 +29,4 @@ adding widgets to its right and left. When possible, the control buttons
 respect the positioning settings, the global menu and the system theme. They 
 also behave desirably when the window is full screen.
 
-*The theme is still the PySide default
+The theme is still the PySide default, but it accepts the qss stylesheet.
