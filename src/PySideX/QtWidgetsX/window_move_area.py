@@ -9,6 +9,7 @@ class QWindowMoveArea(QtWidgets.QFrame):
     """Window move area"""
     mouse_double_click_event_signal = QtCore.Signal(object)
     mouse_press_event_signal = QtCore.Signal(object)
+    mouse_release_event_signal = QtCore.Signal(object)
 
     def __init__(
             self, toplevel: QApplicationWindow, *args, **kwargs) -> None:
@@ -21,9 +22,15 @@ class QWindowMoveArea(QtWidgets.QFrame):
         super().__init__(*args, **kwargs)
         self.__toplevel = toplevel
 
+        self.__screen_w = self.__toplevel.screen().size().width()
+        self.__screen_h = self.__toplevel.screen().size().height()
+
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(0, 0, 0, 0)
         self.__enable = True
+
+        self.__timer = QtCore.QTimer()
+        # self.__timer.timeout.connect(self.__shadow_on_release)
 
     def set_enable(self, enable: bool) -> None:
         """Enable or disable the window moving area.
@@ -32,6 +39,28 @@ class QWindowMoveArea(QtWidgets.QFrame):
         dragging the mouse cursor.
         """
         self.__enable = enable
+
+    def __shadow_on_press(self):
+        sides = [
+            self.__toplevel.x() + self.__toplevel.width() != self.__screen_w,
+            self.__toplevel.y() + self.__toplevel.height() != self.__screen_h,
+            self.__toplevel.x() != 0, self.__toplevel.y() != 0]
+        if any(sides):
+            if not self.__toplevel.is_shadow_visible():
+                self.__toplevel.set_shadow_visible(True)
+        self.__timer.stop()
+
+    def __shadow_on_release(self):
+        sides = [
+            self.__toplevel.x() + self.__toplevel.width() == self.__screen_w,
+            self.__toplevel.y() + self.__toplevel.height() == self.__screen_h,
+            self.__toplevel.x() == 0, self.__toplevel.y() == 0]
+        if any(sides):
+            self.__toplevel.set_shadow_visible(False)
+        else:
+            if not self.__toplevel.is_shadow_visible():
+                self.__toplevel.set_shadow_visible(True)
+        self.__timer.stop()
 
     def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
         """This method has changed.
@@ -46,7 +75,17 @@ class QWindowMoveArea(QtWidgets.QFrame):
             if not self.__toplevel.is_server_side_decorated():
                 if (event.button() == QtCore.Qt.LeftButton and
                         self.under_mouse()):
+                    self.__timer.timeout.connect(self.__shadow_on_press)
+                    self.__timer.start(100)
                     self.__toplevel.window_handle().start_system_move()
+
+    def mouse_release_event(self, event: QtGui.QMouseEvent) -> None:
+        """..."""
+        if self.__enable:
+            self.mouse_release_event_signal.emit(event)
+            if not self.__toplevel.is_server_side_decorated():
+                self.__timer.timeout.connect(self.__shadow_on_release)
+                self.__timer.start(100)
 
     def mouse_double_click_event(self, event: QtGui.QMouseEvent) -> None:
         """This method has changed.
