@@ -50,6 +50,71 @@ class StyleParser(object):
                     return scope_value
         return ''
 
+    def color(self, widget_scope: str, default_color: tuple) -> tuple:
+        # return self.__tuple_values('color', widget_scope, default_color)
+        pass
+
+    def margin(self, widget_scope: str, default_margin: tuple) -> tuple:
+        return self.__tuple_values('margin', widget_scope, default_margin)
+
+    def padding(self, widget_scope: str, default_padding: tuple) -> tuple:
+        return self.__tuple_values('padding', widget_scope, default_padding)
+
+    @staticmethod
+    def __tuple_values(
+            key_type: str, widget_scope: str, default_tuple_values: tuple
+            ) -> tuple:
+        default_tuple_values_str = [str(x) for x in default_tuple_values]
+        tuple_values = []
+        for item in [x for x in widget_scope.split(';')]:
+            if ':' in item:
+                key, value = item.split(':')
+                values = value.strip(
+                    ).replace(',', ' ').replace('  ', ' ').split(' ')
+                key = key.strip()
+
+                if key == key_type:
+                    if len(values) == 4:
+                        tuple_values = values
+                    elif len(values) == 1:
+                        tuple_values.append(values[0])
+                        tuple_values.append(values[0])
+                        tuple_values.append(values[0])
+                        tuple_values.append(values[0])
+                    elif len(values) == 2:
+                        tuple_values.append(values[0])
+                        tuple_values.append(values[1])
+                        tuple_values.append(default_tuple_values_str[2])
+                        tuple_values.append(default_tuple_values_str[3])
+                    elif len(values) == 3:
+                        tuple_values.append(values[0])
+                        tuple_values.append(values[1])
+                        tuple_values.append(values[2])
+                        tuple_values.append(default_tuple_values_str[3])
+                elif key == key_type + '-top':
+                    tuple_values.append(values[0])
+                    tuple_values.append(default_tuple_values_str[1])
+                    tuple_values.append(default_tuple_values_str[2])
+                    tuple_values.append(default_tuple_values_str[3])
+                elif key == key_type + '-right':
+                    tuple_values.append(default_tuple_values_str[0])
+                    tuple_values.append(values[0])
+                    tuple_values.append(default_tuple_values_str[2])
+                    tuple_values.append(default_tuple_values_str[3])
+                elif key == key_type + '-bottom':
+                    tuple_values.append(default_tuple_values_str[0])
+                    tuple_values.append(default_tuple_values_str[1])
+                    tuple_values.append(values[0])
+                    tuple_values.append(default_tuple_values_str[3])
+                elif key == key_type + '-left':
+                    tuple_values.append(default_tuple_values_str[0])
+                    tuple_values.append(default_tuple_values_str[1])
+                    tuple_values.append(default_tuple_values_str[2])
+                    tuple_values.append(values[0])
+        return (
+            tuple(int(re.findall(r'\d+', x)[0]) for x in tuple_values)
+            if tuple_values else default_tuple_values)
+
     def __split_widgets_scops(self) -> dict:
         # ...
         cleanstyle = re.sub(r'(/\*.+\*/)|(^#.+$)', r'', self.__stylesheet_arg)
