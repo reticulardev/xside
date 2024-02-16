@@ -10,36 +10,14 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
 
 
-class CentralW(QtWidgets.QFrame):
+class QMainWindow(QtWidgets.QFrame):
     """..."""
-    def __init__(
-            self, toplevel, border_radius: tuple, *args, **kwargs) -> None:
-        """..."""
+    def __init__(self, *args, **kwargs):
+        """Class constructor
+
+        Initialize class attributes
+        """
         super().__init__(*args, **kwargs)
-        self.set_style_sheet(
-            'CentralW {'
-            f'border-top-left-radius: {border_radius[0]}px;'
-            f'border-top-right-radius: {border_radius[1]}px;'
-            f'border-bottom-left-radius: {border_radius[3]}px;'
-            f'border-bottom-right-radius: {border_radius[2]}px;'
-            'background-color: rgba(255, 255, 255, 255);}')
-
-        self.__toplevel = toplevel
-
-        self.__main_box = QtWidgets.QVBoxLayout()
-        self.set_layout(self.__main_box)
-
-        self.__btn = QtWidgets.QPushButton('Remove shadow')
-        self.__main_box.add_widget(self.__btn)
-        self.__btn.clicked.connect(lambda: self.__toplevel.remove_shadow())
-
-        self.__btn2 = QtWidgets.QPushButton('Add shadow')
-        self.__main_box.add_widget(self.__btn2)
-        self.__btn2.clicked.connect(lambda: self.__toplevel.add_shadow())
-
-        self.__btn3 = QtWidgets.QPushButton('Close')
-        self.__main_box.add_widget(self.__btn3)
-        self.__btn3.clicked.connect(lambda: self.__toplevel.close())
 
 
 class Shadow(QtWidgets.QFrame):
@@ -146,12 +124,15 @@ class Shadow(QtWidgets.QFrame):
                 '}')
 
 
-class CSDWindow(QtWidgets.QMainWindow):
+class BaseShadowWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_window_flags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window)
         self.set_contents_margins(0, 0, 0, 0)
+
+        self.__is_shadow_has_removed = False
+        self.__is_shadow_has_added = True
 
         self.__border_radius = (10, 10, 0, 0)
         self.__width = 500
@@ -203,7 +184,7 @@ class CSDWindow(QtWidgets.QMainWindow):
         self.__central_widget_box.set_spacing(0)
         self.__center_shadow.set_layout(self.__central_widget_box)
 
-        self.__central_widget = CentralW(self, self.__border_radius)
+        self.__central_widget = QMainWindow()
         self.__central_widget_box.add_widget(self.__central_widget)
 
         # Right
@@ -229,52 +210,42 @@ class CSDWindow(QtWidgets.QMainWindow):
         self.__bottom_right_shadow.set_fixed_height(self.__shadow_size)
         self.__bottom_box.add_widget(self.__bottom_right_shadow)
 
-        self.install_event_filter(self)
+    def central_widget(self) -> QtWidgets:
+        """..."""
+        return self.__central_widget
 
-    def remove_shadow(self) -> None:
-        self.__center_shadow.set_background_color_visible(False)
+    def set_shadow_as_hidden(self, hide_value: bool) -> None:
+        """..."""
+        if hide_value:
+            self.__center_shadow.set_background_color_visible(False)
 
-        self.__bottom_left_shadow.set_visible(False)
-        self.__bottom_shadow.set_visible(False)
-        self.__bottom_right_shadow.set_visible(False)
+            self.__bottom_left_shadow.set_visible(False)
+            self.__bottom_shadow.set_visible(False)
+            self.__bottom_right_shadow.set_visible(False)
 
-        self.__top_left_shadow.set_visible(False)
-        self.__top_shadow.set_visible(False)
-        self.__top_right_shadow.set_visible(False)
+            self.__top_left_shadow.set_visible(False)
+            self.__top_shadow.set_visible(False)
+            self.__top_right_shadow.set_visible(False)
 
-        self.__left_shadow.set_visible(False)
-        self.__right_shadow.set_visible(False)
+            self.__left_shadow.set_visible(False)
+            self.__right_shadow.set_visible(False)
 
-    def add_shadow(self):
-        self.__center_shadow.set_background_color_visible(True)
+            self.__is_shadow_has_removed = True
+            self.__is_shadow_has_added = False
 
-        self.__bottom_left_shadow.set_visible(True)
-        self.__bottom_shadow.set_visible(True)
-        self.__bottom_right_shadow.set_visible(True)
+        else:
+            self.__center_shadow.set_background_color_visible(True)
 
-        self.__top_left_shadow.set_visible(True)
-        self.__top_shadow.set_visible(True)
-        self.__top_right_shadow.set_visible(True)
+            self.__bottom_left_shadow.set_visible(True)
+            self.__bottom_shadow.set_visible(True)
+            self.__bottom_right_shadow.set_visible(True)
 
-        self.__left_shadow.set_visible(True)
-        self.__right_shadow.set_visible(True)
+            self.__top_left_shadow.set_visible(True)
+            self.__top_shadow.set_visible(True)
+            self.__top_right_shadow.set_visible(True)
 
-    def event_filter(
-            self, watched: QtCore.QObject, event: QtCore.QEvent) -> bool:
-        if event.type() == QtCore.QEvent.Resize:
-            pass
+            self.__left_shadow.set_visible(True)
+            self.__right_shadow.set_visible(True)
 
-        elif event.type() == QtCore.QEvent.HoverMove:
-            pass
-
-        elif event.type() == QtCore.QEvent.MouseButtonPress:
-            if event.button() == QtCore.Qt.LeftButton:
-                if self.under_mouse():
-                    self.window_handle().start_system_move()
-
-        elif event.type() == QtCore.QEvent.MouseButtonRelease:
-            if self.under_mouse():
-                # self.close()
-                pass
-
-        return QtWidgets.QMainWindow.event_filter(self, watched, event)
+            self.__is_shadow_has_added = True
+            self.__is_shadow_has_removed = False

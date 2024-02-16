@@ -30,11 +30,6 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.__toplevel = self.__sideview_widget.parent().window()
         self.__style_parser = StyleParser(self.__toplevel.style_sheet())
 
-        # Settings
-        self.set_contents_margins(
-            self.__toplevel.shadow_size(), self.__toplevel.shadow_size(),
-            self.__toplevel.shadow_size(), self.__toplevel.shadow_size())
-
         # Main layout
         self.__main_box = QtWidgets.QHBoxLayout()
         self.__main_box.set_contents_margins(0, 0, 0, 0)
@@ -88,6 +83,13 @@ class QOverlaySideView(QtWidgets.QFrame):
 
     def open(self) -> None:
         """..."""
+        if self.__toplevel.is_shadow_visible():
+            self.set_contents_margins(
+                self.__toplevel.shadow_size(), self.__toplevel.shadow_size(),
+                self.__toplevel.shadow_size(), self.__toplevel.shadow_size())
+        else:
+            self.set_contents_margins(0, 0, 0, 0)
+
         self.__update_style()
         self.__sideview_widget.set_visible(True)
         self.resize(self.__toplevel.width(), self.__toplevel.height())

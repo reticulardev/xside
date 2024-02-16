@@ -12,14 +12,6 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
 
 
-class CSDWindow(QtWidgetsX.CSDWindow):
-    """..."""
-
-    def __init__(self, *args, **kwargs) -> None:
-        """..."""
-        super().__init__(*args, **kwargs)
-
-
 class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
     """..."""
 
@@ -73,6 +65,16 @@ class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
         self.set_style_button = QtWidgets.QPushButton('Set style')
         self.set_style_button.clicked.connect(self.on_set_style_button)
         self.frameview_layout().add_widget(self.set_style_button)
+
+        self.remove_shadow_button = QtWidgets.QPushButton('Remove shadow')
+        self.remove_shadow_button.clicked.connect(
+            lambda: self.set_shadow_visible(False))
+        self.frameview_layout().add_widget(self.remove_shadow_button)
+
+        self.add_shadow_button = QtWidgets.QPushButton('Add shadow')
+        self.add_shadow_button.clicked.connect(
+            lambda: self.set_shadow_visible(True))
+        self.frameview_layout().add_widget(self.add_shadow_button)
 
         # self.sideview_opened_signal.connect(lambda event: print(event))
         # self.sideview_closed_signal.connect(lambda event: print(event))
@@ -216,6 +218,11 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.reset_style_button.clicked.connect(self.on_reset_style)
         self.body_layout.add_widget(self.reset_style_button)
 
+        self.remove_sahdow_button = QtWidgets.QPushButton('Remove shadow')
+        self.remove_sahdow_button.clicked.connect(
+            lambda: self.set_shadow_visible(False))
+        self.body_layout.add_widget(self.remove_sahdow_button)
+
         # Context menu
         self.context_menu_label = QtWidgets.QLabel('Context menu text here')
         self.body_layout.add_widget(self.context_menu_label)
@@ -303,16 +310,15 @@ class Application(object):
         self.sideview_window = SideViewWindow(
             server_side_decoration=False, follow_platform=True)
         self.window = Window()
-        self.appwindow = CSDWindow()
+        # self.appwindow = CSDWindow()
 
     def main(self) -> None:
         """Start the app
 
         Sets basic window details and starts the application.
         """
-        # self.sideview_window.show()
+        self.sideview_window.show()
         # self.window.show()
-        self.appwindow.show()
         sys.exit(self.application.exec())
 
 

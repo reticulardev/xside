@@ -2,6 +2,7 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
+from PySideX.QtWidgetsX.base_shadow_window import BaseShadowWindow
 import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.platform import Platform
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
@@ -9,17 +10,7 @@ from PySideX.QtWidgetsX.modules.dynamicstyle import DynamicStyle
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 
 
-class QMainWindow(QtWidgets.QFrame):
-    """..."""
-    def __init__(self, *args, **kwargs):
-        """Class constructor
-
-        Initialize class attributes
-        """
-        super().__init__(*args, **kwargs)
-
-
-class QApplicationWindow(QtWidgets.QMainWindow):
+class QApplicationWindow(BaseShadowWindow):
     """Application main window prepared to use CSD
 
     The edges are rounded and there is no title bar. A custom header bar can
@@ -46,8 +37,8 @@ class QApplicationWindow(QtWidgets.QMainWindow):
         self.__platform = Platform()
 
         # Flags
-        self.__shadow_size = 5
-        self.__shadow_is_disabled = self.__is_server_side_decorated
+        self.__shadow_size = 8
+        self.__is_shadow_removed = self.__is_server_side_decorated
         self.__active_resize_border = None
         self.__default_resize_border_size = 5
         self.__resize_border_size = self.__default_resize_border_size
@@ -61,8 +52,7 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__gui_env.settings().window_background_color().to_tuple())
 
         # Layout
-        self.__central_widget = QMainWindow()
-        self.set_central_widget(self.__central_widget)
+        self.__central_widget = self.central_widget()
 
         # Style
         self.__dynamic_style = DynamicStyle(self)
@@ -75,22 +65,15 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__dynamic_style.fullscreen_adapted_style(
                 self.__style_sheet))
 
-        self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
-        self.__shadow_effect.set_blur_radius(self.__shadow_size)
-        self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
-        self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 90))
-
         self.__set_window_decoration()
 
         # Events
         self.install_event_filter(self)
 
-    def central_widget(self) -> QtWidgets.QWidget:
-        """Returns the central widget for the main window
-
-        This function returns None if the central widget has not been set.
-        """
-        return self.__central_widget
+    def set_shadow_visible(self, visible: bool) -> None:
+        visible = False if visible else True
+        self.set_shadow_as_hidden(visible)
+        self.__is_shadow_removed = visible
 
     def follow_platform(self) -> bool:
         """..."""
@@ -99,6 +82,10 @@ class QApplicationWindow(QtWidgets.QMainWindow):
     def is_server_side_decorated(self) -> bool:
         """..."""
         return self.__is_server_side_decorated
+
+    def is_shadow_visible(self) -> bool:
+        """..."""
+        return False if self.__is_shadow_removed else True
 
     def platform(self) -> Platform:
         """..."""
@@ -115,10 +102,6 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__central_widget.set_style_sheet(self.__style_sheet)
 
         self.reset_style_signal.emit(0)
-
-    def set_shadow_size(self, size: int) -> None:
-        """..."""
-        self.__shadow_size = size
 
     def set_style_sheet(self, style: str) -> None:
         """Set the application style sheet
@@ -169,18 +152,18 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.set_window_flags(
                 QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window)
             self.__window_shadow_visible(True)
-        else:
-            self.__shadow_is_disabled = True
 
     def __set_edge_position(self, event: QtCore.QEvent) -> None:
         # Saves the position of the window where the mouse cursor is
-        resize_area = self.__shadow_size - 3
+        resize_area = (
+            -3 if self.__is_shadow_removed else self.__shadow_size - 3)
         pos = event.position().to_point()  # QtGui.QHoverEvent(ev.clone())
         window_area = [
             resize_area < pos.x() < self.width() - resize_area,
             resize_area < pos.y() < self.height() - resize_area]
-        if self.__shadow_is_disabled:
-            window_area = [pos.x() < self.width(), pos.y() < self.height()]
+        if self.__is_server_side_decorated or self.__is_shadow_removed:
+            window_area = [
+                pos.x() < self.width(), pos.y() < self.height()]
 
         if all(window_area):
             # top-right, top-left, bottom-right, bottom-left
@@ -216,26 +199,15 @@ class QApplicationWindow(QtWidgets.QMainWindow):
             self.__active_resize_border = None
 
     def __window_shadow_visible(self, visible: bool) -> None:
-        if self.__shadow_is_disabled:
+        # if self.__shadow_is_disabled:
+        if self.__is_server_side_decorated:
             self.__resize_border_size = self.__default_resize_border_size
         else:
+            self.set_shadow_as_hidden(False if visible else True)
             if visible:
-                if color.is_dark(self.__gui_env.settings(
-                        ).window_background_color().to_tuple()):
-
-                    self.__shadow_effect.set_color(
-                        QtGui.QColor(10, 10, 10, 180))
-
-                self.set_contents_margins(
-                    self.__shadow_size, self.__shadow_size,
-                    self.__shadow_size, self.__shadow_size)
-
                 self.__resize_border_size = (
                         self.__default_resize_border_size + self.__shadow_size)
-
-                self.__central_widget.set_graphics_effect(self.__shadow_effect)
             else:
-                self.set_contents_margins(0, 0, 0, 0)
                 self.__resize_border_size = self.__default_resize_border_size
 
     def __update_cursor_shape(self) -> None:
@@ -295,6 +267,8 @@ class QApplicationWindow(QtWidgets.QMainWindow):
                     self.__window_shadow_visible(False)
                 else:
                     self.__central_widget.set_style_sheet(self.__style_sheet)
-                    self.__window_shadow_visible(True)
+                    if (not self.__is_server_side_decorated and not
+                            self.__is_shadow_removed):
+                        self.__window_shadow_visible(True)
 
         return QtWidgets.QMainWindow.event_filter(self, watched, event)
