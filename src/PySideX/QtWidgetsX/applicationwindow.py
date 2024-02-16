@@ -278,7 +278,6 @@ class QApplicationWindow(BaseShadowWindow):
 
         # Flags
         self.__shadow_size = 8
-        self.__is_shadow_removed = self.__is_server_side_decorated
         self.__active_resize_border = None
         self.__default_resize_border_size = 5
         self.__resize_border_size = self.__default_resize_border_size
@@ -310,11 +309,6 @@ class QApplicationWindow(BaseShadowWindow):
         # Events
         self.install_event_filter(self)
 
-    def set_shadow_visible(self, visible: bool) -> None:
-        visible = False if visible else True
-        self.set_shadow_as_hidden(visible)
-        self.__is_shadow_removed = visible
-
     def follow_platform(self) -> bool:
         """..."""
         return self.__follow_platform
@@ -322,10 +316,6 @@ class QApplicationWindow(BaseShadowWindow):
     def is_server_side_decorated(self) -> bool:
         """..."""
         return self.__is_server_side_decorated
-
-    def is_shadow_visible(self) -> bool:
-        """..."""
-        return False if self.__is_shadow_removed else True
 
     def platform(self) -> Platform:
         """..."""
@@ -396,12 +386,12 @@ class QApplicationWindow(BaseShadowWindow):
     def __set_edge_position(self, event: QtCore.QEvent) -> None:
         # Saves the position of the window where the mouse cursor is
         resize_area = (
-            -3 if self.__is_shadow_removed else self.__shadow_size - 3)
+            -3 if self.__is_server_side_decorated else self.__shadow_size - 3)
         pos = event.position().to_point()  # QtGui.QHoverEvent(ev.clone())
         window_area = [
             resize_area < pos.x() < self.width() - resize_area,
             resize_area < pos.y() < self.height() - resize_area]
-        if self.__is_server_side_decorated or self.__is_shadow_removed:
+        if self.__is_server_side_decorated:
             window_area = [
                 pos.x() < self.width(), pos.y() < self.height()]
 
@@ -507,8 +497,7 @@ class QApplicationWindow(BaseShadowWindow):
                     self.__window_shadow_visible(False)
                 else:
                     self.__central_widget.set_style_sheet(self.__style_sheet)
-                    if (not self.__is_server_side_decorated and not
-                            self.__is_shadow_removed):
+                    if not self.__is_server_side_decorated:
                         self.__window_shadow_visible(True)
 
         return QtWidgets.QMainWindow.event_filter(self, watched, event)

@@ -22,7 +22,6 @@ class QWindowMoveArea(QtWidgets.QFrame):
         super().__init__(*args, **kwargs)
         self.__toplevel = toplevel
         self.__enable = True
-        self.__is_shadow_has_removed = False
 
         self.__screen_w = self.__toplevel.screen().size().width()
         self.__screen_h = self.__toplevel.screen().size().height()
@@ -46,10 +45,8 @@ class QWindowMoveArea(QtWidgets.QFrame):
             self.__toplevel.y() + self.__toplevel.height() != self.__screen_h,
             self.__toplevel.x() != 0, self.__toplevel.y() != 0]
         if any(conditions):
-            if (self.__is_shadow_has_removed and not
-                    self.__toplevel.is_shadow_visible):
+            if not self.__toplevel.is_server_side_decorated():
                 self.__toplevel.set_shadow_as_hidden(False)
-                self.__is_shadow_has_removed = False
         self.__timer.stop()
 
     def __shadow_on_release(self):
@@ -59,12 +56,9 @@ class QWindowMoveArea(QtWidgets.QFrame):
             self.__toplevel.x() == 0, self.__toplevel.y() == 0]
         if any(conditions):
             self.__toplevel.set_shadow_as_hidden(True)
-            self.__is_shadow_has_removed = True
         else:
-            if (self.__is_shadow_has_removed and not
-                    self.__toplevel.is_shadow_visible):
+            if not self.__toplevel.is_server_side_decorated():
                 self.__toplevel.set_shadow_as_hidden(False)
-                self.__is_shadow_has_removed = False
         self.__timer.stop()
 
     def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
