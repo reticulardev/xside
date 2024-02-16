@@ -9,8 +9,8 @@ from __feature__ import snake_case
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
-from PySideX.QtWidgetsX.application_window import QApplicationWindow
-from PySideX.QtWidgetsX.header_bar import QHeaderBar
+from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
+from PySideX.QtWidgetsX.headerbar import QHeaderBar
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -139,7 +139,7 @@ class QOverlaySideView(QtWidgets.QFrame):
         return 'QOverlaySideView(QtWidgets.QFrame)'
 
 
-class QSideViewApplicationWindow(QApplicationWindow):
+class QApplicationWindowSideView(QApplicationWindow):
     """Window with side panel"""
     adaptive_mode_signal = QtCore.Signal(object)
     sideview_opened_signal = QtCore.Signal(object)

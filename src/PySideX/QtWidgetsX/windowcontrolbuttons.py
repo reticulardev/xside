@@ -2,8 +2,8 @@
 from PySide6 import QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.QtWidgetsX.control_button import QControlButton
-from PySideX.QtWidgetsX.application_window import QApplicationWindow
+from PySideX.QtWidgetsX.controlbutton import QControlButton
+from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 
 

@@ -2,7 +2,7 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.QtWidgetsX.application_window import QApplicationWindow
+from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
 
 
 class QWindowMoveArea(QtWidgets.QFrame):
@@ -21,15 +21,15 @@ class QWindowMoveArea(QtWidgets.QFrame):
         """
         super().__init__(*args, **kwargs)
         self.__toplevel = toplevel
+        self.__enable = True
+        self.__is_shadow_has_removed = False
 
         self.__screen_w = self.__toplevel.screen().size().width()
         self.__screen_h = self.__toplevel.screen().size().height()
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(0, 0, 0, 0)
-        self.__enable = True
 
-        self.__is_shadow_has_removed = False
         self.__timer = QtCore.QTimer()
 
     def set_enable(self, enable: bool) -> None:
@@ -41,11 +41,11 @@ class QWindowMoveArea(QtWidgets.QFrame):
         self.__enable = enable
 
     def __shadow_on_press(self):
-        sides = [
+        conditions = [
             self.__toplevel.x() + self.__toplevel.width() != self.__screen_w,
             self.__toplevel.y() + self.__toplevel.height() != self.__screen_h,
             self.__toplevel.x() != 0, self.__toplevel.y() != 0]
-        if any(sides):
+        if any(conditions):
             if (self.__is_shadow_has_removed and not
                     self.__toplevel.is_shadow_visible):
                 self.__toplevel.set_shadow_as_hidden(False)
@@ -53,11 +53,11 @@ class QWindowMoveArea(QtWidgets.QFrame):
         self.__timer.stop()
 
     def __shadow_on_release(self):
-        sides = [
+        conditions = [
             self.__toplevel.x() + self.__toplevel.width() == self.__screen_w,
             self.__toplevel.y() + self.__toplevel.height() == self.__screen_h,
             self.__toplevel.x() == 0, self.__toplevel.y() == 0]
-        if any(sides):
+        if any(conditions):
             self.__toplevel.set_shadow_as_hidden(True)
             self.__is_shadow_has_removed = True
         else:

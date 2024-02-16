@@ -5,7 +5,7 @@ import os
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.QtWidgetsX.application_window import QApplicationWindow
+from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 import PySideX.QtWidgetsX.modules.color as color

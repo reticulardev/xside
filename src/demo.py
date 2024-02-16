@@ -12,7 +12,7 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
 
 
-class SideViewWindow(QtWidgetsX.QSideViewApplicationWindow):
+class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
     """..."""
 
     def __init__(self, *args, **kwargs) -> None:
