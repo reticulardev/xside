@@ -128,6 +128,7 @@ class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
                 '  background: transparent;'
                 '  background-color: rgba(100, 100, 100, 0.3);}'
                 'QQuickContextMenu {'
+                '  padding: 4;'
                 '  background-color: rgba(44, 44, 50, 0.9);'
                 '  border: 1px solid #283690;}'
                 'QQuickContextMenuButton:hover {'

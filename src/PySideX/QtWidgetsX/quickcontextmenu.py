@@ -14,7 +14,7 @@ import PySideX.QtWidgetsX.modules.color as color
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-class QQuickContextMenuSeparator(QtWidgets.QFrame):
+class QQuickContextMenuSeparatorLine(QtWidgets.QFrame):
     """..."""
     def __init__(self, color: QtGui.QColor, *args, **kwargs) -> None:
         """..."""
@@ -24,7 +24,6 @@ class QQuickContextMenuSeparator(QtWidgets.QFrame):
         self.set_frame_shadow(QtWidgets.QFrame.Plain)
         self.set_line_width(0)
         self.set_mid_line_width(3)
-        self.set_contents_margins(0, 0, 0, 0)
         self.set_color(self.__color)
 
     def set_color(self, color: QtGui.QColor) -> None:
@@ -32,6 +31,21 @@ class QQuickContextMenuSeparator(QtWidgets.QFrame):
         palette = self.palette()
         palette.set_color(QtGui.QPalette.WindowText, color)
         self.set_palette(palette)
+
+
+class QQuickContextMenuSeparator(QtWidgets.QFrame):
+    """..."""
+    def __init__(self, color: QtGui.QColor, *args, **kwargs) -> None:
+        """..."""
+        super().__init__(*args, **kwargs)
+        self.__color = color
+        box = QtWidgets.QVBoxLayout()
+        box.set_contents_margins(0, 0, 0, 0)
+        self.set_layout(box)
+
+        line = QQuickContextMenuSeparatorLine(self.__color)
+        line.set_contents_margins(0, 0, 0, 0)
+        box.add_widget(line)
 
 
 class QQuickContextMenuButtonLabel(QtWidgets.QLabel):
@@ -60,8 +74,6 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
             *args, **kwargs) -> None:
         """..."""
         super().__init__(*args, **kwargs)
-        self.set_contents_margins(0, 0, 0, 0)
-
         self.__toplevel = toplevel
         self.__context_menu = context_menu
         self.__text = text
@@ -189,64 +201,37 @@ class QQuickContextMenu(QtWidgets.QFrame):
         :param toplevel: QApplicationWindow app main window instance
         """
         super().__init__(*args, **kwargs)
-        # Param
         self.__toplevel = toplevel
 
-        # Settings
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_window_flags(
             QtCore.Qt.FramelessWindowHint | QtCore.Qt.Popup)
-
-        # Properties
         self.set_minimum_width(50)
         self.set_minimum_height(35)
 
-        self.__separator_layouts = []
-        self.__context_buttons_layout = []
-        self.__context_buttons = []
-        self.__labels_box = []
-
-        self.__style_saved = self.__toplevel.style_sheet()
-        self.__style_parser = StyleParser(self.__style_saved)
-        self.__widget_style = self.__style_parser.widget_scope(
-            'QQuickContextMenu')
-        self.__separator_style = self.__style_parser.widget_scope(
-            'QQuickContextMenuSeparator')
-        self.__point_x = None
-        self.__point_y = None
-
-        # Properties
         self.__gui_env = GuiEnv(
             self.__toplevel.platform().operational_system(),
             self.__toplevel.platform().desktop_environment())
 
-        self.__spacing = self.__gui_env.settings().contextmenu_spacing()
-
-        self.__separator_margin = self.__style_parser.margin(
-            self.__separator_style,
-            self.__gui_env.settings().contextmenu_separator_margin())
-
-        self.__padding = self.__style_parser.padding(
-            self.__widget_style,
-            self.__gui_env.settings().contextmenu_padding())
-
         self.__is_dark = self.__gui_env.settings().window_is_dark()
+        self.__style_saved = self.__toplevel.style_sheet()
+        self.__style_parser = StyleParser(self.__style_saved)
+        self.__context_separators = []
+        self.__context_buttons = []
+        self.__point_x = None
+        self.__point_y = None
 
         # Main layout
-        self.set_contents_margins(0, 0, 0, 0)
         self.__main_layout = QtWidgets.QHBoxLayout()
-        self.__main_layout.set_contents_margins(5, 5, 5, 5)
-        self.__main_layout.set_spacing(0)
         self.set_layout(self.__main_layout)
 
-        self.__main_widget = QtWidgets.QWidget()
+        self.__main_widget = QtWidgets.QFrame()
         self.__main_widget.set_object_name('QQuickContextMenu')
         self.__main_layout.add_widget(self.__main_widget)
 
         # Layout
         self.__menu_context_layout = QtWidgets.QVBoxLayout()
-        self.__menu_context_layout.set_contents_margins(
-            0, self.__padding[1], 0, self.__padding[3])
+        self.__menu_context_layout.set_contents_margins(0, 0, 0, 0)
         self.__menu_context_layout.set_spacing(0)
         self.__main_widget.set_layout(self.__menu_context_layout)
 
@@ -272,13 +257,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
             shortcut: QtGui.QKeySequence | None = None) -> None:
         """..."""
         labels_box = QtWidgets.QHBoxLayout()
-        self.__labels_box.append(labels_box)
-        labels_box.set_contents_margins(
-            self.__padding[0], 0, self.__padding[2], 0)
-
-        if self.__context_buttons_layout:
-            self.__context_buttons_layout[-1].set_contents_margins(
-                self.__padding[0], 0, self.__padding[2], self.__spacing)
+        # self.__labels_box.append(labels_box)
 
         ctx_btn = QQuickContextMenuButton(
             self.__toplevel, self, text, receiver, icon, shortcut,
@@ -288,7 +267,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
 
         self.__menu_context_layout.add_layout(labels_box)
 
-        self.__context_buttons_layout.append(labels_box)
+        # self.__context_buttons_layout.append(labels_box)
         self.__context_buttons.append(ctx_btn)
 
     def add_separator(self, color: QtGui.QColor = None) -> None:
@@ -297,17 +276,11 @@ class QQuickContextMenu(QtWidgets.QFrame):
             ).contextmenu_separator_color()
 
         separator_layout = QtWidgets.QVBoxLayout()
-        separator_layout.set_contents_margins(
-            self.__separator_margin[0],
-            self.__separator_margin[1],
-            self.__separator_margin[2],
-            self.__separator_margin[3] + self.__spacing)
-
         separator = QQuickContextMenuSeparator(color)
         separator_layout.add_widget(separator)
 
         self.__menu_context_layout.add_layout(separator_layout)
-        self.__separator_layouts.append(separator_layout)
+        self.__context_separators.append(separator)
 
     def exec(self, point: QtCore.QPoint) -> None:
         """..."""
@@ -318,7 +291,10 @@ class QQuickContextMenu(QtWidgets.QFrame):
         for btn in self.__context_buttons:
             btn.set_style_sheet(self.__style_saved)
 
-        self.move(self.__point_x - 5, self.__point_y - 5)
+        for sep in self.__context_separators:
+            sep.set_style_sheet(self.__style_saved)
+
+        self.move(self.__point_x - 10, self.__point_y - 10)
         self.show()
         self.__set_dynamic_positioning()
 
@@ -326,42 +302,6 @@ class QQuickContextMenu(QtWidgets.QFrame):
         """..."""
         logging.info(event)
         self.close()
-
-    def set_contents_paddings(
-            self, left: int, top: int, right: int, bottom: int) -> None:
-        """..."""
-        self.__padding = (left, top, right, bottom)
-
-        if self.__context_buttons_layout:
-            for item in self.__context_buttons_layout:
-                item.set_contents_margins(
-                    self.__padding[0], 0, self.__padding[2], self.__spacing)
-
-        self.__menu_context_layout.set_contents_margins(
-            0, self.__padding[1], 0, self.__padding[3])
-
-    def set_separators_margins(
-            self, left: int, top: int, right: int, bottom: int) -> None:
-        """..."""
-        if self.__separator_layouts:
-            for item in self.__separator_layouts:
-                item.set_contents_margins(
-                    left, top, right, bottom + self.__spacing)
-
-    def set_spacing(self, spacing: int) -> None:
-        """..."""
-        self.__spacing = spacing
-
-        if self.__context_buttons_layout:
-            for item in self.__context_buttons_layout:
-                item.set_contents_margins(
-                    self.__padding[0], 0, self.__padding[2], self.__spacing)
-
-        if self.__separator_layouts:
-            for item in self.__separator_layouts:
-                margins = item.contents_margins()
-                margins.set_bottom(self.__spacing)
-                item.set_contents_margins(margins)
 
     def __set_dynamic_positioning(self) -> None:
         # ...
@@ -383,32 +323,6 @@ class QQuickContextMenu(QtWidgets.QFrame):
         # ...
         self.__style_saved = self.__toplevel.style_sheet()
         self.__style_parser.set_style_sheet(self.__style_saved)
-        self.__widget_style = self.__style_parser.widget_scope(
-            'QQuickContextMenu')
-        self.__padding = self.__style_parser.padding(
-            self.__widget_style,
-            self.__gui_env.settings().contextmenu_padding())
-
-        if self.__labels_box:
-            for label in self.__labels_box:
-                label.set_contents_margins(
-                    self.__padding[0], 0, self.__padding[2], 0)
-
-        if self.__context_buttons_layout:
-            for button in self.__context_buttons_layout[:-1]:
-                button.set_contents_margins(
-                    self.__padding[0], 0, self.__padding[2], self.__spacing)
-
-        self.__separator_margin = self.__style_parser.margin(
-            self.__separator_style,
-            self.__gui_env.settings().contextmenu_separator_margin())
-        if self.__separator_layouts:
-            for separator in self.__separator_layouts:
-                separator.set_contents_margins(
-                    self.__separator_margin[0],
-                    self.__separator_margin[1],
-                    self.__separator_margin[2],
-                    self.__separator_margin[3] + self.__spacing)
 
     def __set_style(self) -> str:
         # ...

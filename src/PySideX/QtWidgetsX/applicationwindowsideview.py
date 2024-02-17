@@ -83,7 +83,7 @@ class QOverlaySideView(QtWidgets.QFrame):
 
     def open(self) -> None:
         """..."""
-        if self.__toplevel.is_shadow_visible():
+        if not self.__toplevel.is_server_side_decorated():
             self.set_contents_margins(
                 self.__toplevel.shadow_size(), self.__toplevel.shadow_size(),
                 self.__toplevel.shadow_size(), self.__toplevel.shadow_size())

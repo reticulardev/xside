@@ -32,6 +32,11 @@ class GlobalEnvSettings(object):
         return self.window_border_radius()[0]
 
     @staticmethod
+    def contextmenu_margin() -> tuple:
+        """..."""
+        return 0, 0, 0, 0
+
+    @staticmethod
     def contextmenu_padding() -> tuple:
         """..."""
         return 4, 4, 4, 4
@@ -206,10 +211,19 @@ class EnvSettingsPlasma(GlobalEnvSettings):
         cor = self.window_background_color()
         return QtGui.QColor(cor.red(), cor.green(), cor.blue(), 225)
 
+    def contextmenu_border_radius(self) -> int:
+        """..."""
+        return 3
+
+    @staticmethod
+    def contextmenu_padding() -> tuple:
+        """..."""
+        return 3, 3, 3, 3
+
     @staticmethod
     def contextmenu_separator_margin() -> tuple:
         """Left, top, right and bottom margins tuple"""
-        return 8, 4, 8, 4
+        return 3, 3, 3, 3
 
     def contextmenubutton_background_hover_color(self) -> QtGui.QColor:
         """..."""

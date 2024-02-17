@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import logging
 import os
 import re
 import sys
@@ -50,71 +51,6 @@ class StyleParser(object):
                     return scope_value
         return ''
 
-    def color(self, widget_scope: str, default_color: tuple) -> tuple:
-        # return self.__tuple_values('color', widget_scope, default_color)
-        pass
-
-    def margin(self, widget_scope: str, default_margin: tuple) -> tuple:
-        return self.__tuple_values('margin', widget_scope, default_margin)
-
-    def padding(self, widget_scope: str, default_padding: tuple) -> tuple:
-        return self.__tuple_values('padding', widget_scope, default_padding)
-
-    @staticmethod
-    def __tuple_values(
-            key_type: str, widget_scope: str, default_tuple_values: tuple
-            ) -> tuple:
-        default_tuple_values_str = [str(x) for x in default_tuple_values]
-        tuple_values = []
-        for item in [x for x in widget_scope.split(';')]:
-            if ':' in item:
-                key, value = item.split(':')
-                values = value.strip(
-                    ).replace(',', ' ').replace('  ', ' ').split(' ')
-                key = key.strip()
-
-                if key == key_type:
-                    if len(values) == 4:
-                        tuple_values = values
-                    elif len(values) == 1:
-                        tuple_values.append(values[0])
-                        tuple_values.append(values[0])
-                        tuple_values.append(values[0])
-                        tuple_values.append(values[0])
-                    elif len(values) == 2:
-                        tuple_values.append(values[0])
-                        tuple_values.append(values[1])
-                        tuple_values.append(default_tuple_values_str[2])
-                        tuple_values.append(default_tuple_values_str[3])
-                    elif len(values) == 3:
-                        tuple_values.append(values[0])
-                        tuple_values.append(values[1])
-                        tuple_values.append(values[2])
-                        tuple_values.append(default_tuple_values_str[3])
-                elif key == key_type + '-top':
-                    tuple_values.append(values[0])
-                    tuple_values.append(default_tuple_values_str[1])
-                    tuple_values.append(default_tuple_values_str[2])
-                    tuple_values.append(default_tuple_values_str[3])
-                elif key == key_type + '-right':
-                    tuple_values.append(default_tuple_values_str[0])
-                    tuple_values.append(values[0])
-                    tuple_values.append(default_tuple_values_str[2])
-                    tuple_values.append(default_tuple_values_str[3])
-                elif key == key_type + '-bottom':
-                    tuple_values.append(default_tuple_values_str[0])
-                    tuple_values.append(default_tuple_values_str[1])
-                    tuple_values.append(values[0])
-                    tuple_values.append(default_tuple_values_str[3])
-                elif key == key_type + '-left':
-                    tuple_values.append(default_tuple_values_str[0])
-                    tuple_values.append(default_tuple_values_str[1])
-                    tuple_values.append(default_tuple_values_str[2])
-                    tuple_values.append(values[0])
-        return (
-            tuple(int(re.findall(r'\d+', x)[0]) for x in tuple_values)
-            if tuple_values else default_tuple_values)
-
     def __split_widgets_scops(self) -> dict:
         # ...
         cleanstyle = re.sub(r'(/\*.+\*/)|(^#.+$)', r'', self.__stylesheet_arg)
@@ -161,12 +97,6 @@ class StyleParser(object):
         return value.lstrip('#').replace(' ', '').strip()
 
 
-class StyleScopeParser(object):
-    """..."""
-    def __init__(self, scope_style: str) -> None:
-        self.__scope = scope_style
-
-
 class DynamicStyle(object):
     """..."""
     def __init__(self, toplevel: QtWidgets.QMainWindow) -> None:
@@ -187,12 +117,19 @@ class DynamicStyle(object):
         self.__win_border_color = self.__env.settings(
             ).window_border_color()
 
+        self.__ctxmenu_margin = self.__env.settings(
+            ).contextmenu_margin()
+        self.__ctxmenu_padding = self.__env.settings(
+            ).contextmenu_padding()
         self.__ctxmenu_background_color = self.__env.settings(
             ).contextmenu_background_color()
         self.__ctxmenu_border_color = self.__env.settings(
             ).contextmenu_border_color()
         self.__ctxmenu_border_radius = self.__env.settings(
             ).contextmenu_border_radius()
+
+        self.__ctxmenu_separator_margin = self.__env.settings(
+            ).contextmenu_separator_margin()
 
         self.__ctxmenubutton_background_hover_color = self.__env.settings(
             ).contextmenubutton_background_hover_color()
@@ -237,17 +174,34 @@ class DynamicStyle(object):
 
         context_menu_style = (
             'QQuickContextMenu {'
+            'margin:'
+            f' {self.__ctxmenu_margin[0]}px'
+            f' {self.__ctxmenu_margin[1]}px'
+            f' {self.__ctxmenu_margin[2]}px'
+            f' {self.__ctxmenu_margin[3]}px;'
+            'padding:'
+            f' {self.__ctxmenu_padding[0]}px'
+            f' {self.__ctxmenu_padding[1]}px'
+            f' {self.__ctxmenu_padding[2]}px'
+            f' {self.__ctxmenu_padding[3]}px;'
             'background-color: rgba('
-            f'{self.__ctxmenu_background_color.red()},'
-            f'{self.__ctxmenu_background_color.green()},'
-            f'{self.__ctxmenu_background_color.blue()},'
-            f'{self.__ctxmenu_background_color.alpha()});'
+            f' {self.__ctxmenu_background_color.red()},'
+            f' {self.__ctxmenu_background_color.green()},'
+            f' {self.__ctxmenu_background_color.blue()},'
+            f' {self.__ctxmenu_background_color.alpha()});'
             'border: 1px solid rgba('
-            f'{self.__ctxmenu_border_color.red()},'
-            f'{self.__ctxmenu_border_color.green()},'
-            f'{self.__ctxmenu_border_color.blue()},'
-            f'{self.__ctxmenu_border_color.alpha_f()});'
+            f' {self.__ctxmenu_border_color.red()},'
+            f' {self.__ctxmenu_border_color.green()},'
+            f' {self.__ctxmenu_border_color.blue()},'
+            f' {self.__ctxmenu_border_color.alpha_f()});'
             f'border-radius: {self.__ctxmenu_border_radius}px;'
+            '}'
+            'QQuickContextMenuSeparator {'
+            'margin:'
+            f' {self.__ctxmenu_separator_margin[0]}px'
+            f' {self.__ctxmenu_separator_margin[1]}px'
+            f' {self.__ctxmenu_separator_margin[2]}px'
+            f' {self.__ctxmenu_separator_margin[3]}px;'
             '}'
             'QQuickContextMenuButton {'
             'background: transparent;'
@@ -261,27 +215,27 @@ class DynamicStyle(object):
             '}'
             'QQuickContextMenuButton:hover {'
             'color: rgba('
-            f'{self.__ctxtmenubutton_foreground_hover_color.red()},'
-            f'{self.__ctxtmenubutton_foreground_hover_color.green()},'
-            f'{self.__ctxtmenubutton_foreground_hover_color.blue()},'
-            f'{self.__ctxtmenubutton_foreground_hover_color.alpha()});'
+            f' {self.__ctxtmenubutton_foreground_hover_color.red()},'
+            f' {self.__ctxtmenubutton_foreground_hover_color.green()},'
+            f' {self.__ctxtmenubutton_foreground_hover_color.blue()},'
+            f' {self.__ctxtmenubutton_foreground_hover_color.alpha()});'
             'background-color: rgba('
-            f'{self.__ctxmenubutton_background_hover_color.red()},'
-            f'{self.__ctxmenubutton_background_hover_color.green()},'
-            f'{self.__ctxmenubutton_background_hover_color.blue()},'
-            f'{self.__ctxmenubutton_background_hover_color.alpha()});'
+            f' {self.__ctxmenubutton_background_hover_color.red()},'
+            f' {self.__ctxmenubutton_background_hover_color.green()},'
+            f' {self.__ctxmenubutton_background_hover_color.blue()},'
+            f' {self.__ctxmenubutton_background_hover_color.alpha()});'
             'border: 1px solid rgba('
-            f'{self.__ctxmenubutton_border_hover_color.red()},'
-            f'{self.__ctxmenubutton_border_hover_color.green()},'
-            f'{self.__ctxmenubutton_border_hover_color.blue()},'
-            f'{self.__ctxmenubutton_border_hover_color.alpha()});'
+            f' {self.__ctxmenubutton_border_hover_color.red()},'
+            f' {self.__ctxmenubutton_border_hover_color.green()},'
+            f' {self.__ctxmenubutton_border_hover_color.blue()},'
+            f' {self.__ctxmenubutton_border_hover_color.alpha()});'
             '}'
             'QQuickContextMenuButtonLabel:hover {'
             'color: rgba('
-            f'{self.__ctxtmenubutton_foreground_hover_color.red()},'
-            f'{self.__ctxtmenubutton_foreground_hover_color.green()},'
-            f'{self.__ctxtmenubutton_foreground_hover_color.blue()},'
-            f'{self.__ctxtmenubutton_foreground_hover_color.alpha()});'
+            f' {self.__ctxtmenubutton_foreground_hover_color.red()},'
+            f' {self.__ctxtmenubutton_foreground_hover_color.green()},'
+            f' {self.__ctxtmenubutton_foreground_hover_color.blue()},'
+            f' {self.__ctxtmenubutton_foreground_hover_color.alpha()});'
             '}')
 
         style_path = os.path.join(SRC_DIR, 'static', 'style.qss')
