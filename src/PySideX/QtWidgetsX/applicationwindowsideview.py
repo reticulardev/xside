@@ -132,12 +132,6 @@ class QOverlaySideView(QtWidgets.QFrame):
     def __resize_sig(self) -> None:
         self.resize(self.__toplevel.width(), self.__toplevel.height())
 
-    def __str__(self) -> str:
-        return 'QOverlaySideView()'
-
-    def __repr__(self) -> str:
-        return 'QOverlaySideView(QtWidgets.QFrame)'
-
 
 class QApplicationWindowSideView(QApplicationWindow):
     """Window with side panel"""
@@ -452,9 +446,3 @@ class QApplicationWindowSideView(QApplicationWindow):
         logging.info(event)
         self.__switch_adaptive_and_wide_mode_window()
         self.__fullscreen_maximized_and_windowed_modes_adjusts()
-
-    def __str__(self) -> str:
-        return 'QSideViewApplicationWindow()'
-
-    def __repr__(self) -> str:
-        return 'QSideViewApplicationWindow(QtWidgetsX.QApplicationWindow)'

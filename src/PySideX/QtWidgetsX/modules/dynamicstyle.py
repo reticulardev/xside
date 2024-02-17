@@ -96,6 +96,12 @@ class StyleParser(object):
         # ...
         return value.lstrip('#').replace(' ', '').strip()
 
+    def __str__(self) -> str:
+        return 'StyleParser'
+
+    def __repr__(self) -> str:
+        return 'StyleParser(object)'
+
 
 class DynamicStyle(object):
     """..."""
@@ -130,6 +136,8 @@ class DynamicStyle(object):
 
         self.__ctxmenu_separator_margin = self.__env.settings(
             ).contextmenu_separator_margin()
+        self.__ctxmenu_separator_color = self.__env.settings(
+            ).contextmenu_separator_color()
 
         self.__ctxmenubutton_background_hover_color = self.__env.settings(
             ).contextmenubutton_background_hover_color()
@@ -137,8 +145,13 @@ class DynamicStyle(object):
             ).contextmenubutton_border_hover_color()
         self.__ctxmenubutton_border_radius = self.__env.settings(
             ).contextmenubutton_border_radius()
-        self.__ctxtmenubutton_foreground_hover_color = self.__env.settings(
-            ).contextmenubutton_foreground_hover_color()
+
+        self.__ctxtmenubutton_label_hover_color = self.__env.settings(
+            ).contextmenubutton_label_hover_color()
+
+        self.__ctxtmenubutton_shortcut_label_hover_color = self.__env.settings(
+            ).contextmenubutton_shortcut_label_color()
+
         self.__ctxmenubutton_padding = self.__env.settings(
             ).contextmenubutton_padding()
 
@@ -203,6 +216,13 @@ class DynamicStyle(object):
             f' {self.__ctxmenu_separator_margin[2]}px'
             f' {self.__ctxmenu_separator_margin[3]}px;'
             '}'
+            'QQuickContextMenuSeparatorLine {'
+            'color: rgba('
+            f' {self.__ctxmenu_separator_color.red()},'
+            f' {self.__ctxmenu_separator_color.green()},'
+            f' {self.__ctxmenu_separator_color.blue()},'
+            f' {self.__ctxmenu_separator_color.alpha()});'
+            '}'
             'QQuickContextMenuButton {'
             'background: transparent;'
             'padding:'
@@ -215,10 +235,10 @@ class DynamicStyle(object):
             '}'
             'QQuickContextMenuButton:hover {'
             'color: rgba('
-            f' {self.__ctxtmenubutton_foreground_hover_color.red()},'
-            f' {self.__ctxtmenubutton_foreground_hover_color.green()},'
-            f' {self.__ctxtmenubutton_foreground_hover_color.blue()},'
-            f' {self.__ctxtmenubutton_foreground_hover_color.alpha()});'
+            f' {self.__ctxtmenubutton_label_hover_color.red()},'
+            f' {self.__ctxtmenubutton_label_hover_color.green()},'
+            f' {self.__ctxtmenubutton_label_hover_color.blue()},'
+            f' {self.__ctxtmenubutton_label_hover_color.alpha()});'
             'background-color: rgba('
             f' {self.__ctxmenubutton_background_hover_color.red()},'
             f' {self.__ctxmenubutton_background_hover_color.green()},'
@@ -232,11 +252,19 @@ class DynamicStyle(object):
             '}'
             'QQuickContextMenuButtonLabel:hover {'
             'color: rgba('
-            f' {self.__ctxtmenubutton_foreground_hover_color.red()},'
-            f' {self.__ctxtmenubutton_foreground_hover_color.green()},'
-            f' {self.__ctxtmenubutton_foreground_hover_color.blue()},'
-            f' {self.__ctxtmenubutton_foreground_hover_color.alpha()});'
-            '}')
+            f' {self.__ctxtmenubutton_label_hover_color.red()},'
+            f' {self.__ctxtmenubutton_label_hover_color.green()},'
+            f' {self.__ctxtmenubutton_label_hover_color.blue()},'
+            f' {self.__ctxtmenubutton_label_hover_color.alpha()});'
+            '}'
+            'QQuickContextMenuButtonShortcutLabel {'
+            'color: rgba('
+            f' {self.__ctxtmenubutton_shortcut_label_hover_color.red()},'
+            f' {self.__ctxtmenubutton_shortcut_label_hover_color.green()},'
+            f' {self.__ctxtmenubutton_shortcut_label_hover_color.blue()},'
+            f' {self.__ctxtmenubutton_shortcut_label_hover_color.alpha()});'
+            '}'
+        )
 
         style_path = os.path.join(SRC_DIR, 'static', 'style.qss')
         with open(style_path, 'r') as style_qss_file:

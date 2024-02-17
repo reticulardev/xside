@@ -16,39 +16,37 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class QQuickContextMenuSeparatorLine(QtWidgets.QFrame):
     """..."""
-    def __init__(self, color: QtGui.QColor, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """..."""
         super().__init__(*args, **kwargs)
-        self.__color = color
         self.set_frame_shape(QtWidgets.QFrame.HLine)
         self.set_frame_shadow(QtWidgets.QFrame.Plain)
         self.set_line_width(0)
         self.set_mid_line_width(3)
-        self.set_color(self.__color)
-
-    def set_color(self, color: QtGui.QColor) -> None:
-        """..."""
-        palette = self.palette()
-        palette.set_color(QtGui.QPalette.WindowText, color)
-        self.set_palette(palette)
 
 
 class QQuickContextMenuSeparator(QtWidgets.QFrame):
     """..."""
-    def __init__(self, color: QtGui.QColor, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """..."""
         super().__init__(*args, **kwargs)
-        self.__color = color
         box = QtWidgets.QVBoxLayout()
         box.set_contents_margins(0, 0, 0, 0)
         self.set_layout(box)
 
-        line = QQuickContextMenuSeparatorLine(self.__color)
+        line = QQuickContextMenuSeparatorLine()
         line.set_contents_margins(0, 0, 0, 0)
         box.add_widget(line)
 
 
 class QQuickContextMenuButtonLabel(QtWidgets.QLabel):
+    """..."""
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        """..."""
+
+
+class QQuickContextMenuButtonShortcutLabel(QtWidgets.QLabel):
     """..."""
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -80,10 +78,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__receiver = receiver
         self.__icon = icon
         self.__shortcut = shortcut
-        self.__gui_env = gui_env
-
-        self.__shortcut_color = self.__gui_env.settings().text_disabled_color()
-        self.__is_dark = self.__gui_env.settings().window_is_dark()
+        self.__env = gui_env
 
         self.__style_parser = StyleParser(self.__toplevel.style_sheet())
         self.__normal_style = self.__updated_normal_style()
@@ -110,13 +105,6 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 
         txt_shortcut = self.__shortcut.to_string() if self.__shortcut else ' '
         shortcut_label = QtWidgets.QLabel(txt_shortcut)
-
-        shortcut_label.set_style_sheet(
-            'color: rgba('
-            f'{self.__shortcut_color.red()},'
-            f'{self.__shortcut_color.green()},'
-            f'{self.__shortcut_color.blue()},'
-            f'{self.__shortcut_color.alpha_f()});')
         shortcut_label.set_contents_margins(20, 0, 0, 0)
         shortcut_label.set_alignment(QtCore.Qt.AlignRight)
         self.__main_layout.add_widget(shortcut_label)
@@ -131,9 +119,9 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
     def __configure_icon(self):
         # ...
         if not self.__icon:
-            symblc = '-symbolic' if self.__is_dark else ''
+            sym = '-symbolic' if self.__env.settings().window_is_dark() else ''
             icon_path = os.path.join(
-                SRC_DIR, 'modules', 'static', f'context-menu-item{symblc}.svg')
+                SRC_DIR, 'modules', 'static', f'context-menu-item{sym}.svg')
             self.__icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
 
     def __updated_hover_style(self) -> str:
@@ -141,8 +129,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         updated_hover_style = self.__style_parser.widget_scope(
             'QQuickContextMenuButtonLabel', 'hover')
         if not updated_hover_style:
-            fg = self.__gui_env.settings(
-                ).contextmenubutton_foreground_hover_color()
+            fg = self.__env.settings().contextmenubutton_label_hover_color()
             return (
                 'color: rgba'
                 f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
@@ -154,7 +141,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         updated_normal_style = self.__style_parser.widget_scope(
             'QQuickContextMenuButtonLabel')
         if not updated_normal_style:
-            fg = self.__gui_env.settings().window_foreground_color()
+            fg = self.__env.settings().label_color()
             return (
                 'color: rgba'
                 f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
@@ -257,8 +244,6 @@ class QQuickContextMenu(QtWidgets.QFrame):
             shortcut: QtGui.QKeySequence | None = None) -> None:
         """..."""
         labels_box = QtWidgets.QHBoxLayout()
-        # self.__labels_box.append(labels_box)
-
         ctx_btn = QQuickContextMenuButton(
             self.__toplevel, self, text, receiver, icon, shortcut,
             self.__gui_env)
@@ -266,17 +251,12 @@ class QQuickContextMenu(QtWidgets.QFrame):
         labels_box.add_widget(ctx_btn)
 
         self.__menu_context_layout.add_layout(labels_box)
-
-        # self.__context_buttons_layout.append(labels_box)
         self.__context_buttons.append(ctx_btn)
 
-    def add_separator(self, color: QtGui.QColor = None) -> None:
+    def add_separator(self) -> None:
         """..."""
-        color = color if color else self.__gui_env.settings(
-            ).contextmenu_separator_color()
-
         separator_layout = QtWidgets.QVBoxLayout()
-        separator = QQuickContextMenuSeparator(color)
+        separator = QQuickContextMenuSeparator()
         separator_layout.add_widget(separator)
 
         self.__menu_context_layout.add_layout(separator_layout)

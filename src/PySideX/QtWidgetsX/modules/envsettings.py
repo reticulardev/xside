@@ -68,9 +68,13 @@ class GlobalEnvSettings(object):
         contextmenu_bdr = self.contextmenu_border_radius()
         return contextmenu_bdr - 4 if contextmenu_bdr > 4 else contextmenu_bdr
 
-    def contextmenubutton_foreground_hover_color(self) -> QtGui.QColor:
+    def contextmenubutton_label_hover_color(self) -> QtGui.QColor:
         """..."""
-        return self.window_foreground_color()
+        return self.label_color()
+
+    def contextmenubutton_shortcut_label_color(self) -> QtGui.QColor:
+        """..."""
+        return self.label_disabled_color()
 
     @staticmethod
     def contextmenubutton_padding() -> tuple:
@@ -121,11 +125,14 @@ class GlobalEnvSettings(object):
         """..."""
         return 'hicolor'
 
-    def text_disabled_color(self) -> QtGui.QColor:
+    def label_color(self) -> QtGui.QColor:
         """..."""
-        if self.window_is_dark():
-            return QtGui.QColor(170, 170, 170, 255)
-        return QtGui.QColor(120, 120, 120, 255)
+        return self.palette.color(
+            QtGui.QPalette.Active, QtGui.QPalette.WindowText)
+
+    def label_disabled_color(self) -> QtGui.QColor:
+        """..."""
+        return self.window_border_color()
 
     @staticmethod
     def windowcontrolbutton_margin() -> tuple:
@@ -167,11 +174,6 @@ class GlobalEnvSettings(object):
 
         return color.rgba_to_qcolor(color.darken_rgba(
             self.palette.color(QtGui.QPalette.Window).to_tuple(), 30))
-
-    def window_foreground_color(self) -> QtGui.QColor:
-        """..."""
-        return self.palette.color(
-            QtGui.QPalette.Active, QtGui.QPalette.WindowText)
 
     def window_is_dark(self) -> bool:
         """..."""
@@ -314,11 +316,6 @@ class EnvSettingsPlasma(GlobalEnvSettings):
         if group in self.__kde_globals and key in self.__kde_globals[group]:
             return self.__kde_globals[group][key]
         return None
-
-    def text_disabled_color(self) -> QtGui.QColor:
-        """..."""
-        return self.palette.color(
-            QtGui.QPalette.Disabled, QtGui.QPalette.Text)
 
     @staticmethod
     def window_border_radius() -> tuple:
@@ -505,7 +502,7 @@ class EnvSettingsXFCE(GlobalEnvSettings):
         return color.rgba_to_qcolor(
             color.darken_rgba(self.window_accent_color().to_tuple(), 50))
 
-    def contextmenubutton_foreground_hover_color(self) -> QtGui.QColor:
+    def contextmenubutton_label_hover_color(self) -> QtGui.QColor:
         """..."""
         return QtGui.QColor(255, 255, 255, 255)
 
@@ -616,9 +613,9 @@ class EnvSettingsMate(EnvSettingsXFCE):
         """..."""
         return 0
 
-    def contextmenubutton_foreground_hover_color(self) -> QtGui.QColor:
+    def contextmenubutton_label_hover_color(self) -> QtGui.QColor:
         """..."""
-        return self.window_foreground_color()
+        return self.label_color()
 
     @staticmethod
     def controlbutton_style(*args, **kwargs) -> str:
