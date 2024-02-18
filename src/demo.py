@@ -50,7 +50,7 @@ class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
         self.frameview_layout().add_widget(self.image)
         self.frameview_layout().set_alignment(QtCore.Qt.AlignCenter)
 
-        # Image context menu
+        # Image: context menu
         self.image_qcontext = QtWidgetsX.QQuickContextMenu(self)
         self.image_qcontext.add_action(
             'Delete', lambda: self.__context_menu_cal('Delete'))

@@ -6,6 +6,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
+from PySideX.QtWidgetsX.tooltip import QTooltip
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 import PySideX.QtWidgetsX.modules.color as color
@@ -79,8 +80,12 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__receiver = receiver
         self.__icon = icon
         self.__shortcut = shortcut
+        self.__shortcut_txt = shortcut.to_string() if shortcut else ' '
         self.__is_quick_action = is_quick_action
         self.__env = gui_env
+        self.__tooltip = None
+        self.__is_tooltip_open = False
+        self.__tooltip_timer = QtCore.QTimer()
 
         self.__style_parser = StyleParser(self.__toplevel.style_sheet())
         self.__normal_style = self.__updated_normal_style()
@@ -109,12 +114,16 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         if not self.__is_quick_action:
             self.__left_layout.add_widget(self.__text_label)
 
-        txt_shortcut = self.__shortcut.to_string() if self.__shortcut else ' '
         if not self.__is_quick_action:
-            shortcut_label = QQuickContextMenuButtonShortcutLabel(txt_shortcut)
+            shortcut_label = QQuickContextMenuButtonShortcutLabel(
+                self.__shortcut_txt)
             shortcut_label.set_contents_margins(20, 0, 0, 0)
             shortcut_label.set_alignment(QtCore.Qt.AlignRight)
             self.__main_layout.add_widget(shortcut_label)
+
+        if self.__is_quick_action:
+            self.__tooltip = QTooltip(
+                self.__toplevel, self, self.__text, self.__shortcut)
 
         self.__toplevel.set_style_signal.connect(self.__set_style_signal)
         self.__toplevel.reset_style_signal.connect(self.__set_style_signal)
@@ -164,13 +173,24 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 
     def enter_event(self, event: QtGui.QEnterEvent) -> None:
         """..."""
-        self.enter_event_signal.emit(event)
-        self.__text_label.set_style_sheet(self.__hover_style)
+        if self.__is_quick_action and not self.__is_tooltip_open:
+            self.__is_tooltip_open = True
+            self.__tooltip.exec()
+            self.__tooltip_timer.timeout.connect(self.__tooltip_exec)
+            self.__tooltip_timer.start(500)
+        else:
+            self.enter_event_signal.emit(event)
+            self.__text_label.set_style_sheet(self.__hover_style)
+
+    def __tooltip_exec(self):
+        self.__tooltip.exec()
+        self.__tooltip_timer.stop()
 
     def leave_event(self, event: QtGui.QEnterEvent) -> None:
         """..."""
         self.leave_event_signal.emit(event)
         self.__text_label.set_style_sheet(self.__normal_style)
+        self.__is_tooltip_open = False
 
     def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
         self.mouse_press_event_signal.emit(event)
@@ -187,7 +207,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 class QQuickContextMenu(QtWidgets.QFrame):
     """..."""
 
-    def __init__(self, toplevel: QtWidgets.QWidget, *args, **kwargs) -> None:
+    def __init__(self, toplevel: QApplicationWindow, *args, **kwargs) -> None:
         """Class constructor
 
         Initialize class attributes
