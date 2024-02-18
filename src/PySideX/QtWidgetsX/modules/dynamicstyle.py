@@ -149,7 +149,7 @@ class DynamicStyle(object):
         self.__ctxtmenubutton_label_hover_color = self.__env.settings(
             ).contextmenubutton_label_hover_color()
 
-        self.__ctxtmenubutton_shortcut_label_hover_color = self.__env.settings(
+        self.__ctxtmenubutton_shortcut_label_color = self.__env.settings(
             ).contextmenubutton_shortcut_label_color()
 
         self.__ctxmenubutton_padding = self.__env.settings(
@@ -259,10 +259,10 @@ class DynamicStyle(object):
             '}'
             'QQuickContextMenuButtonShortcutLabel {'
             'color: rgba('
-            f' {self.__ctxtmenubutton_shortcut_label_hover_color.red()},'
-            f' {self.__ctxtmenubutton_shortcut_label_hover_color.green()},'
-            f' {self.__ctxtmenubutton_shortcut_label_hover_color.blue()},'
-            f' {self.__ctxtmenubutton_shortcut_label_hover_color.alpha()});'
+            f' {self.__ctxtmenubutton_shortcut_label_color.red()},'
+            f' {self.__ctxtmenubutton_shortcut_label_color.green()},'
+            f' {self.__ctxtmenubutton_shortcut_label_color.blue()},'
+            f' {self.__ctxtmenubutton_shortcut_label_color.alpha()});'
             '}'
         )
 

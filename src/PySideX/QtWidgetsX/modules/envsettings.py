@@ -132,7 +132,8 @@ class GlobalEnvSettings(object):
 
     def label_disabled_color(self) -> QtGui.QColor:
         """..."""
-        return self.window_border_color()
+        return self.palette.color(
+            QtGui.QPalette.Disabled, QtGui.QPalette.WindowText)
 
     @staticmethod
     def windowcontrolbutton_margin() -> tuple:

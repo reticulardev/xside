@@ -68,6 +68,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
             receiver: callable,
             icon: QtGui.QIcon | None = None,
             shortcut: QtGui.QKeySequence | None = None,
+            is_quick_action: bool = False,
             gui_env=None,
             *args, **kwargs) -> None:
         """..."""
@@ -78,6 +79,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__receiver = receiver
         self.__icon = icon
         self.__shortcut = shortcut
+        self.__is_quick_action = is_quick_action
         self.__env = gui_env
 
         self.__style_parser = StyleParser(self.__toplevel.style_sheet())
@@ -95,19 +97,24 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__configure_icon()
         icon_label = QtWidgets.QLabel()
         icon_label.set_pixmap(self.__icon.pixmap(QtCore.QSize(16, 16)))
-        icon_label.set_contents_margins(0, 0, 5, 0)
         icon_label.set_alignment(QtCore.Qt.AlignLeft)
+        if self.__is_quick_action:
+            icon_label.set_contents_margins(0, 2, 0, 2)
+        else:
+            icon_label.set_contents_margins(0, 0, 5, 0)
         self.__left_layout.add_widget(icon_label)
 
         self.__text_label = QQuickContextMenuButtonLabel(self.__text)
         self.__text_label.set_alignment(QtCore.Qt.AlignLeft)
-        self.__left_layout.add_widget(self.__text_label)
+        if not self.__is_quick_action:
+            self.__left_layout.add_widget(self.__text_label)
 
         txt_shortcut = self.__shortcut.to_string() if self.__shortcut else ' '
-        shortcut_label = QtWidgets.QLabel(txt_shortcut)
-        shortcut_label.set_contents_margins(20, 0, 0, 0)
-        shortcut_label.set_alignment(QtCore.Qt.AlignRight)
-        self.__main_layout.add_widget(shortcut_label)
+        if not self.__is_quick_action:
+            shortcut_label = QQuickContextMenuButtonShortcutLabel(txt_shortcut)
+            shortcut_label.set_contents_margins(20, 0, 0, 0)
+            shortcut_label.set_alignment(QtCore.Qt.AlignRight)
+            self.__main_layout.add_widget(shortcut_label)
 
         self.__toplevel.set_style_signal.connect(self.__set_style_signal)
         self.__toplevel.reset_style_signal.connect(self.__set_style_signal)
@@ -204,9 +211,12 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__style_saved = self.__toplevel.style_sheet()
         self.__style_parser = StyleParser(self.__style_saved)
         self.__context_separators = []
-        self.__context_buttons = []
+        self.__action_buttons = []
+        self.__quick_action_buttons = []
         self.__point_x = None
         self.__point_y = None
+        self.__quick_buttons_on_top = True
+        self.__quick_buttons_on_vertical = False
 
         # Main layout
         self.__main_layout = QtWidgets.QHBoxLayout()
@@ -217,10 +227,37 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__main_layout.add_widget(self.__main_widget)
 
         # Layout
-        self.__menu_context_layout = QtWidgets.QVBoxLayout()
-        self.__menu_context_layout.set_contents_margins(0, 0, 0, 0)
-        self.__menu_context_layout.set_spacing(0)
-        self.__main_widget.set_layout(self.__menu_context_layout)
+        self.__menu_context_box = QtWidgets.QVBoxLayout()
+        self.__menu_context_box.set_contents_margins(0, 0, 0, 0)
+        self.__menu_context_box.set_spacing(0)
+        self.__main_widget.set_layout(self.__menu_context_box)
+
+        # Top
+        self.__quick_actions_top_hbox = QtWidgets.QHBoxLayout()
+        self.__quick_actions_top_hbox.set_alignment(QtCore.Qt.AlignLeft)
+        self.__menu_context_box.add_layout(self.__quick_actions_top_hbox)
+
+        self.__quick_actions_box = QtWidgets.QVBoxLayout()
+        self.__menu_context_box.add_layout(self.__quick_actions_box)
+
+        self.__quick_top_separator = QQuickContextMenuSeparator()
+        self.__quick_top_separator.set_visible(False)
+        self.__menu_context_box.add_widget(self.__quick_top_separator)
+        self.__context_separators.append(self.__quick_top_separator)
+
+        # Body
+        self.__actions_box = QtWidgets.QVBoxLayout()
+        self.__menu_context_box.add_layout(self.__actions_box)
+
+        # Bottom
+        self.__quick_bottom_separator = QQuickContextMenuSeparator()
+        self.__quick_bottom_separator.set_visible(False)
+        self.__menu_context_box.add_widget(self.__quick_bottom_separator)
+        self.__context_separators.append(self.__quick_bottom_separator)
+
+        self.__quick_actions_bottom_hbox = QtWidgets.QHBoxLayout()
+        self.__quick_actions_bottom_hbox.set_alignment(QtCore.Qt.AlignLeft)
+        self.__menu_context_box.add_layout(self.__quick_actions_bottom_hbox)
 
         # Shadow
         self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
@@ -241,25 +278,29 @@ class QQuickContextMenu(QtWidgets.QFrame):
             text: str,
             receiver: callable,
             icon: QtGui.QIcon | None = None,
-            shortcut: QtGui.QKeySequence | None = None) -> None:
+            shortcut: QtGui.QKeySequence | None = None,
+            is_quick_action: bool = False) -> None:
         """..."""
-        labels_box = QtWidgets.QHBoxLayout()
         ctx_btn = QQuickContextMenuButton(
             self.__toplevel, self, text, receiver, icon, shortcut,
-            self.__gui_env)
-        ctx_btn.set_style_sheet(self.__style_saved)
-        labels_box.add_widget(ctx_btn)
+            is_quick_action, self.__gui_env)
+        self.__action_buttons.append(ctx_btn)
 
-        self.__menu_context_layout.add_layout(labels_box)
-        self.__context_buttons.append(ctx_btn)
+        if is_quick_action:
+            if self.__quick_buttons_on_vertical:
+                self.__quick_actions_box.add_widget(ctx_btn)
+            else:
+                self.__quick_actions_top_hbox.add_widget(ctx_btn)
+
+            self.__quick_action_buttons.append(ctx_btn)
+        else:
+            ctx_btn.set_style_sheet(self.__style_saved)
+            self.__actions_box.add_widget(ctx_btn)
 
     def add_separator(self) -> None:
         """..."""
-        separator_layout = QtWidgets.QVBoxLayout()
         separator = QQuickContextMenuSeparator()
-        separator_layout.add_widget(separator)
-
-        self.__menu_context_layout.add_layout(separator_layout)
+        self.__actions_box.add_widget(separator)
         self.__context_separators.append(separator)
 
     def exec(self, point: QtCore.QPoint) -> None:
@@ -268,7 +309,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__point_y = point.y()
 
         self.__main_widget.set_style_sheet(self.__set_style())
-        for btn in self.__context_buttons:
+        for btn in self.__action_buttons:
             btn.set_style_sheet(self.__style_saved)
 
         for sep in self.__context_separators:
@@ -294,10 +335,32 @@ class QQuickContextMenu(QtWidgets.QFrame):
         if self.geometry().x() + self.geometry().width() > screen_width:
             x = screen_width - self.geometry().width()
 
+        self.__quick_buttons_on_top = True
         if self.geometry().y() + self.geometry().height() > screen_height:
-            y = self.geometry().y() - self.geometry().height() + 10
+            y = self.geometry().y() - self.geometry().height() + 20
+            self.__quick_buttons_on_top = False
 
+        self.__quick_buttons_on_top_or_bottom()
         self.move(x, y)
+
+    def __quick_buttons_on_top_or_bottom(self):
+        if not self.__quick_buttons_on_vertical:
+            for btn in self.__quick_action_buttons:
+                self.__quick_actions_top_hbox.remove_widget(btn)
+
+            for btn in self.__quick_action_buttons:
+                self.__quick_actions_bottom_hbox.remove_widget(btn)
+
+        if self.__quick_buttons_on_top:
+            for btn in self.__quick_action_buttons:
+                self.__quick_actions_top_hbox.add_widget(btn)
+                self.__quick_top_separator.set_visible(True)
+                self.__quick_bottom_separator.set_visible(False)
+        else:
+            for btn in self.__quick_action_buttons:
+                self.__quick_actions_bottom_hbox.add_widget(btn)
+                self.__quick_top_separator.set_visible(False)
+                self.__quick_bottom_separator.set_visible(True)
 
     def __set_style_signal(self) -> None:
         # ...
