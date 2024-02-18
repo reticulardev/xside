@@ -76,21 +76,30 @@ class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
         self.frameview_layout().add_widget(self.context_menu_label)
 
         self.qcontext_menu = QtWidgetsX.QQuickContextMenu(self)
-        self.qcontext_menu.add_action(
-            'Quick 1', lambda: self.__context_menu_cal('Quick 1'),
-            icon=QtGui.QIcon.from_theme('edit-copy-symbolic'),
-            shortcut=QtGui.QKeySequence('Ctrl+C'), is_quick_action=True)
-        self.qcontext_menu.add_action(
-            'Quick 2', lambda: self.__context_menu_cal('Quick 2'),
-            icon=QtGui.QIcon.from_theme('edit-paste-symbolic'),
-            shortcut=QtGui.QKeySequence('Ctrl+C'), is_quick_action=True)
+        self.qcontext_menu.set_force_quick_mode(True)
         self.qcontext_menu.add_action(
             'Copy', lambda: self.__context_menu_cal('Copy'),
             icon=QtGui.QIcon.from_theme('edit-copy-symbolic'),
-            shortcut=QtGui.QKeySequence('Ctrl+C'))
+            shortcut=QtGui.QKeySequence('Ctrl+C'), is_quick_action=True)
+        self.qcontext_menu.add_action(
+            'Cut', lambda: self.__context_menu_cal('Cut'),
+            icon=QtGui.QIcon.from_theme('edit-cut-symbolic'),
+            shortcut=QtGui.QKeySequence('Ctrl+X'), is_quick_action=True)
         self.qcontext_menu.add_action(
             'Paste', lambda: self.__context_menu_cal('Paste'),
             icon=QtGui.QIcon.from_theme('edit-paste-symbolic'),
+            shortcut=QtGui.QKeySequence('Ctrl+V'), is_quick_action=True)
+        self.qcontext_menu.add_action(
+            'Rename', lambda: self.__context_menu_cal('Rename'),
+            icon=QtGui.QIcon.from_theme('document-edit-symbolic'),
+            shortcut=QtGui.QKeySequence('F2'), is_quick_action=True)
+        self.qcontext_menu.add_action(
+            'Terminal', lambda: self.__context_menu_cal('Terminal'),
+            icon=QtGui.QIcon.from_theme('dialog-scripts-symbolic'),
+            shortcut=QtGui.QKeySequence('Alt+Shift+F4'))
+        self.qcontext_menu.add_action(
+            'Open', lambda: self.__context_menu_cal('Open'),
+            icon=QtGui.QIcon.from_theme('document-open-symbolic'),
             shortcut=QtGui.QKeySequence('Ctrl+V'))
 
         self.qcontext_menu.add_separator()
