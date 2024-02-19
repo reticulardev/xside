@@ -6,6 +6,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
+from PySideX.QtWidgetsX.label import ContextLabel
 from PySideX.QtWidgetsX.tooltip import QTooltip
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
@@ -47,13 +48,6 @@ class QQuickContextMenuButtonLabel(QtWidgets.QLabel):
         """..."""
 
 
-class QQuickContextMenuButtonShortcutLabel(QtWidgets.QLabel):
-    """..."""
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        """..."""
-
-
 class QQuickContextMenuButton(QtWidgets.QFrame):
     """..."""
     enter_event_signal = QtCore.Signal(object)
@@ -70,6 +64,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
             icon: QtGui.QIcon | None = None,
             shortcut: QtGui.QKeySequence | None = None,
             is_quick_action: bool = False,
+            quick_action_label_as_tooltip: bool = True,
             gui_env=None,
             *args, **kwargs) -> None:
         """..."""
@@ -82,6 +77,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__shortcut = shortcut
         self.__shortcut_txt = shortcut.to_string() if shortcut else ' '
         self.__is_quick_action = is_quick_action
+        self.__quick_action_label_as_tooltip = quick_action_label_as_tooltip
         self.__env = gui_env
         self.__tooltip = None
         self.__is_tooltip_open = False
@@ -115,15 +111,14 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
             self.__left_layout.add_widget(self.__text_label)
 
         if not self.__is_quick_action:
-            shortcut_label = QQuickContextMenuButtonShortcutLabel(
-                self.__shortcut_txt)
+            shortcut_label = ContextLabel(self.__shortcut_txt)
             shortcut_label.set_contents_margins(20, 0, 0, 0)
             shortcut_label.set_alignment(QtCore.Qt.AlignRight)
             self.__main_layout.add_widget(shortcut_label)
 
-        if self.__is_quick_action:
+        if self.__is_quick_action and self.__quick_action_label_as_tooltip:
             self.__tooltip = QTooltip(
-                self.__toplevel, self, self.__text, self.__shortcut)
+                self.__toplevel, self, self.__text, None, self.__shortcut)
 
         self.__toplevel.set_style_signal.connect(self.__set_style_signal)
         self.__toplevel.reset_style_signal.connect(self.__set_style_signal)
@@ -132,6 +127,9 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         """..."""
         return self.__text
 
+    def tooltip_widget(self) -> QtWidgets.QWidget | None:
+        return self.__tooltip
+
     def __configure_icon(self):
         # ...
         if not self.__icon:
@@ -139,6 +137,19 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
             icon_path = os.path.join(
                 SRC_DIR, 'modules', 'static', f'context-menu-item{sym}.svg')
             self.__icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
+
+    def __set_style_signal(self) -> None:
+        # ...
+        self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
+        self.__normal_style = self.__updated_normal_style()
+        self.__hover_style = self.__updated_hover_style()
+        self.__text_label.set_style_sheet(self.__normal_style)
+
+    def __tooltip_exec(self):
+        if self.__tooltip and not self.__is_tooltip_open:
+            self.__tooltip.exec()
+            self.__tooltip_timer.stop()
+            self.__is_tooltip_open = True
 
     def __updated_hover_style(self) -> str:
         # ...
@@ -164,33 +175,25 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 
         return updated_normal_style
 
-    def __set_style_signal(self) -> None:
-        # ...
-        self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
-        self.__normal_style = self.__updated_normal_style()
-        self.__hover_style = self.__updated_hover_style()
-        self.__text_label.set_style_sheet(self.__normal_style)
-
     def enter_event(self, event: QtGui.QEnterEvent) -> None:
         """..."""
-        if self.__is_quick_action and not self.__is_tooltip_open:
-            self.__is_tooltip_open = True
-            self.__tooltip.exec()
-            self.__tooltip_timer.timeout.connect(self.__tooltip_exec)
-            self.__tooltip_timer.start(500)
+        if self.__tooltip and self.__is_quick_action:
+            if not self.__is_tooltip_open:
+                self.__tooltip_timer.timeout.connect(self.__tooltip_exec)
+                self.__tooltip_timer.start(500)
         else:
             self.enter_event_signal.emit(event)
             self.__text_label.set_style_sheet(self.__hover_style)
-
-    def __tooltip_exec(self):
-        self.__tooltip.exec()
-        self.__tooltip_timer.stop()
 
     def leave_event(self, event: QtGui.QEnterEvent) -> None:
         """..."""
         self.leave_event_signal.emit(event)
         self.__text_label.set_style_sheet(self.__normal_style)
-        self.__is_tooltip_open = False
+
+        if self.__tooltip and self.__is_quick_action:
+            self.__is_tooltip_open = False
+            self.__tooltip.close()
+            self.__tooltip_timer.stop()
 
     def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
         self.mouse_press_event_signal.emit(event)
@@ -207,7 +210,11 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 class QQuickContextMenu(QtWidgets.QFrame):
     """..."""
 
-    def __init__(self, toplevel: QApplicationWindow, *args, **kwargs) -> None:
+    def __init__(
+            self,
+            toplevel: QApplicationWindow,
+            quick_action_label_as_tooltip: bool = True,
+            *args, **kwargs) -> None:
         """Class constructor
 
         Initialize class attributes
@@ -216,6 +223,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         """
         super().__init__(*args, **kwargs)
         self.__toplevel = toplevel
+        self.__quick_action_label_as_tooltip = quick_action_label_as_tooltip
 
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_window_flags(
@@ -300,12 +308,13 @@ class QQuickContextMenu(QtWidgets.QFrame):
             receiver: callable,
             icon: QtGui.QIcon | None = None,
             shortcut: QtGui.QKeySequence | None = None,
-            is_quick_action: bool = False) -> None:
+            is_quick_action: bool = False,
+            ) -> None:
         """..."""
         quick = False if not self.__quick_mode else is_quick_action
         ctx_btn = QQuickContextMenuButton(
             self.__toplevel, self, text, receiver, icon, shortcut,
-            quick, self.__gui_env)
+            quick, self.__quick_action_label_as_tooltip, self.__gui_env)
         self.__action_buttons.append(ctx_btn)
 
         if is_quick_action:
@@ -331,6 +340,11 @@ class QQuickContextMenu(QtWidgets.QFrame):
 
         self.__main_widget.set_style_sheet(self.__set_style())
         for btn in self.__action_buttons:
+            btn.set_style_sheet(self.__style_saved)
+
+        for btn in self.__quick_action_buttons:
+            if btn.tooltip_widget():
+                btn.tooltip_widget().set_style_sheet(self.__style_saved)
             btn.set_style_sheet(self.__style_saved)
 
         for sep in self.__context_separators:

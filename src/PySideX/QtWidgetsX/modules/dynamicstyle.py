@@ -257,7 +257,7 @@ class DynamicStyle(object):
             f' {self.__ctxtmenubutton_label_hover_color.blue()},'
             f' {self.__ctxtmenubutton_label_hover_color.alpha()});'
             '}'
-            'QQuickContextMenuButtonShortcutLabel {'
+            'ContextLabel {'
             'color: rgba('
             f' {self.__ctxtmenubutton_shortcut_label_color.red()},'
             f' {self.__ctxtmenubutton_shortcut_label_color.green()},'

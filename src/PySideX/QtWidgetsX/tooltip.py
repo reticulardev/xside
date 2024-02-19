@@ -6,6 +6,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
+from PySideX.QtWidgetsX.label import ContextLabel
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 import PySideX.QtWidgetsX.modules.color as color
@@ -18,6 +19,7 @@ class QTooltip(QtWidgets.QFrame):
             toplevel: QApplicationWindow,
             parent: QtWidgets.QWidget,
             text: str,
+            complement_text: str = None,
             shortcut: QtGui.QKeySequence | None = None,
             *args, **kwargs) -> None:
         """Class constructor
@@ -29,6 +31,8 @@ class QTooltip(QtWidgets.QFrame):
         super().__init__(*args, **kwargs)
         self.__toplevel = toplevel
         self.__parent = parent
+        self.__text = text
+        self.__complement_text = complement_text
         self.__shortcut = f'({shortcut.to_string()})' if shortcut else ''
 
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
@@ -62,14 +66,15 @@ class QTooltip(QtWidgets.QFrame):
         self.__label_box.set_alignment(QtCore.Qt.AlignLeft)
         self.__body_box.add_layout(self.__label_box)
 
-        self.__label = QtWidgets.QLabel(text)
+        self.__label = QtWidgets.QLabel(self.__text)
         self.__label_box.add_widget(self.__label)
 
-        self.__shortcut_label = QtWidgets.QLabel(self.__shortcut)
-        self.__shortcut_label.set_enabled(False)
-        self.__label_box.add_widget(self.__shortcut_label)
+        if self.__shortcut:
+            self.__shortcut_label = ContextLabel(self.__shortcut)
+            self.__label_box.add_widget(self.__shortcut_label)
 
-        self.__body_box.add_widget(QtWidgets.QLabel('test test test...'))
+        if self.__complement_text:
+            self.__body_box.add_widget(ContextLabel(self.__complement_text))
 
         # Shadow
         self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
@@ -90,10 +95,10 @@ class QTooltip(QtWidgets.QFrame):
         """..."""
         self.__main_widget.set_style_sheet(self.__set_style())
         point = QtGui.QCursor.pos()
-        self.move(
-            point.x() + self.__parent.x(),
-            point.y() + (self.__parent.y() + self.__parent.height()))
         self.show()
+        self.move(
+            point.x() - self.__parent.width() // 2,
+            point.y() - (self.height() + 10))
 
     def mouse_move_event(self, event: QtGui.QMouseEvent) -> None:
         logging.info(event)

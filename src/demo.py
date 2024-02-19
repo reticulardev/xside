@@ -75,7 +75,8 @@ class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
         self.context_menu_label = QtWidgets.QLabel('Menu text here')
         self.frameview_layout().add_widget(self.context_menu_label)
 
-        self.qcontext_menu = QtWidgetsX.QQuickContextMenu(self)
+        self.qcontext_menu = QtWidgetsX.QQuickContextMenu(
+            self, quick_action_label_as_tooltip=True)
         self.qcontext_menu.set_force_quick_mode(True)
         self.qcontext_menu.add_action(
             'Copy', lambda: self.__context_menu_cal('Copy'),
