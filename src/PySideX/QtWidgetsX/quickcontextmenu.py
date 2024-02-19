@@ -65,7 +65,6 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
             shortcut: QtGui.QKeySequence | None = None,
             is_quick_action: bool = False,
             quick_action_label_as_tooltip: bool = True,
-            gui_env=None,
             *args, **kwargs) -> None:
         """..."""
         super().__init__(*args, **kwargs)
@@ -78,10 +77,13 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__shortcut_txt = shortcut.to_string() if shortcut else ' '
         self.__is_quick_action = is_quick_action
         self.__quick_action_label_as_tooltip = quick_action_label_as_tooltip
-        self.__env = gui_env
         self.__tooltip = None
         self.__is_tooltip_open = False
         self.__tooltip_timer = QtCore.QTimer()
+
+        self.__env = GuiEnv(
+            self.__toplevel.platform().operational_system(),
+            self.__toplevel.platform().desktop_environment())
 
         self.__style_parser = StyleParser(self.__toplevel.style_sheet())
         self.__normal_style = self.__updated_normal_style()
@@ -314,7 +316,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         quick = False if not self.__quick_mode else is_quick_action
         ctx_btn = QQuickContextMenuButton(
             self.__toplevel, self, text, receiver, icon, shortcut,
-            quick, self.__quick_action_label_as_tooltip, self.__gui_env)
+            quick, self.__quick_action_label_as_tooltip)
         self.__action_buttons.append(ctx_btn)
 
         if is_quick_action:
