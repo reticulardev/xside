@@ -145,15 +145,14 @@ class DynamicStyle(object):
             ).contextmenubutton_border_hover_color()
         self.__ctxmenubutton_border_radius = self.__env.settings(
             ).contextmenubutton_border_radius()
+        self.__ctxmenubutton_padding = self.__env.settings(
+            ).contextmenubutton_padding()
 
         self.__ctxtmenubutton_label_hover_color = self.__env.settings(
             ).contextmenubutton_label_hover_color()
 
-        self.__ctxtmenubutton_shortcut_label_color = self.__env.settings(
-            ).contextmenubutton_shortcut_label_color()
-
-        self.__ctxmenubutton_padding = self.__env.settings(
-            ).contextmenubutton_padding()
+        self.__label_context_color = self.__env.settings(
+            ).label_context_color()
 
     def build_style(self) -> str:
         """..."""
@@ -259,10 +258,10 @@ class DynamicStyle(object):
             '}'
             'ContextLabel {'
             'color: rgba('
-            f' {self.__ctxtmenubutton_shortcut_label_color.red()},'
-            f' {self.__ctxtmenubutton_shortcut_label_color.green()},'
-            f' {self.__ctxtmenubutton_shortcut_label_color.blue()},'
-            f' {self.__ctxtmenubutton_shortcut_label_color.alpha()});'
+            f' {self.__label_context_color.red()},'
+            f' {self.__label_context_color.green()},'
+            f' {self.__label_context_color.blue()},'
+            f' {self.__label_context_color.alpha()});'
             '}'
         )
 

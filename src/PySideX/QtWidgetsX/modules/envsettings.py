@@ -72,10 +72,6 @@ class GlobalEnvSettings(object):
         """..."""
         return self.label_color()
 
-    def contextmenubutton_shortcut_label_color(self) -> QtGui.QColor:
-        """..."""
-        return self.label_disabled_color()
-
     @staticmethod
     def contextmenubutton_padding() -> tuple:
         """..."""
@@ -129,6 +125,10 @@ class GlobalEnvSettings(object):
         """..."""
         return self.palette.color(
             QtGui.QPalette.Active, QtGui.QPalette.WindowText)
+
+    def label_context_color(self) -> QtGui.QColor:
+        """..."""
+        return self.label_disabled_color()
 
     def label_disabled_color(self) -> QtGui.QColor:
         """..."""
