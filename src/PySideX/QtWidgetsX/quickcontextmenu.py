@@ -216,6 +216,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
             self,
             toplevel: QApplicationWindow,
             quick_action_label_as_tooltip: bool = True,
+            force_quick_mode: bool = False,
             *args, **kwargs) -> None:
         """Class constructor
 
@@ -226,6 +227,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         super().__init__(*args, **kwargs)
         self.__toplevel = toplevel
         self.__quick_action_label_as_tooltip = quick_action_label_as_tooltip
+        self.__force_quick_mode = force_quick_mode
 
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_window_flags(
@@ -237,7 +239,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
             self.__toplevel.platform().operational_system(),
             self.__toplevel.platform().desktop_environment())
 
-        self.__is_dark = self.__gui_env.settings().window_is_dark()
+        self.__quick_mode = self.__is_quick_mode()
         self.__style_saved = self.__toplevel.style_sheet()
         self.__style_parser = StyleParser(self.__style_saved)
         self.__context_separators = []
@@ -246,8 +248,6 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__point_x = None
         self.__point_y = None
         self.__quick_buttons_on_top = True
-        self.__force_quick_mode = False
-        self.__quick_mode = self.__is_quick_mode()
 
         # Main layout
         self.__main_layout = QtWidgets.QHBoxLayout()
@@ -266,6 +266,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         # Top
         self.__quick_actions_top_hbox = QtWidgets.QHBoxLayout()
         self.__quick_actions_top_hbox.set_alignment(QtCore.Qt.AlignLeft)
+        self.__quick_actions_top_hbox.set_spacing(2)
         self.__menu_context_box.add_layout(self.__quick_actions_top_hbox)
 
         self.__quick_actions_box = QtWidgets.QVBoxLayout()
@@ -287,6 +288,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__context_separators.append(self.__quick_bottom_separator)
 
         self.__quick_actions_bottom_hbox = QtWidgets.QHBoxLayout()
+        self.__quick_actions_bottom_hbox.set_spacing(2)
         self.__quick_actions_bottom_hbox.set_alignment(QtCore.Qt.AlignLeft)
         self.__menu_context_box.add_layout(self.__quick_actions_bottom_hbox)
 
@@ -295,7 +297,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__shadow_effect.set_blur_radius(5)
         self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
 
-        if self.__is_dark:
+        if self.__gui_env.settings().window_is_dark():
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 100))
         else:
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 70))
@@ -313,21 +315,23 @@ class QQuickContextMenu(QtWidgets.QFrame):
             is_quick_action: bool = False,
             ) -> None:
         """..."""
-        quick = False if not self.__quick_mode else is_quick_action
-        ctx_btn = QQuickContextMenuButton(
-            self.__toplevel, self, text, receiver, icon, shortcut,
-            quick, self.__quick_action_label_as_tooltip)
-        self.__action_buttons.append(ctx_btn)
+        context_button = QQuickContextMenuButton(
+            self.__toplevel,
+            self,
+            text, receiver, icon, shortcut,
+            False if not self.__quick_mode else is_quick_action,
+            self.__quick_action_label_as_tooltip)
+        self.__action_buttons.append(context_button)
 
         if is_quick_action:
             if self.__quick_mode:
-                self.__quick_actions_top_hbox.add_widget(ctx_btn)
+                self.__quick_actions_top_hbox.add_widget(context_button)
             else:
-                self.__quick_actions_box.add_widget(ctx_btn)
-            self.__quick_action_buttons.append(ctx_btn)
+                self.__quick_actions_box.add_widget(context_button)
+            self.__quick_action_buttons.append(context_button)
         else:
-            ctx_btn.set_style_sheet(self.__style_saved)
-            self.__actions_box.add_widget(ctx_btn)
+            context_button.set_style_sheet(self.__style_saved)
+            self.__actions_box.add_widget(context_button)
 
     def add_separator(self) -> None:
         """..."""
@@ -390,7 +394,9 @@ class QQuickContextMenu(QtWidgets.QFrame):
 
         if self.__quick_mode:
             self.__toggle_quick_buttons_position()
-        self.move(x, y)
+
+        self.__point_x, self.__point_y = x, y
+        self.move(self.__point_x, self.__point_y)
 
     def __set_style_signal(self) -> None:
         # ...

@@ -262,8 +262,7 @@ class DynamicStyle(object):
             f' {self.__label_context_color.green()},'
             f' {self.__label_context_color.blue()},'
             f' {self.__label_context_color.alpha()});'
-            '}'
-        )
+            '}')
 
         style_path = os.path.join(SRC_DIR, 'static', 'style.qss')
         with open(style_path, 'r') as style_qss_file:
