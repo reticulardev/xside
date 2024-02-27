@@ -93,6 +93,19 @@ class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
             'Rename', lambda: self.__context_menu_cal('Rename'),
             icon=QtGui.QIcon.from_theme('document-edit-symbolic'),
             shortcut=QtGui.QKeySequence('F2'), is_quick_action=True)
+
+        self.qcontext_menu.add_group('color', 'Change color:')
+        self.qcontext_menu.add_separator()
+        self.qcontext_menu.add_group_action(
+            'color', 'RED', lambda: self.__context_menu_cal('RED'),
+            icon=QtGui.QIcon('red.png'))
+        self.qcontext_menu.add_group_action(
+            'color', 'GREEN', lambda: self.__context_menu_cal('GREEN'),
+            icon=QtGui.QIcon('green.png'))
+        self.qcontext_menu.add_group_action(
+            'color', 'BLUE', lambda: self.__context_menu_cal('BLUE'),
+            icon=QtGui.QIcon('blue.png'))
+
         self.qcontext_menu.add_action(
             'Terminal', lambda: self.__context_menu_cal('Terminal'),
             icon=QtGui.QIcon.from_theme('dialog-scripts-symbolic'),

@@ -69,7 +69,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         """..."""
         super().__init__(*args, **kwargs)
         self.__toplevel = toplevel
-        self.__context_menu = context_menu
+        self.__contextmenu = context_menu
         self.__text = text
         self.__receiver = receiver
         self.__icon = icon
@@ -88,35 +88,32 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__style_parser = StyleParser(self.__toplevel.style_sheet())
         self.__normal_style = self.__updated_normal_style()
         self.__hover_style = self.__updated_hover_style()
-        self.__main_layout = QtWidgets.QHBoxLayout()
-        self.__main_layout.set_contents_margins(0, 0, 0, 0)
-        self.__main_layout.set_spacing(0)
-        self.set_layout(self.__main_layout)
+        self.__main_box = QtWidgets.QHBoxLayout()
+        self.__main_box.set_contents_margins(0, 0, 0, 0)
+        self.__main_box.set_spacing(0)
+        self.set_layout(self.__main_box)
 
-        self.__left_layout = QtWidgets.QHBoxLayout()
-        self.__left_layout.set_alignment(QtCore.Qt.AlignLeft)
-        self.__main_layout.add_layout(self.__left_layout)
+        self.__left_box = QtWidgets.QHBoxLayout()
+        self.__left_box.set_spacing(5)
+        self.__left_box.set_alignment(QtCore.Qt.AlignLeft)
+        self.__main_box.add_layout(self.__left_box)
 
         self.__configure_icon()
         icon_label = QtWidgets.QLabel()
         icon_label.set_pixmap(self.__icon.pixmap(QtCore.QSize(16, 16)))
         icon_label.set_alignment(QtCore.Qt.AlignLeft)
-        if self.__is_quick_action:
-            icon_label.set_contents_margins(0, 2, 0, 2)
-        else:
-            icon_label.set_contents_margins(0, 0, 5, 0)
-        self.__left_layout.add_widget(icon_label)
+        self.__left_box.add_widget(icon_label)
 
         self.__text_label = QQuickContextMenuButtonLabel(self.__text)
         self.__text_label.set_alignment(QtCore.Qt.AlignLeft)
         if not self.__is_quick_action:
-            self.__left_layout.add_widget(self.__text_label)
+            self.__left_box.add_widget(self.__text_label)
 
         if not self.__is_quick_action:
             shortcut_label = ContextLabel(self.__shortcut_txt)
             shortcut_label.set_contents_margins(20, 0, 0, 0)
             shortcut_label.set_alignment(QtCore.Qt.AlignRight)
-            self.__main_layout.add_widget(shortcut_label)
+            self.__main_box.add_widget(shortcut_label)
 
         if self.__is_quick_action and self.__quick_action_label_as_tooltip:
             self.__tooltip = QTooltip(
@@ -179,23 +176,23 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 
     def enter_event(self, event: QtGui.QEnterEvent) -> None:
         """..."""
+        self.enter_event_signal.emit(event)
         if self.__tooltip and self.__is_quick_action:
             if not self.__is_tooltip_open:
                 self.__tooltip_timer.timeout.connect(self.__tooltip_exec)
                 self.__tooltip_timer.start(500)
         else:
-            self.enter_event_signal.emit(event)
             self.__text_label.set_style_sheet(self.__hover_style)
 
     def leave_event(self, event: QtGui.QEnterEvent) -> None:
         """..."""
         self.leave_event_signal.emit(event)
-        self.__text_label.set_style_sheet(self.__normal_style)
-
         if self.__tooltip and self.__is_quick_action:
             self.__is_tooltip_open = False
             self.__tooltip.close()
             self.__tooltip_timer.stop()
+        else:
+            self.__text_label.set_style_sheet(self.__normal_style)
 
     def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
         self.mouse_press_event_signal.emit(event)
@@ -206,7 +203,7 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         if self.under_mouse():
             self.__receiver()
             self.__text_label.set_style_sheet(self.__normal_style)
-            self.__context_menu.close()
+            self.__contextmenu.close()
 
 
 class QQuickContextMenu(QtWidgets.QFrame):
@@ -245,6 +242,7 @@ class QQuickContextMenu(QtWidgets.QFrame):
         self.__context_separators = []
         self.__action_buttons = []
         self.__quick_action_buttons = []
+        self.__group_action_box = {}
         self.__point_x = None
         self.__point_y = None
         self.__quick_buttons_on_top = True
@@ -330,8 +328,44 @@ class QQuickContextMenu(QtWidgets.QFrame):
                 self.__quick_actions_box.add_widget(context_button)
             self.__quick_action_buttons.append(context_button)
         else:
-            context_button.set_style_sheet(self.__style_saved)
             self.__actions_box.add_widget(context_button)
+
+    def add_group_action(
+            self,
+            group_id: str,
+            text: str,
+            receiver: callable,
+            icon: QtGui.QIcon | None = None,
+            shortcut: QtGui.QKeySequence | None = None,
+            ) -> None:
+        """..."""
+        context_button = QQuickContextMenuButton(
+            self.__toplevel, self, text, receiver, icon, shortcut, True, True)
+        self.__action_buttons.append(context_button)
+        self.__group_action_box[group_id].add_widget(context_button)
+
+    def add_group(
+            self, group_id: str, title: str = None, title_on_top: bool = False
+            ) -> None:
+        """..."""
+        box = QtWidgets.QVBoxLayout()
+        box.set_contents_margins(0, 0, 0, 0)
+        self.__actions_box.add_layout(box)
+
+        title = QtWidgets.QLabel(title if title else group_id)
+        if title_on_top:
+            box.add_widget(title)
+
+        hbox = QtWidgets.QHBoxLayout()
+        hbox.set_contents_margins(0, 0, 0, 0)
+        hbox.set_alignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        hbox.set_spacing(2)
+        box.add_layout(hbox)
+
+        if not title_on_top:
+            hbox.add_widget(title)
+
+        self.__group_action_box[group_id] = hbox
 
     def add_separator(self) -> None:
         """..."""
@@ -346,6 +380,8 @@ class QQuickContextMenu(QtWidgets.QFrame):
 
         self.__main_widget.set_style_sheet(self.__set_style())
         for btn in self.__action_buttons:
+            if btn.tooltip_widget():
+                btn.tooltip_widget().set_style_sheet(self.__style_saved)
             btn.set_style_sheet(self.__style_saved)
 
         for btn in self.__quick_action_buttons:
