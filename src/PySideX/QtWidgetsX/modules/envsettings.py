@@ -78,6 +78,11 @@ class GlobalEnvSettings(object):
         return 4, 6, 4, 6
 
     @staticmethod
+    def contextmenugroup_padding() -> tuple:
+        """..."""
+        return 0, 6, 0, 8
+
+    @staticmethod
     def controlbutton_margin() -> tuple:
         """..."""
         return 2, 0, 2, 0
@@ -242,6 +247,11 @@ class EnvSettingsPlasma(GlobalEnvSettings):
         """..."""
         return 2, 6, 2, 6
 
+    @staticmethod
+    def contextmenugroup_padding() -> tuple:
+        """..."""
+        return 2, 6, 2, 8
+
     def controlbutton_order(self) -> tuple:
         """..."""
         right_buttons = 'IAX'  # X = close, A = max, I = min
@@ -363,6 +373,11 @@ class EnvSettingsGnome(GlobalEnvSettings):
     def contextmenubutton_padding() -> tuple:
         """..."""
         return 6, 12, 6, 12
+
+    @staticmethod
+    def contextmenugroup_padding() -> tuple:
+        """..."""
+        return 6, 12, 6, 14
 
     def controlbutton_order(self) -> tuple:
         """XAI M -> (2, 1, 0), (3,)
@@ -536,6 +551,11 @@ class EnvSettingsXFCE(GlobalEnvSettings):
     def contextmenubutton_padding() -> tuple:
         """..."""
         return 2, 4, 2, 4
+
+    @staticmethod
+    def contextmenugroup_padding() -> tuple:
+        """..."""
+        return 2, 4, 2, 6
 
     def controlbutton_order(self) -> tuple:
         """XAI M -> (2, 1, 0), (3,)

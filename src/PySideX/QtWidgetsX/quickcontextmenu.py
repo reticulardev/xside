@@ -101,7 +101,11 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
         self.__configure_icon()
         icon_label = QtWidgets.QLabel()
         icon_label.set_pixmap(self.__icon.pixmap(QtCore.QSize(16, 16)))
-        icon_label.set_alignment(QtCore.Qt.AlignLeft)
+        if self.__is_quick_action:
+            self.set_minimum_height(18)
+            icon_label.set_minimum_height(18)
+            icon_label.set_contents_margins(0, 2, 0, 2)
+        icon_label.set_alignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.__left_box.add_widget(icon_label)
 
         self.__text_label = QQuickContextMenuButtonLabel(self.__text)
@@ -204,6 +208,49 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
             self.__receiver()
             self.__text_label.set_style_sheet(self.__normal_style)
             self.__contextmenu.close()
+
+
+class ContextMenuGroup(QtWidgets.QFrame):
+    """..."""
+    def __init__(
+            self,
+            toplevel: QApplicationWindow,
+            title: str,
+            group_id: str,
+            title_on_top: bool = False,
+            *args, **kwargs) -> None:
+        """..."""
+        super().__init__(*args, **kwargs)
+        self.__toplevel = toplevel
+        self.__title = title
+        self.__group_id = group_id
+        self.__title_on_top = title_on_top
+
+        self.__env = GuiEnv(
+            self.__toplevel.platform().operational_system(),
+            self.__toplevel.platform().desktop_environment())
+
+        self.__box = QtWidgets.QVBoxLayout()
+        self.__box.set_contents_margins(0, 0, 0, 0)
+        self.set_layout(self.__box)
+        self.__title = QtWidgets.QLabel(
+            self.__title if self.__title else self.__group_id)
+
+        if self.__title_on_top:
+            self.__box.add_widget(self.__title)
+
+        self.__hbox = QtWidgets.QHBoxLayout()
+        self.__hbox.set_contents_margins(0, 0, 0, 0)
+        self.__hbox.set_alignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.__hbox.set_spacing(2)
+        self.__box.add_layout(self.__hbox)
+
+        if not self.__title_on_top:
+            self.__hbox.add_widget(self.__title)
+
+    def add_widget(self, widget: QtWidgets.QWidget) -> None:
+        """..."""
+        self.__hbox.add_widget(widget)
 
 
 class QQuickContextMenu(QtWidgets.QFrame):
@@ -348,24 +395,10 @@ class QQuickContextMenu(QtWidgets.QFrame):
             self, group_id: str, title: str = None, title_on_top: bool = False
             ) -> None:
         """..."""
-        box = QtWidgets.QVBoxLayout()
-        box.set_contents_margins(0, 0, 0, 0)
-        self.__actions_box.add_layout(box)
-
-        title = QtWidgets.QLabel(title if title else group_id)
-        if title_on_top:
-            box.add_widget(title)
-
-        hbox = QtWidgets.QHBoxLayout()
-        hbox.set_contents_margins(0, 0, 0, 0)
-        hbox.set_alignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
-        hbox.set_spacing(2)
-        box.add_layout(hbox)
-
-        if not title_on_top:
-            hbox.add_widget(title)
-
-        self.__group_action_box[group_id] = hbox
+        box = ContextMenuGroup(self.__toplevel, title, group_id, title_on_top)
+        box.set_style_sheet(self.__style_saved)
+        self.__actions_box.add_widget(box)
+        self.__group_action_box[group_id] = box
 
     def add_separator(self) -> None:
         """..."""

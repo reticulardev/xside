@@ -93,6 +93,17 @@ class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
             'Rename', lambda: self.__context_menu_cal('Rename'),
             icon=QtGui.QIcon.from_theme('document-edit-symbolic'),
             shortcut=QtGui.QKeySequence('F2'), is_quick_action=True)
+        self.qcontext_menu.add_action(
+            'Terminal', lambda: self.__context_menu_cal('Terminal'),
+            icon=QtGui.QIcon.from_theme('dialog-scripts-symbolic'),
+            shortcut=QtGui.QKeySequence('Alt+Shift+F4'))
+        self.qcontext_menu.add_action(
+            'Open', lambda: self.__context_menu_cal('Open'),
+            icon=QtGui.QIcon.from_theme('document-open-symbolic'),
+            shortcut=QtGui.QKeySequence('Ctrl+V'))
+
+        self.qcontext_menu.add_separator()
+        # self.qcontext_menu.set_separators_margins(8, 0, 8, 0)
 
         self.qcontext_menu.add_group('color', 'Change color:')
         self.qcontext_menu.add_separator()
@@ -105,18 +116,9 @@ class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
         self.qcontext_menu.add_group_action(
             'color', 'BLUE', lambda: self.__context_menu_cal('BLUE'),
             icon=QtGui.QIcon('blue.png'))
-
-        self.qcontext_menu.add_action(
-            'Terminal', lambda: self.__context_menu_cal('Terminal'),
-            icon=QtGui.QIcon.from_theme('dialog-scripts-symbolic'),
-            shortcut=QtGui.QKeySequence('Alt+Shift+F4'))
-        self.qcontext_menu.add_action(
-            'Open', lambda: self.__context_menu_cal('Open'),
-            icon=QtGui.QIcon.from_theme('document-open-symbolic'),
-            shortcut=QtGui.QKeySequence('Ctrl+V'))
-
-        self.qcontext_menu.add_separator()
-        # self.qcontext_menu.set_separators_margins(8, 0, 8, 0)
+        self.qcontext_menu.add_group_action(
+            'color', 'More', lambda: self.__context_menu_cal('More'),
+            icon=QtGui.QIcon.from_theme('list-add-symbolic'))
 
         self.qcontext_menu.add_action(
             'Delete', lambda: self.__context_menu_cal('Delete'))
@@ -334,6 +336,7 @@ class Application(object):
         Sets basic window details and starts the application.
         """
         self.sideview_window.show()
+        print(hex(self.sideview_window.win_id()), '<<<<')
         # self.window.show()
         sys.exit(self.application.exec())
 

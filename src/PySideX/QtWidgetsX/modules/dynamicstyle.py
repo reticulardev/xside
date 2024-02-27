@@ -151,6 +151,9 @@ class DynamicStyle(object):
         self.__ctxtmenubutton_label_hover_color = self.__env.settings(
             ).contextmenubutton_label_hover_color()
 
+        self.__contextmenugroup_padding = self.__env.settings(
+            ).contextmenugroup_padding()
+
         self.__label_context_color = self.__env.settings(
             ).label_context_color()
 
@@ -262,6 +265,13 @@ class DynamicStyle(object):
             f' {self.__label_context_color.green()},'
             f' {self.__label_context_color.blue()},'
             f' {self.__label_context_color.alpha()});'
+            '}'
+            'ContextMenuGroup {'
+            'padding:'
+            f' {self.__contextmenugroup_padding[0]}px'
+            f' {self.__contextmenugroup_padding[1]}px'
+            f' {self.__contextmenugroup_padding[2]}px'
+            f' {self.__contextmenugroup_padding[3]}px;'
             '}')
 
         style_path = os.path.join(SRC_DIR, 'static', 'style.qss')
