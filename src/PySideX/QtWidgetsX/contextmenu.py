@@ -100,12 +100,17 @@ class ContextMenuButton(QtWidgets.QFrame):
 
         self.__configure_icon()
         icon_label = QtWidgets.QLabel()
+        icon_label.set_alignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        if self.__is_quick_action:
+            self.set_minimum_height(22)
+            self.set_contents_margins(0, 1, 0, 1)
+            icon_label.set_minimum_height(18)
+
+        # Fix: Initial height is cutting the icon
         icon_label.set_pixmap(self.__icon.pixmap(QtCore.QSize(16, 16)))
         if self.__is_quick_action:
-            self.set_minimum_height(18)
-            icon_label.set_minimum_height(18)
             icon_label.set_contents_margins(0, 2, 0, 2)
-        icon_label.set_alignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+
         self.__left_box.add_widget(icon_label)
 
         self.__text_label = ContextMenuButtonLabel(self.__text)
