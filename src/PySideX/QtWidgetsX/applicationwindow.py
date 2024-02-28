@@ -213,6 +213,9 @@ class BaseShadowWindow(QtWidgets.QMainWindow):
         """..."""
         return self.__central_widget
 
+    def is_shadow_visible(self) -> bool:
+        return self.__is_shadow_has_added
+
     def set_shadow_as_hidden(self, hide_value: bool) -> None:
         """..."""
         if hide_value:
