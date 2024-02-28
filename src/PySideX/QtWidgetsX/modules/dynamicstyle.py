@@ -161,7 +161,7 @@ class DynamicStyle(object):
         """..."""
         if self.__toplevel.is_server_side_decorated():
             window_style = (
-                'QMainWindow {'
+                'MainWindow {'
                 'background-color: rgba('
                 f'{self.__win_background_color.red()},'
                 f'{self.__win_background_color.green()},'
@@ -170,7 +170,7 @@ class DynamicStyle(object):
                 '}')
         else:
             window_style = (
-                'QMainWindow {'
+                'MainWindow {'
                 'background-color: rgba('
                 f'{self.__win_background_color.red()},'
                 f'{self.__win_background_color.green()},'
@@ -188,7 +188,7 @@ class DynamicStyle(object):
                 '}')
 
         context_menu_style = (
-            'QQuickContextMenu {'
+            'ContextMenu {'
             'margin:'
             f' {self.__ctxmenu_margin[0]}px'
             f' {self.__ctxmenu_margin[1]}px'
@@ -211,21 +211,21 @@ class DynamicStyle(object):
             f' {self.__ctxmenu_border_color.alpha_f()});'
             f'border-radius: {self.__ctxmenu_border_radius}px;'
             '}'
-            'QQuickContextMenuSeparator {'
+            'ContextMenuSeparator {'
             'margin:'
             f' {self.__ctxmenu_separator_margin[0]}px'
             f' {self.__ctxmenu_separator_margin[1]}px'
             f' {self.__ctxmenu_separator_margin[2]}px'
             f' {self.__ctxmenu_separator_margin[3]}px;'
             '}'
-            'QQuickContextMenuSeparatorLine {'
+            'ContextMenuSeparatorLine {'
             'color: rgba('
             f' {self.__ctxmenu_separator_color.red()},'
             f' {self.__ctxmenu_separator_color.green()},'
             f' {self.__ctxmenu_separator_color.blue()},'
             f' {self.__ctxmenu_separator_color.alpha()});'
             '}'
-            'QQuickContextMenuButton {'
+            'ContextMenuButton {'
             'background: transparent;'
             'padding:'
             f' {self.__ctxmenubutton_padding[0]}px'
@@ -235,7 +235,7 @@ class DynamicStyle(object):
             'border: 1px solid rgba(0, 0, 0, 0.0);'
             f'border-radius: {self.__ctxmenubutton_border_radius}px;'
             '}'
-            'QQuickContextMenuButton:hover {'
+            'ContextMenuButton:hover {'
             'color: rgba('
             f' {self.__ctxtmenubutton_label_hover_color.red()},'
             f' {self.__ctxtmenubutton_label_hover_color.green()},'
@@ -252,7 +252,7 @@ class DynamicStyle(object):
             f' {self.__ctxmenubutton_border_hover_color.blue()},'
             f' {self.__ctxmenubutton_border_hover_color.alpha()});'
             '}'
-            'QQuickContextMenuButtonLabel:hover {'
+            'ContextMenuButtonLabel:hover {'
             'color: rgba('
             f' {self.__ctxtmenubutton_label_hover_color.red()},'
             f' {self.__ctxtmenubutton_label_hover_color.green()},'
@@ -284,7 +284,7 @@ class DynamicStyle(object):
     def fullscreen_adapted_style(style: str) -> str:
         # ...
         styleparser = StyleParser(style)
-        style = styleparser.widget_scope('QMainWindow')
+        style = styleparser.widget_scope('MainWindow')
         return (
-            'QMainWindow {' f'{style}'
+            'MainWindow {' f'{style}'
             'border-radius: 0px; border: 0px;}')

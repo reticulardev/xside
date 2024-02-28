@@ -9,13 +9,13 @@ from __feature__ import snake_case
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
-from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
-from PySideX.QtWidgetsX.headerbar import QHeaderBar
+from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
+from PySideX.QtWidgetsX.headerbar import HeaderBar
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-class QOverlaySideView(QtWidgets.QFrame):
+class OverlaySideView(QtWidgets.QFrame):
     """..."""
     side_view_closed_signal = QtCore.Signal(object)
 
@@ -101,7 +101,7 @@ class QOverlaySideView(QtWidgets.QFrame):
     def __update_style(self) -> None:
         # ...
         self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
-        base_style = self.__style_parser.widget_scope('QMainWindow')
+        base_style = self.__style_parser.widget_scope('MainWindow')
 
         self.__sideview_background.set_style_sheet(
             f'{self.__toplevel.style_sheet()}'
@@ -133,7 +133,7 @@ class QOverlaySideView(QtWidgets.QFrame):
         self.resize(self.__toplevel.width(), self.__toplevel.height())
 
 
-class QApplicationWindowSideView(QApplicationWindow):
+class ApplicationWindowSideView(ApplicationWindow):
     """Window with side panel"""
     adaptive_mode_signal = QtCore.Signal(object)
     sideview_opened_signal = QtCore.Signal(object)
@@ -196,7 +196,7 @@ class QApplicationWindowSideView(QApplicationWindow):
         self.__sideview_headerbar_box.set_contents_margins(0, 0, 6, 0)
         self.__sideview_main_box.add_layout(self.__sideview_headerbar_box)
 
-        self.__sideview_headerbar = QHeaderBar(self)
+        self.__sideview_headerbar = HeaderBar(self)
         self.__sideview_headerbar.set_right_control_buttons_visible(False)
         self.__sideview_headerbar_box.add_widget(self.__sideview_headerbar)
 
@@ -221,7 +221,7 @@ class QApplicationWindowSideView(QApplicationWindow):
         self.__main_box.add_layout(self.__frameview_main_box)
 
         # Frame view header bar
-        self.__frameview_headerbar = QHeaderBar(self)
+        self.__frameview_headerbar = HeaderBar(self)
         self.__frameview_headerbar.set_left_control_buttons_visible(False)
         self.__frameview_main_box.add_widget(self.__frameview_headerbar)
 
@@ -239,7 +239,7 @@ class QApplicationWindowSideView(QApplicationWindow):
         self.__frameview_main_box.add_layout(self.__frameview_box, 9)
 
         # Side view overlay
-        self.__sideview_overlay = QOverlaySideView(
+        self.__sideview_overlay = OverlaySideView(
             self.__sideview_width_area, parent=self)
         self.__sideview_overlay.set_visible(False)
 
@@ -271,7 +271,7 @@ class QApplicationWindowSideView(QApplicationWindow):
             self.sideview_opened_signal.emit('sideview-opened-signal')
             self.__is_sideview_open = True
 
-    def sideview_headerbar(self) -> QHeaderBar:
+    def sideview_headerbar(self) -> HeaderBar:
         """..."""
         return self.__sideview_headerbar
 
@@ -351,7 +351,7 @@ class QApplicationWindowSideView(QApplicationWindow):
 
     def __color_sideview(self) -> None:
         """..."""
-        basestyle = StyleParser(self.style_sheet()).widget_scope('QMainWindow')
+        basestyle = StyleParser(self.style_sheet()).widget_scope('MainWindow')
         sideview_style_sheet = (
             '#__panelwidthstyle {'
             f'{basestyle}'

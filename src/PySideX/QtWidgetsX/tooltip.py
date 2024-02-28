@@ -5,18 +5,18 @@ import os
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
+from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
 from PySideX.QtWidgetsX.label import ContextLabel
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 import PySideX.QtWidgetsX.modules.color as color
 
 
-class QTooltip(QtWidgets.QFrame):
+class Tooltip(QtWidgets.QFrame):
     """..."""
     def __init__(
             self,
-            toplevel: QApplicationWindow,
+            toplevel: ApplicationWindow,
             parent: QtWidgets.QWidget,
             text: str,
             complement_text: str = None,
@@ -26,7 +26,7 @@ class QTooltip(QtWidgets.QFrame):
 
         Initialize class attributes
 
-        :param toplevel: QApplicationWindow app main window instance
+        :param toplevel: ApplicationWindow app main window instance
         """
         super().__init__(*args, **kwargs)
         self.__toplevel = toplevel
@@ -130,4 +130,4 @@ class QTooltip(QtWidgets.QFrame):
             self.__set_style_signal()
 
         return ('#QTooltip {'
-                f'{self.__style_parser.widget_scope("QQuickContextMenu")}' '}')
+                f'{self.__style_parser.widget_scope("ContextMenu")}' '}')

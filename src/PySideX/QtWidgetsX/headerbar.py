@@ -4,25 +4,25 @@ import logging
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
-from PySideX.QtWidgetsX.windowmovearea import QWindowMoveArea
-from PySideX.QtWidgetsX.windowcontrolbuttons import QWindowControlButtons
+from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
+from PySideX.QtWidgetsX.windowmovearea import WindowMoveArea
+from PySideX.QtWidgetsX.windowcontrolbuttons import WindowControlButtons
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 
 
-class QHeaderBar(QtWidgets.QFrame):
+class HeaderBar(QtWidgets.QFrame):
     """Window header bar
 
     Replaces traditional title bar and allows adding and editing widgets
     """
     resize_event_signal = QtCore.Signal(object)
 
-    def __init__(self, toplevel: QApplicationWindow, *args, **kwargs) -> None:
+    def __init__(self, toplevel: ApplicationWindow, *args, **kwargs) -> None:
         """Class constructor
 
         Initialize class attributes
 
-        :param toplevel: QApplicationWindow app main window instance
+        :param toplevel: ApplicationWindow app main window instance
         :param window_control_buttons_on_left:
             window control buttons (minimize, maximize and close) on left
         :param window_control_buttons_order:
@@ -55,7 +55,7 @@ class QHeaderBar(QtWidgets.QFrame):
         self.__bar_item_layout_center.set_contents_margins(0, 0, 0, 0)
         self.__layout.add_layout(self.__bar_item_layout_center)
 
-        self.__window_move_area = QWindowMoveArea(self.__toplevel)
+        self.__window_move_area = WindowMoveArea(self.__toplevel)
         self.__bar_item_layout_center.add_widget(self.__window_move_area, 9)
 
         self.__window_move_area_text = QtWidgets.QLabel()
@@ -71,11 +71,11 @@ class QHeaderBar(QtWidgets.QFrame):
         self.__bar_item_layout_right.set_contents_margins(0, 0, 0, 0)
         self.__layout.add_layout(self.__bar_item_layout_right)
 
-        self.__left_ctrl_buttons = QWindowControlButtons(
+        self.__left_ctrl_buttons = WindowControlButtons(
             self.__toplevel, side='left')
         self.__bar_item_layout_left.add_widget(self.__left_ctrl_buttons)
 
-        self.__right_ctrl_buttons = QWindowControlButtons(
+        self.__right_ctrl_buttons = WindowControlButtons(
             self.__toplevel, side='right')
         self.__bar_item_layout_right.add_widget(self.__right_ctrl_buttons)
 
@@ -209,7 +209,7 @@ class QHeaderBar(QtWidgets.QFrame):
     def set_text(self, text: str) -> None:
         """Sets a text in the center
 
-        :param text: The text to be shown in the center of the QWindowMoveArea
+        :param text: The text to be shown in the center of the WindowMoveArea
         """
         if not self.__toplevel.is_server_side_decorated():
             self.__window_move_area_text.set_text(text)
@@ -223,9 +223,9 @@ class QHeaderBar(QtWidgets.QFrame):
         self.__left_ctrl_buttons.update_window_icon(icon)
 
     def text(self) -> str:
-        """Get the QWindowMoveArea's text
+        """Get the WindowMoveArea's text
 
-        The text shown in the center of the QWindowMoveArea
+        The text shown in the center of the WindowMoveArea
         """
         return self.__window_move_area.text()
 

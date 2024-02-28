@@ -2,22 +2,22 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
+from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
 
 
-class QWindowMoveArea(QtWidgets.QFrame):
+class WindowMoveArea(QtWidgets.QFrame):
     """Window move area"""
     mouse_double_click_event_signal = QtCore.Signal(object)
     mouse_press_event_signal = QtCore.Signal(object)
     mouse_release_event_signal = QtCore.Signal(object)
 
     def __init__(
-            self, toplevel: QApplicationWindow, *args, **kwargs) -> None:
+            self, toplevel: ApplicationWindow, *args, **kwargs) -> None:
         """Class constructor
 
         Initialize class attributes
 
-        :param toplevel: QApplicationWindow app main window instance
+        :param toplevel: ApplicationWindow app main window instance
         """
         super().__init__(*args, **kwargs)
         self.__toplevel = toplevel

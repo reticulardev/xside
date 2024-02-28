@@ -12,7 +12,7 @@ SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
 
 
-class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
+class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
     """..."""
 
     def __init__(self, *args, **kwargs) -> None:
@@ -51,7 +51,7 @@ class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
         self.frameview_layout().set_alignment(QtCore.Qt.AlignCenter)
 
         # Image: context menu
-        self.image_qcontext = QtWidgetsX.QQuickContextMenu(self)
+        self.image_qcontext = QtWidgetsX.ContextMenu(self)
         self.image_qcontext.add_action(
             'Delete', lambda: self.__context_menu_cal('Delete'))
         self.image_qcontext.add_action(
@@ -75,7 +75,7 @@ class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
         self.context_menu_label = QtWidgets.QLabel('Menu text here')
         self.frameview_layout().add_widget(self.context_menu_label)
 
-        self.qcontext_menu = QtWidgetsX.QQuickContextMenu(
+        self.qcontext_menu = QtWidgetsX.ContextMenu(
             self, quick_action_label_as_tooltip=True, force_quick_mode=True)
         self.qcontext_menu.add_action(
             'Copy', lambda: self.__context_menu_cal('Copy'),
@@ -146,7 +146,7 @@ class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
         if self.set_style_button.text() == 'Set style':
             self.set_sideview_color((0, 0, 0, 0.1))
             self.set_style_sheet(
-                'QMainWindow {'
+                'MainWindow {'
                 '  background-color: rgba(44, 44, 50, 0.9);'
                 '  border: 1px solid #283690;'
                 '  border-radius: 10px;}'
@@ -159,16 +159,16 @@ class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
                 'QToolButton:hover {'
                 '  background: transparent;'
                 '  background-color: rgba(100, 100, 100, 0.3);}'
-                'QQuickContextMenu {'
+                'ContextMenu {'
                 '  padding: 4;'
                 '  background-color: rgba(44, 44, 50, 0.9);'
                 '  border: 1px solid #283690;}'
-                'QQuickContextMenuButton:hover {'
+                'ContextMenuButton:hover {'
                 '  border: 1px solid green;'
                 '  background-color: darkgreen;}'
-                'QQuickContextMenuButtonLabel {'
+                'ContextMenuButtonLabel {'
                 '  color: white;}'
-                'QQuickContextMenuButtonLabel:hover {'
+                'ContextMenuButtonLabel:hover {'
                 '  color: yellow;}'
                 'QPushButton {'
                 '  background-color: #363636;}'
@@ -185,7 +185,7 @@ class SideViewWindow(QtWidgetsX.QApplicationWindowSideView):
         self.close_sideview()
 
 
-class Window(QtWidgetsX.QApplicationWindow):
+class Window(QtWidgetsX.ApplicationWindow):
     """App window instance"""
 
     def __init__(self, *args, **kwargs) -> None:
@@ -212,7 +212,7 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.main_layout.set_alignment(QtCore.Qt.AlignTop)
         self.central_widget().set_layout(self.main_layout)
 
-        self.headerbar = QtWidgetsX.QHeaderBar(self)
+        self.headerbar = QtWidgetsX.HeaderBar(self)
         self.main_layout.add_widget(self.headerbar)
         self.headerbar.set_text(self.window_title())
 
@@ -245,7 +245,7 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.context_menu_label = QtWidgets.QLabel('Context menu text here')
         self.body_layout.add_widget(self.context_menu_label)
 
-        self.ctx_menu = QtWidgetsX.QQuickContextMenu(self)
+        self.ctx_menu = QtWidgetsX.ContextMenu(self)
         self.ctx_menu.add_action(
             'Copy', lambda: self.context_menu_cal('Copy'),
             icon=QtGui.QIcon.from_theme('edit-copy'),
@@ -273,7 +273,7 @@ class Window(QtWidgetsX.QApplicationWindow):
 
     def on_set_style(self):
         self.set_style_sheet(
-            'QMainWindow {'
+            'MainWindow {'
             '  background-color: rgba(59, 59, 59, 0.8);'
             '  border-radius: 10px;'
             '  border: 1px solid #555;'
@@ -293,23 +293,23 @@ class Window(QtWidgetsX.QApplicationWindow):
             '  border: 0px;'
             '  background-color: rgba(125, 77, 136, 0.6);'
             '}'
-            'QControlButton {'
+            'ControlButton {'
             '  padding: 0px;'
             '  background: transparent;'
             '  border-radius: 9px;}'
-            'QControlButton:hover {'
+            'ControlButton:hover {'
             '  padding: 0px;'
             '  background: transparent;'
             '  border-radius: 9px;'
             '  background-color: rgba(100, 100, 100, 0.5);'
             '}'
-            'QQuickContextMenu {'
+            'ContextMenu {'
             '  border: 1px solid #0000FF;'
             '}'
-            'QQuickContextMenuButton {'
+            'ContextMenuButton {'
             '  border: 1px solid #FF0000;'
             '}'
-            'QQuickContextMenuButtonLabel {color: #FF0000;}')
+            'ContextMenuButtonLabel {color: #FF0000;}')
 
     def on_reset_style(self):
         self.reset_style()

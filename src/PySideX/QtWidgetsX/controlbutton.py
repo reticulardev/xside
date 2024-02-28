@@ -7,14 +7,14 @@ import sys
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
+from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
 import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-class QControlButton(QtWidgets.QToolButton):
+class ControlButton(QtWidgets.QToolButton):
     """Control Button
 
     Window control button, such as window close and maximize buttons
@@ -23,7 +23,7 @@ class QControlButton(QtWidgets.QToolButton):
     leave_event_signal = QtCore.Signal(object)
 
     def __init__(
-            self, toplevel: QApplicationWindow, button_id: int,
+            self, toplevel: ApplicationWindow, button_id: int,
             *args, **kwargs) -> None:
         """Class constructor
 

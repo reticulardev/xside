@@ -1,8 +1,8 @@
-from PySideX.QtWidgetsX.applicationwindow import QApplicationWindow
+from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
 from PySideX.QtWidgetsX.applicationwindowsideview import (
-    QApplicationWindowSideView)
-from PySideX.QtWidgetsX.controlbutton import QControlButton
-from PySideX.QtWidgetsX.headerbar import QHeaderBar
-from PySideX.QtWidgetsX.quickcontextmenu import QQuickContextMenu
-from PySideX.QtWidgetsX.windowcontrolbuttons import QWindowControlButtons
-from PySideX.QtWidgetsX.windowmovearea import QWindowMoveArea
+    ApplicationWindowSideView)
+from PySideX.QtWidgetsX.controlbutton import ControlButton
+from PySideX.QtWidgetsX.headerbar import HeaderBar
+from PySideX.QtWidgetsX.contextmenu import ContextMenu
+from PySideX.QtWidgetsX.windowcontrolbuttons import WindowControlButtons
+from PySideX.QtWidgetsX.windowmovearea import WindowMoveArea

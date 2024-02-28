@@ -9,7 +9,7 @@ from PySideX.QtWidgetsX.modules.dynamicstyle import DynamicStyle
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 
 
-class QMainWindow(QtWidgets.QFrame):
+class MainWindow(QtWidgets.QFrame):
     """..."""
     def __init__(self, *args, **kwargs):
         """Class constructor
@@ -183,7 +183,7 @@ class BaseShadowWindow(QtWidgets.QMainWindow):
         self.__central_widget_box.set_spacing(0)
         self.__center_shadow.set_layout(self.__central_widget_box)
 
-        self.__central_widget = QMainWindow()
+        self.__central_widget = MainWindow()
         self.__central_widget_box.add_widget(self.__central_widget)
 
         # Right
@@ -250,7 +250,7 @@ class BaseShadowWindow(QtWidgets.QMainWindow):
             self.__is_shadow_has_removed = False
 
 
-class QApplicationWindow(BaseShadowWindow):
+class ApplicationWindow(BaseShadowWindow):
     """Application main window prepared to use CSD
 
     The edges are rounded and there is no title bar. A custom header bar can

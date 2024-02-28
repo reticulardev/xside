@@ -102,13 +102,13 @@ class GlobalEnvSettings(object):
     def controlbutton_style(*args, **kwargs) -> str:
         """..."""
         return (
-            'QControlButton {'
+            'ControlButton {'
             '  border: 0px;'
             '  border-radius: 10px;'
             '  padding: 1px;'
             '  background-color: rgba(127, 127, 127, 0.2);'
             '}'
-            'QControlButton:hover {'
+            'ControlButton:hover {'
             '  background-color: rgba(200, 200, 200, 0.2);'
             '}')
 
@@ -311,8 +311,9 @@ class EnvSettingsPlasma(GlobalEnvSettings):
             'kde-breeze-control-buttons', button_name + '.svg')
         return (
             # f'background: url({url_icon}) top center no-repeat;'
-            'QControlButton {'
-            f'background: url({url_icon}) center no-repeat;'
+            'ControlButton {'
+            '  border: 0px;'
+            f' background: url({url_icon}) center no-repeat;'
             '}')
 
     def desktop_is_using_global_menu(self) -> bool:
@@ -415,14 +416,14 @@ class EnvSettingsGnome(GlobalEnvSettings):
     def controlbutton_style(*args, **kwargs) -> str:
         """..."""
         return (
-            'QControlButton {'
+            'ControlButton {'
             '  border: 0px;'
             '  border-radius: 10px;'
             '  background-color: rgba(127, 127, 127, 0.2);'
             '  margin: 5px 4px 5px 4px;'
             '  padding: 2px 1px 1px 2px;'
             '}'
-            'QControlButton:hover {'
+            'ControlButton:hover {'
             '  background-color: rgba(127, 127, 127, 0.3);'
             '}')
 
@@ -463,7 +464,7 @@ class EnvSettingsCinnamon(EnvSettingsGnome):
             accent = self.window_accent_color()
             accent_light = color.lighten_rgba(accent.to_tuple(), 20)
             return (
-                'QControlButton {'
+                'ControlButton {'
                 '  border: 0px;'
                 '  border-radius: 10px;'
                 f' background: url({url_icon}) center no-repeat;'
@@ -475,7 +476,7 @@ class EnvSettingsCinnamon(EnvSettingsGnome):
                 '  margin: 5px 2px 5px 2px;'
                 '  padding: 1px 0px 0px 1px;'
                 '}'
-                'QControlButton:hover {'
+                'ControlButton:hover {'
                 '  background-color: rgba('
                 f' {accent_light[0]},'
                 f' {accent_light[1]},'
@@ -483,14 +484,14 @@ class EnvSettingsCinnamon(EnvSettingsGnome):
                 f' {accent_light[3]});'
                 '}')
         return (
-            'QControlButton {'
+            'ControlButton {'
             '  border: 0px;'
             '  border-radius: 10px;'
             '  background-color: rgba(127, 127, 127, 0.2);'
             '  margin: 5px 2px 5px 2px;'
             '  padding: 1px 0px 0px 1px;'
             '}'
-            'QControlButton:hover {'
+            'ControlButton:hover {'
             '  background-color: rgba(127, 127, 127, 0.3);'
             '}')
 
@@ -571,13 +572,13 @@ class EnvSettingsXFCE(GlobalEnvSettings):
     def controlbutton_style(*args, **kwargs) -> str:
         """..."""
         return (
-            'QControlButton {'
+            'ControlButton {'
             '  border: 0px;'
             '  border-radius: 3px;'
             '  margin: 0px;'
             '  padding: 1px;'
             '}'
-            'QControlButton:hover {'
+            'ControlButton:hover {'
             '  background-color: rgba(127, 127, 127, 0.2);'
             '}')
 
@@ -642,14 +643,14 @@ class EnvSettingsMate(EnvSettingsXFCE):
     def controlbutton_style(*args, **kwargs) -> str:
         """..."""
         return (
-            'QControlButton {'
+            'ControlButton {'
             '  border: 0px;'
             '  border-radius: 10px;'
             '  background-color: rgba(127, 127, 127, 0.2);'
             '  margin: 3px 4px 3px 4px;'
             '  padding: 1px 0px 0px 1px;'
             '}'
-            'QControlButton:hover {'
+            'ControlButton:hover {'
             '  background-color: rgba(127, 127, 127, 0.3);'
             '}')
 
@@ -716,7 +717,7 @@ class EnvSettingsWindows11(GlobalEnvSettings):
             'windows-11-control-buttons', button_name + '.svg')
 
         return (
-            'QControlButton {'
+            'ControlButton {'
             f'background: url({url_icon}) center no-repeat;'
             f'width: 42px;'
             'height: 26px;'

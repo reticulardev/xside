@@ -47,13 +47,13 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.central_widget().set_layout(self.main_layout)
 
         # Headerbar
-        self.headerbar = QtWidgetsX.QHeaderBar(self)
+        self.headerbar = QtWidgetsX.HeaderBar(self)
         self.main_layout.add_widget(self.headerbar)
 
         # Window title
         self.set_window_title('App title')
         self.headerbar.set_text(self.window_title())
-    
+
     def enter_event(self, event: QtGui.QEnterEvent) -> None:
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_style_sheet(

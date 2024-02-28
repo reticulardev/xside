@@ -202,7 +202,7 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.main_layout.set_contents_margins(0, 0, 0, 0)
         self.main_layout.set_alignment(QtCore.Qt.AlignTop)
 
-        self.headerbar = QtWidgetsX.QHeaderBar(self)
+        self.headerbar = QtWidgetsX.HeaderBar(self)
         self.main_layout.add_widget(self.headerbar)
 
 
@@ -286,7 +286,7 @@ class Window(QtWidgetsX.QApplicationWindow):
         self.central_widget().set_layout(self.main_layout)
 
         # Headerbar
-        self.headerbar = QtWidgetsX.QHeaderBar(self)
+        self.headerbar = QtWidgetsX.HeaderBar(self)
         self.main_layout.add_widget(self.headerbar)
 
         # Window title
