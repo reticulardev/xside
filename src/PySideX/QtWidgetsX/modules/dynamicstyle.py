@@ -154,8 +154,20 @@ class DynamicStyle(object):
         self.__contextmenugroup_padding = self.__env.settings(
             ).contextmenugroup_padding()
 
+        self.__headerbar_margin = self.__env.settings(
+            ).headerbar_margin()
+
         self.__label_context_color = self.__env.settings(
             ).label_context_color()
+
+        self.__windowcontrolbutton_margin = self.__env.settings(
+            ).windowcontrolbutton_margin()
+
+        self.__window_margin = self.__env.settings(
+            ).window_margin()
+
+        self.__window_icon_margin = self.__env.settings(
+            ).window_icon_margin()
 
     def build_style(self) -> str:
         """..."""
@@ -171,12 +183,18 @@ class DynamicStyle(object):
         else:
             window_style = (
                 'MainWindow {'
+                'margin: '
+                f' {self.__window_margin[0]}px'
+                f' {self.__window_margin[1]}px'
+                f' {self.__window_margin[2]}px'
+                f' {self.__window_margin[3]}px;'
                 'background-color: rgba('
                 f'{self.__win_background_color.red()},'
                 f'{self.__win_background_color.green()},'
                 f'{self.__win_background_color.blue()},'
                 f'{self.__win_background_color.alpha_f()});'
-                'border: 1px solid rgba('
+                f'border: {self.__env.settings().window_border()}px solid'
+                ' rgba('
                 f'{self.__win_border_color.red()},'
                 f'{self.__win_border_color.green()},'
                 f'{self.__win_border_color.blue()},'
@@ -272,7 +290,29 @@ class DynamicStyle(object):
             f' {self.__contextmenugroup_padding[1]}px'
             f' {self.__contextmenugroup_padding[2]}px'
             f' {self.__contextmenugroup_padding[3]}px;'
-            '}')
+            '}'
+            'HeaderBar {'
+            f'margin:'
+            f' {self.__headerbar_margin[0]}px'
+            f' {self.__headerbar_margin[1]}px'
+            f' {self.__headerbar_margin[2]}px'
+            f' {self.__headerbar_margin[3]}px;'
+            '}'
+            'WindowControlButtons {'
+            f'margin:'
+            f' {self.__windowcontrolbutton_margin[0]}px'
+            f' {self.__windowcontrolbutton_margin[1]}px'
+            f' {self.__windowcontrolbutton_margin[2]}px'
+            f' {self.__windowcontrolbutton_margin[3]}px;'
+            '}'
+            'WindowIcon {'
+            f'margin:'
+            f' {self.__window_icon_margin[0]}px'
+            f' {self.__window_icon_margin[1]}px'
+            f' {self.__window_icon_margin[2]}px'
+            f' {self.__window_icon_margin[3]}px;'
+            '}'
+        )
 
         style_path = os.path.join(SRC_DIR, 'static', 'style.qss')
         with open(style_path, 'r') as style_qss_file:

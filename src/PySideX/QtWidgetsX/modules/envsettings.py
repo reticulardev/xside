@@ -83,11 +83,6 @@ class GlobalEnvSettings(object):
         return 0, 6, 0, 8
 
     @staticmethod
-    def controlbutton_margin() -> tuple:
-        """..."""
-        return 2, 0, 2, 0
-
-    @staticmethod
     def controlbutton_order() -> tuple:
         """XAI M -> (2, 1, 0), (3,)
 
@@ -171,6 +166,11 @@ class GlobalEnvSettings(object):
         return color.rgba_to_qcolor(color.lighten_rgba(
             self.window_background_color().to_tuple(), step))
 
+    @staticmethod
+    def window_border() -> int:
+        """..."""
+        return 1
+
     def window_border_color(self) -> QtGui.QColor:
         """..."""
         if self.window_is_dark():
@@ -181,19 +181,24 @@ class GlobalEnvSettings(object):
         return color.rgba_to_qcolor(color.darken_rgba(
             self.palette.color(QtGui.QPalette.Window).to_tuple(), 30))
 
-    def window_is_dark(self) -> bool:
-        """..."""
-        return color.is_dark(self.window_background_color().to_tuple())
-
     @staticmethod
     def window_border_radius() -> tuple:
         """..."""
         return 5, 5, 5, 5
 
+    def window_is_dark(self) -> bool:
+        """..."""
+        return color.is_dark(self.window_background_color().to_tuple())
+
+    @staticmethod
+    def window_margin() -> tuple:
+        """..."""
+        return 0, 0, 0, 0
+
     @staticmethod
     def window_icon_margin() -> tuple:
         """..."""
-        return 0, 1, 0, 1
+        return 1, 0, 1, 0
 
 
 class EnvSettingsPlasma(GlobalEnvSettings):
@@ -313,6 +318,8 @@ class EnvSettingsPlasma(GlobalEnvSettings):
             # f'background: url({url_icon}) top center no-repeat;'
             'ControlButton {'
             '  border: 0px;'
+            '  margin: 0px;'
+            '  padding: 0px;'
             f' background: url({url_icon}) center no-repeat;'
             '}')
 
@@ -321,6 +328,11 @@ class EnvSettingsPlasma(GlobalEnvSettings):
         group, key = '[Windows]', 'BorderlessMaximizedWindows'
         if group in self.__kwinrc and key in self.__kwinrc[group]:
             return True if self.__kwinrc[group][key] == 'true' else False
+
+    @staticmethod
+    def headerbar_margin() -> tuple:
+        """..."""
+        return 3, 5, 0, 5
 
     def icon_theme_name(self) -> str | None:
         """..."""
@@ -333,6 +345,16 @@ class EnvSettingsPlasma(GlobalEnvSettings):
     def window_border_radius() -> tuple:
         """..."""
         return 4, 4, 0, 0
+
+    @staticmethod
+    def windowcontrolbutton_margin() -> tuple:
+        """..."""
+        return 0, 0, 0, 0
+
+    @staticmethod
+    def window_icon_margin() -> tuple:
+        """..."""
+        return 0, 0, 0, 0
 
 
 class EnvSettingsGnome(GlobalEnvSettings):
@@ -741,6 +763,11 @@ class EnvSettingsWindows11(GlobalEnvSettings):
         """..."""
         return 0
 
+    @staticmethod
+    def window_border() -> int:
+        """..."""
+        return 1
+
     def window_border_color(self) -> QtGui.QColor:
         """..."""
         if self.window_is_dark():
@@ -759,7 +786,7 @@ class EnvSettingsWindows11(GlobalEnvSettings):
     @staticmethod
     def window_icon_margin() -> tuple:
         """..."""
-        return 5, 2, 5, 2
+        return 5, 5, 5, 5
 
 
 class EnvSettingsWindows10(EnvSettingsWindows11):

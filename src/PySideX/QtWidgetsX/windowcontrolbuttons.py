@@ -7,6 +7,11 @@ from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 
 
+class WindowIcon(QtWidgets.QLabel):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+
 class WindowControlButtons(QtWidgets.QFrame):
     """window control buttons
 
@@ -52,26 +57,18 @@ class WindowControlButtons(QtWidgets.QFrame):
         self.__right_system_button_order = self.__env_btn_order[1]
         self.__set_button_order()
 
-        self.__window_icon = QtWidgets.QLabel()
+        self.__window_icon = WindowIcon()
         self.__window_icon.set_pixmap(
             self.__toplevel.window_icon().pixmap(20))
-        margin = self.__gui_env.settings().window_icon_margin()
-        self.__window_icon.set_contents_margins(
-            margin[0], margin[1], margin[2], margin[3])
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_spacing(
             self.__gui_env.settings().windowcontrolbutton_spacing())
-        wmrg = self.__gui_env.settings().windowcontrolbutton_margin()
-        self.__layout.set_contents_margins(wmrg[0], wmrg[1], wmrg[2], wmrg[3])
+        self.__layout.set_contents_margins(0, 0, 0, 0)
 
-        m = self.__gui_env.settings().controlbutton_margin()
         self.__minimize_button = ControlButton(self.__toplevel, 0)
-        self.__minimize_button.set_contents_margins(m[0], m[1], m[2], m[3])
         self.__maximize_button = ControlButton(self.__toplevel, 1)
-        self.__maximize_button.set_contents_margins(m[0], m[1], m[2], m[3])
         self.__close_button = ControlButton(self.__toplevel, 2)
-        self.__close_button.set_contents_margins(m[0], m[1], m[2], m[3])
 
         self.__add_buttons_in_order()
 

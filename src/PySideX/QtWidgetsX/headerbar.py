@@ -39,8 +39,7 @@ class HeaderBar(QtWidgets.QFrame):
             self.__toplevel.platform().desktop_environment())
 
         self.__layout = QtWidgets.QHBoxLayout(self)
-        mrg = self.__gui_env.settings().headerbar_margin()
-        self.__layout.set_contents_margins(mrg[0], mrg[1], mrg[2], mrg[3])
+        self.__layout.set_contents_margins(0, 0, 0, 0)
         self.__layout.set_spacing(6)
 
         self.__bar_item_layout_left = QtWidgets.QHBoxLayout()
