@@ -200,6 +200,10 @@ class QQuickContextMenuButton(QtWidgets.QFrame):
 
     def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
         self.mouse_press_event_signal.emit(event)
+        if self.__tooltip and self.__is_quick_action:
+            self.__is_tooltip_open = False
+            self.__tooltip.close()
+            self.__tooltip_timer.stop()
 
     def mouse_release_event(self, event: QtGui.QMouseEvent) -> None:
         """..."""

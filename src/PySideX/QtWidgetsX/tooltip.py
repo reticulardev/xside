@@ -37,7 +37,7 @@ class QTooltip(QtWidgets.QFrame):
 
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_window_flags(
-            QtCore.Qt.FramelessWindowHint | QtCore.Qt.Popup)
+            QtCore.Qt.FramelessWindowHint | QtCore.Qt.ToolTip)
 
         self.__gui_env = GuiEnv(
             self.__toplevel.platform().operational_system(),
