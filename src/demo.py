@@ -144,10 +144,12 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
         accent_color = "#{:02x}{:02x}{:02x}".format(
             color.red(), color.green(), color.blue())
         if self.set_style_button.text() == 'Set style':
+            print(SRC_DIR)
             self.set_sideview_color((0, 0, 0, 0.1))
             self.set_style_sheet(
                 'MainWindow {'
                 '  background-color: rgba(44, 44, 50, 0.9);'
+                f'  background: url({SRC_DIR}/PySideX/QtWidgetsX/modules/textures/texture_region.png) no-repeat;'
                 '  border: 1px solid #283690;'
                 '  border-radius: 10px;}'
                 'QToolButton {'
@@ -335,7 +337,7 @@ class Application(object):
         Sets basic window details and starts the application.
         """
         self.sideview_window.show()
-        # print(hex(self.sideview_window.win_id()), '<<<<')
+        print(hex(self.sideview_window.win_id()), '<<<<')
         # self.window.show()
         sys.exit(self.application.exec())
 
