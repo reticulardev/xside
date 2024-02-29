@@ -109,10 +109,12 @@ class OverlaySideView(QtWidgets.QFrame):
         self.__sideview_background.set_style_sheet(
             f'{self.__toplevel.style_sheet()}'
             '#__sideviewbgstyle {'
+            'background: url(none);'
             f'{base_style}'
             'border-right: 0px; '
             'border-top-right-radius: 0;'
-            'border-bottom-right-radius: 0;}')
+            'border-bottom-right-radius: 0;'
+            '}')
 
         self.__close_view_background.set_style_sheet(
             '#__closeviewbgtyle {'

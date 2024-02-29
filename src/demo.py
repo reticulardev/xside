@@ -327,8 +327,7 @@ class Application(object):
         self.application = QtWidgets.QApplication(args)
         self.sideview_window = SideViewWindow(
             server_side_decoration=False, follow_platform=True)
-        self.window = Window()
-        # self.appwindow = CSDWindow()
+        # self.window = Window()
 
     def main(self) -> None:
         """Start the app
@@ -336,7 +335,7 @@ class Application(object):
         Sets basic window details and starts the application.
         """
         self.sideview_window.show()
-        print(hex(self.sideview_window.win_id()), '<<<<')
+        # print(hex(self.sideview_window.win_id()), '<<<<')
         # self.window.show()
         sys.exit(self.application.exec())
 
