@@ -7,6 +7,9 @@ import sys
 
 from PIL import Image, ImageFilter, ImageEnhance
 
+from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
+from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
+
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 sys.path.append(BASE_DIR.as_posix())
 
@@ -15,32 +18,62 @@ import cli
 
 class Window(object):
 	def __init__(self):
-		pass
+		self.id_ = 'Window'
+
+	def __str__(self) -> str:
+		return f'<Window: {self.id_}>'
+
+	def __repr__(self) -> str:
+		return f'<Window: {self.id_}>'
 
 
 class Desktop(object):
 	def __init__(self):
-		pass
+		self.id_ = 'Desktop'
+
+	def __str__(self) -> str:
+		return f'<Desktop: {self.id_}>'
+
+	def __repr__(self) -> str:
+		return f'<Desktop: {self.id_}>'
 
 
 class Texture(object):
 	"""..."""
-	def __init__(
-			self,
-			toplevel_id: str,
-			screen_width: int,
-			screen_height: int,
-			shadow_size: int) -> None:
+	def __init__(self, toplevel: ApplicationWindow) -> None:
 		"""..."""
-		self.__toplevel_id = toplevel_id.replace('0x', '0x0')
-		self.__screen_w = screen_width
-		self.__screen_h = screen_height
-		self.__shadow_size = shadow_size
-		self.__path = os.path.join(BASE_DIR, 'textures')
-		self.__desktop = Desktop()
-		self.__windows = self.__valid_windows()
+		self.__toplevel = toplevel
 
-	def create(self):
+		self.__texture_name = 'texture.png'
+		self.__path = os.path.join(BASE_DIR, 'textures')
+		self.__texture_url = os.path.join(self.__path, self.__texture_name)
+		self.__toplevel_id = hex(self.__toplevel.win_id()).replace('0x', '0x0')
+		self.__screen_w = self.__toplevel.screen().size().width()
+		self.__screen_h = self.__toplevel.screen().size().height()
+		self.__shadow_size = self.__toplevel.shadow_size()
+		self.__background_url = (
+			f'background: url({self.__texture_url}) no-repeat;')
+
+		self.__desktop = Desktop()
+		self.__windows = None
+
+	def apply_texture(self) -> None:
+		self.__windows = self.__valid_windows()
+		self.build_texture()
+		toplevel_style = StyleParser(
+			self.__toplevel.style_sheet()).widget_scope(
+			'MainWindow')
+		toplevel_style += self.__background_url
+		style = self.__toplevel.style_sheet() + (
+			'MainWindow {'
+			f'{toplevel_style}'
+			'}')
+
+		parser = StyleParser(style)
+		style = parser.style_sheet()
+		self.__toplevel.set_style_sheet(style)
+
+	def build_texture(self):
 		if self.__screenshots():
 			imgdesk = Image.open(
 				os.path.join(self.__path, self.__desktop.id_ + '.png'))
@@ -60,17 +93,31 @@ class Texture(object):
 					region = imgdesk.crop((x, y, x + w, y + h))
 					out = region.filter(ImageFilter.GaussianBlur(radius=35))
 					out = ImageEnhance.Brightness(out).enhance(0.8)
-					out.save(os.path.join(self.__path, 'texture_region.png'))
+					out.save(self.__texture_url)
+
+	def __toplevel_window(self) -> Window:
+		w = Window()
+		w.id_ = self.__toplevel_id
+		w.type_ = '0'
+		w.x = self.__toplevel.x()
+		w.y = self.__toplevel.y()
+		w.w = self.__toplevel.width()
+		w.h = self.__toplevel.height()
+		return w
 
 	def __screenshots(self) -> bool:
 		"""..."""
 		if self.__windows:
 			for window in self.__windows:
-				cli.output_by_args([
-					'import', '-window', window.id_, '-quality', '1',
-					os.path.join(self.__path, window.id_ + '.png')])
+				try:
+					cli.output_by_args([
+						'import', '-window', window.id_, '-quality', '1',
+						os.path.join(self.__path, window.id_ + '.png')])
+				except Exception as err:
+					logging.error(err)
 			return True
-		return False
+		else:
+			return False
 
 	def __valid_windows(self):
 		# wmctrl_lg: marks windows that are not windows using an '-1'
@@ -127,9 +174,5 @@ class Texture(object):
 					if win.id_ == xprop_id:
 						windows_in_order.append(win)
 
+		windows_in_order.append(self.__toplevel_window())
 		return windows_in_order
-
-
-if __name__ == '__main__':
-	tex = Texture('0x5a00007', 1366, 768, 8)
-	tex.create()
