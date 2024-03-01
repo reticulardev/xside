@@ -53,27 +53,55 @@ class Texture(object):
 		self.__shadow_size = self.__toplevel.shadow_size()
 		self.__background_url = (
 			f'background: url({self.__texture_url}) no-repeat;')
+		self.__background_url_none = self.__background_style()
 
 		self.__desktop = Desktop()
 		self.__windows = None
 
 	def apply_texture(self) -> None:
 		self.__windows = self.__valid_windows()
-		self.build_texture()
+		self.__build_texture()
 		toplevel_style = StyleParser(
-			self.__toplevel.style_sheet()).widget_scope(
-			'MainWindow')
+			self.__toplevel.style_sheet()).widget_scope('MainWindow')
+
 		toplevel_style += self.__background_url
 		style = self.__toplevel.style_sheet() + (
-			'MainWindow {'
-			f'{toplevel_style}'
-			'}')
+			'MainWindow {' f'{toplevel_style}' '}')
+		parser = StyleParser(style)
+		style = parser.style_sheet()
+		self.__toplevel.set_style_sheet(style)
+
+	def remove_texture(self) -> None:
+		toplevel_style = StyleParser(
+			self.__toplevel.style_sheet()).widget_scope('MainWindow')
+
+		toplevel_style += self.__background_url_none
+		style = self.__toplevel.style_sheet() + (
+			'MainWindow {' f'{toplevel_style}' '}')
 
 		parser = StyleParser(style)
 		style = parser.style_sheet()
 		self.__toplevel.set_style_sheet(style)
 
-	def build_texture(self):
+	def __background_style(self) -> str:
+		toplevel_style = StyleParser(
+			self.__toplevel.style_sheet()).widget_scope('MainWindow')
+		background_url_none = 'background: url();'
+		background_color = 'background-color: rgba(0, 0, 0, 100);'
+
+		for x in toplevel_style.split(';'):
+			if 'background-color' in x:
+				background_color = x + ';'
+				break
+
+		if 'rgba' in background_color:
+			rgba = background_color.split(',')
+			rgba_new = rgba[:-1] + ['0.5']
+			background_color = ','.join(rgba_new) + ');'
+
+		return background_url_none + background_color
+
+	def __build_texture(self):
 		if self.__screenshots():
 			imgdesk = Image.open(
 				os.path.join(self.__path, self.__desktop.id_ + '.png'))
@@ -91,7 +119,7 @@ class Texture(object):
 				if wd.id_ == self.__toplevel_id:
 					x, y, w, h = int(wd.x), int(wd.y), int(wd.w), int(wd.h)
 					region = imgdesk.crop((x, y, x + w, y + h))
-					out = region.filter(ImageFilter.GaussianBlur(radius=35))
+					out = region.filter(ImageFilter.GaussianBlur(radius=20))
 					out = ImageEnhance.Brightness(out).enhance(0.8)
 					out.save(self.__texture_url)
 

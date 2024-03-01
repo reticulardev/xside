@@ -80,6 +80,9 @@ class WindowMoveArea(QtWidgets.QFrame):
                     self.__timer.start(100)
                     self.__toplevel.window_handle().start_system_move()
 
+            if self.__handle_texture:
+                self.__texture.remove_texture()
+
     def mouse_release_event(self, event: QtGui.QMouseEvent) -> None:
         """..."""
         if self.__enable:
