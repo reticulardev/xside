@@ -484,11 +484,17 @@ class ApplicationWindow(BaseShadowWindow):
             if event.type() == QtCore.QEvent.HoverMove:
                 self.__set_edge_position(event)
                 self.__update_cursor_shape()
+                if self.__handle_texture:
+                    if not self.__texture.is_using_texture():
+                        self.__texture.apply_texture()
+
+            elif event.type() == QtCore.QEvent.WindowActivate:
+                if self.__handle_texture:
+                    self.__texture.apply_texture()
 
             elif event.type() == QtCore.QEvent.HoverEnter:
-                # if self.__handle_texture:
-                #     self.__texture.apply_texture()
-                pass
+                if self.__handle_texture:
+                    self.__texture.apply_texture()
 
             elif event.type() == QtCore.QEvent.HoverLeave:
                 if self.__handle_texture:
@@ -502,11 +508,12 @@ class ApplicationWindow(BaseShadowWindow):
 
             elif event.type() == QtCore.QEvent.MouseButtonRelease:
                 self.set_cursor(QtCore.Qt.CursorShape.ArrowCursor)
-                if self.__handle_texture:
-                    self.__texture.apply_texture()
+                # if self.__handle_texture:
+                #     self.__texture.apply_texture()
 
             elif event.type() == QtCore.QEvent.Resize:
                 self.resize_event_signal.emit(0)
+
                 if self.__handle_texture:
                     self.__texture.remove_texture()
 

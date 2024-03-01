@@ -6,6 +6,7 @@ import subprocess
 import sys
 
 from PIL import Image, ImageFilter, ImageEnhance
+from PySide6 import QtCore
 
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 
@@ -39,10 +40,14 @@ class Desktop(object):
 
 class Texture(object):
 	"""..."""
-	def __init__(self, toplevel, style_sheet: str) -> None:
+	def __init__(
+			self,
+			toplevel, style_sheet: str, alpha: float | int = None) -> None:
 		"""..."""
 		self.__toplevel = toplevel
 		self.__style_sheet = style_sheet
+		self.__alpha = alpha
+		self.__is_using_texture = False
 
 		self.__texture_name = 'texture.png'
 		self.__path = os.path.join(BASE_DIR, 'textures')
@@ -58,19 +63,25 @@ class Texture(object):
 
 		self.__desktop = Desktop()
 		self.__windows = None
+		self.__tooltip_timer = QtCore.QTimer()
 
 	def apply_texture(self) -> None:
 		self.__windows = self.__valid_windows()
-		self.__build_texture()
-		toplevel_style = StyleParser(
-			self.__style_sheet).widget_scope('MainWindow')
+		if self.__build_texture():
+			toplevel_style = StyleParser(
+				self.__style_sheet).widget_scope('MainWindow')
 
-		toplevel_style += self.__background_url
-		style = self.__style_sheet + (
-			'MainWindow {' f'{toplevel_style}' '}')
-		parser = StyleParser(style)
-		style = parser.style_sheet()
-		self.__toplevel.set_style_sheet(style)
+			toplevel_style += self.__background_url
+			style = self.__style_sheet + (
+				'MainWindow {' f'{toplevel_style}' '}')
+			parser = StyleParser(style)
+			style = parser.style_sheet()
+			self.__toplevel.set_style_sheet(style)
+			self.__is_using_texture = True
+
+	def is_using_texture(self) -> bool:
+		"""..."""
+		return self.__is_using_texture
 
 	def remove_texture(self) -> None:
 		toplevel_style = StyleParser(
@@ -83,33 +94,45 @@ class Texture(object):
 		parser = StyleParser(style)
 		style = parser.style_sheet()
 		self.__toplevel.set_style_sheet(style)
+		self.__is_using_texture = False
 
 	def __background_style(self) -> str:
 		toplevel_style = StyleParser(
 			self.__style_sheet).widget_scope('MainWindow')
-		background_url_none = 'background: url();'
-		background_color = 'background-color: rgba(0, 0, 0, 100);'
 
+		background_color = None
 		for x in toplevel_style.split(';'):
 			if 'background-color' in x:
 				background_color = x + ';'
 				break
 
-		if 'rgba' in background_color:
+		if background_color and 'rgba' in background_color:
 			rgba = background_color.replace(
 				' ', '').split('(')[-1].split(')')[0].split(',')
-			rgba_color = ', '.join(rgba[:-1] + ['240'])
+
+			if not self.__alpha:
+				if rgba[-1].startswith('0.'):
+					self.__alpha = round(int('0.95'.lstrip('0.')) * 2.55)
+				elif rgba[-1].endswith('.0'):
+					self.__alpha = 255
+				else:
+					self.__alpha = int(rgba[-1])
+
+			self.__alpha = 200 if self.__alpha > 240 else self.__alpha
+			alpha = str(self.__alpha)
+			rgba_color = ', '.join(rgba[:-1] + [alpha])
 			background_color = f'background-color: rgba({rgba_color});'
 			self.__toplevel_background_color = (
-				int(rgba[-4]), int(rgba[-3]), int(rgba[-2]), 240)
+				int(rgba[-4]), int(rgba[-3]), int(rgba[-2]), self.__alpha)
 
-		return background_url_none + background_color
+		if background_color:
+			return 'background: url();' + background_color
+		return 'background: url();'
 
-	def __build_texture(self):
+	def __build_texture(self) -> bool:
 		if self.__screenshots():
 			imgdesk = Image.open(
-				os.path.join(self.__path, self.__desktop.id_ + '.png')
-			)
+				os.path.join(self.__path, self.__desktop.id_ + '.png'))
 
 			for win in self.__windows:
 				urlfile = os.path.join(self.__path, win.id_ + '.png')
@@ -123,15 +146,33 @@ class Texture(object):
 				if wd.id_ == self.__toplevel_id:
 					x, y, w, h = int(wd.x), int(wd.y), int(wd.w), int(wd.h)
 					out = imgdesk.crop((x, y, x + w, y + h)).convert('RGBA')
-					if self.__toplevel_background_color:
-						imgcolor = Image.new(
-							'RGBA',
-							(self.__toplevel.width(), self.__toplevel.height()),
-							color=self.__toplevel_background_color)
-						out = Image.alpha_composite(out, imgcolor)
-					out = out.filter(ImageFilter.GaussianBlur(radius=20))
-					out = ImageEnhance.Brightness(out).enhance(0.97)
-					out.save(self.__texture_url, 'PNG', quality=1)
+					out = self.__composite_background_color(out)
+					if out[1]:
+						out = out[0].filter(
+							ImageFilter.GaussianBlur(radius=10))
+						# out = ImageEnhance.Brightness(out).enhance(0.97)
+						out.save(self.__texture_url, 'PNG', quality=1)
+						return True
+					else:
+						return False
+
+	def __composite_background_color(self, img) -> tuple:
+		if self.__toplevel_background_color:
+			if img.width == self.__toplevel.width(
+					) and img.height == self.__toplevel.height():
+				imgcolor = Image.new(
+					'RGBA', (
+						self.__toplevel.width(),
+						self.__toplevel.height()),
+					color=self.__toplevel_background_color)
+				img = Image.alpha_composite(img, imgcolor)
+
+				self.__tooltip_timer.stop()
+			else:
+				self.__tooltip_timer.timeout.connect(self.apply_texture)
+				self.__tooltip_timer.start(1000)
+				return None, False
+		return img, True
 
 	def __toplevel_window(self) -> Window:
 		window = Window()

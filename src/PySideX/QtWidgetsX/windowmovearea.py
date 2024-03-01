@@ -75,6 +75,9 @@ class WindowMoveArea(QtWidgets.QFrame):
         """
         if self.__enable:
             self.mouse_press_event_signal.emit(event)
+            if self.__handle_texture:
+                self.__texture.remove_texture()
+
             if not self.__toplevel.is_server_side_decorated():
                 if (event.button() == QtCore.Qt.LeftButton and
                         self.under_mouse()):
@@ -82,19 +85,16 @@ class WindowMoveArea(QtWidgets.QFrame):
                     self.__timer.start(100)
                     self.__toplevel.window_handle().start_system_move()
 
-        if self.__handle_texture:
-            self.__texture.remove_texture()
-
     def mouse_release_event(self, event: QtGui.QMouseEvent) -> None:
         """..."""
         if self.__enable:
             self.mouse_release_event_signal.emit(event)
+            if self.__handle_texture:
+                self.__texture.apply_texture()
+
             if not self.__toplevel.is_server_side_decorated():
                 self.__timer.timeout.connect(self.__shadow_on_release)
                 self.__timer.start(100)
-
-        if self.__handle_texture:
-            self.__texture.apply_texture()
 
     def mouse_double_click_event(self, event: QtGui.QMouseEvent) -> None:
         """This method has changed.
