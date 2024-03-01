@@ -7,7 +7,6 @@ import sys
 
 from PIL import Image, ImageFilter, ImageEnhance
 
-from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent
@@ -40,9 +39,10 @@ class Desktop(object):
 
 class Texture(object):
 	"""..."""
-	def __init__(self, toplevel: ApplicationWindow) -> None:
+	def __init__(self, toplevel, style_sheet: str) -> None:
 		"""..."""
 		self.__toplevel = toplevel
+		self.__style_sheet = style_sheet
 
 		self.__texture_name = 'texture.png'
 		self.__path = os.path.join(BASE_DIR, 'textures')
@@ -62,10 +62,10 @@ class Texture(object):
 		self.__windows = self.__valid_windows()
 		self.__build_texture()
 		toplevel_style = StyleParser(
-			self.__toplevel.style_sheet()).widget_scope('MainWindow')
+			self.__style_sheet).widget_scope('MainWindow')
 
 		toplevel_style += self.__background_url
-		style = self.__toplevel.style_sheet() + (
+		style = self.__style_sheet + (
 			'MainWindow {' f'{toplevel_style}' '}')
 		parser = StyleParser(style)
 		style = parser.style_sheet()
@@ -73,10 +73,10 @@ class Texture(object):
 
 	def remove_texture(self) -> None:
 		toplevel_style = StyleParser(
-			self.__toplevel.style_sheet()).widget_scope('MainWindow')
+			self.__style_sheet).widget_scope('MainWindow')
 
 		toplevel_style += self.__background_url_none
-		style = self.__toplevel.style_sheet() + (
+		style = self.__style_sheet + (
 			'MainWindow {' f'{toplevel_style}' '}')
 
 		parser = StyleParser(style)
@@ -85,7 +85,7 @@ class Texture(object):
 
 	def __background_style(self) -> str:
 		toplevel_style = StyleParser(
-			self.__toplevel.style_sheet()).widget_scope('MainWindow')
+			self.__style_sheet).widget_scope('MainWindow')
 		background_url_none = 'background: url();'
 		background_color = 'background-color: rgba(0, 0, 0, 100);'
 
@@ -96,7 +96,7 @@ class Texture(object):
 
 		if 'rgba' in background_color:
 			rgba = background_color.split(',')
-			rgba_new = rgba[:-1] + ['0.5']
+			rgba_new = rgba[:-1] + ['0.98']
 			background_color = ','.join(rgba_new) + ');'
 
 		return background_url_none + background_color

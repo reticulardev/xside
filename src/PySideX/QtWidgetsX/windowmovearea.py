@@ -24,7 +24,9 @@ class WindowMoveArea(QtWidgets.QFrame):
         self.__toplevel = toplevel
         self.__enable = True
         self.__handle_texture = True
-        self.__texture = texture.Texture(self.__toplevel)
+        self.__texture = texture.Texture(
+            self.__toplevel, self.__toplevel.style_sheet())
+
         self.__screen_w = self.__toplevel.screen().size().width()
         self.__screen_h = self.__toplevel.screen().size().height()
 
@@ -80,8 +82,8 @@ class WindowMoveArea(QtWidgets.QFrame):
                     self.__timer.start(100)
                     self.__toplevel.window_handle().start_system_move()
 
-            if self.__handle_texture:
-                self.__texture.remove_texture()
+        if self.__handle_texture:
+            self.__texture.remove_texture()
 
     def mouse_release_event(self, event: QtGui.QMouseEvent) -> None:
         """..."""

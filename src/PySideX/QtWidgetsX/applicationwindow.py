@@ -7,6 +7,7 @@ from PySideX.QtWidgetsX.modules.platform import Platform
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 from PySideX.QtWidgetsX.modules.dynamicstyle import DynamicStyle
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
+from PySideX.QtWidgetsX.modules import texture
 
 
 class MainWindow(QtWidgets.QFrame):
@@ -303,6 +304,9 @@ class ApplicationWindow(BaseShadowWindow):
         self.__style_parser = StyleParser(self.__style_sheet)
         self.__style_sheet = self.__style_parser.style_sheet()
 
+        self.__texture = texture.Texture(self, self.__style_sheet)
+        self.__handle_texture = True
+
         self.__style_sheet_fullscreen = (
             self.__dynamic_style.fullscreen_adapted_style(
                 self.__style_sheet))
@@ -481,6 +485,15 @@ class ApplicationWindow(BaseShadowWindow):
                 self.__set_edge_position(event)
                 self.__update_cursor_shape()
 
+            elif event.type() == QtCore.QEvent.HoverEnter:
+                # if self.__handle_texture:
+                #     self.__texture.apply_texture()
+                pass
+
+            elif event.type() == QtCore.QEvent.HoverLeave:
+                if self.__handle_texture:
+                    self.__texture.remove_texture()
+
             elif event.type() == QtCore.QEvent.MouseButtonPress:
                 self.__update_cursor_shape()
                 if self.__active_resize_border:
@@ -489,17 +502,24 @@ class ApplicationWindow(BaseShadowWindow):
 
             elif event.type() == QtCore.QEvent.MouseButtonRelease:
                 self.set_cursor(QtCore.Qt.CursorShape.ArrowCursor)
+                if self.__handle_texture:
+                    self.__texture.apply_texture()
 
             elif event.type() == QtCore.QEvent.Resize:
                 self.resize_event_signal.emit(0)
+                if self.__handle_texture:
+                    self.__texture.remove_texture()
 
                 if self.is_maximized() or self.is_full_screen():
                     self.__central_widget.set_style_sheet(
                         self.__style_sheet_fullscreen)
 
                     self.__window_shadow_visible(False)
+                    if self.__handle_texture:
+                        self.__texture.apply_texture()
                 else:
                     self.__central_widget.set_style_sheet(self.__style_sheet)
+
                     if not self.__is_server_side_decorated:
                         self.__window_shadow_visible(True)
 
