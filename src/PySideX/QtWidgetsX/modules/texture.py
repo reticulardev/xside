@@ -51,6 +51,7 @@ class Texture(object):
 		self.__screen_w = self.__toplevel.screen().size().width()
 		self.__screen_h = self.__toplevel.screen().size().height()
 		self.__shadow_size = self.__toplevel.shadow_size()
+		self.__toplevel_background_color = None
 		self.__background_url = (
 			f'background: url({self.__texture_url}) no-repeat;')
 		self.__background_url_none = self.__background_style()
@@ -95,16 +96,20 @@ class Texture(object):
 				break
 
 		if 'rgba' in background_color:
-			rgba = background_color.split(',')
-			rgba_new = rgba[:-1] + ['0.98']
-			background_color = ','.join(rgba_new) + ');'
+			rgba = background_color.replace(
+				' ', '').split('(')[-1].split(')')[0].split(',')
+			rgba_color = ', '.join(rgba[:-1] + ['240'])
+			background_color = f'background-color: rgba({rgba_color});'
+			self.__toplevel_background_color = (
+				int(rgba[-4]), int(rgba[-3]), int(rgba[-2]), 240)
 
 		return background_url_none + background_color
 
 	def __build_texture(self):
 		if self.__screenshots():
 			imgdesk = Image.open(
-				os.path.join(self.__path, self.__desktop.id_ + '.png'))
+				os.path.join(self.__path, self.__desktop.id_ + '.png')
+			)
 
 			for win in self.__windows:
 				urlfile = os.path.join(self.__path, win.id_ + '.png')
@@ -113,25 +118,30 @@ class Texture(object):
 						imgwin = Image.open(urlfile)
 						imgdesk.paste(imgwin, (int(win.x), int(win.y)))
 
-			# imgdesk.save(os.path.join(self.__path, 'desktopscreen.png'))
 			self.__windows.reverse()
 			for wd in self.__windows:
 				if wd.id_ == self.__toplevel_id:
 					x, y, w, h = int(wd.x), int(wd.y), int(wd.w), int(wd.h)
-					region = imgdesk.crop((x, y, x + w, y + h))
-					out = region.filter(ImageFilter.GaussianBlur(radius=20))
-					out = ImageEnhance.Brightness(out).enhance(0.8)
-					out.save(self.__texture_url)
+					out = imgdesk.crop((x, y, x + w, y + h)).convert('RGBA')
+					if self.__toplevel_background_color:
+						imgcolor = Image.new(
+							'RGBA',
+							(self.__toplevel.width(), self.__toplevel.height()),
+							color=self.__toplevel_background_color)
+						out = Image.alpha_composite(out, imgcolor)
+					out = out.filter(ImageFilter.GaussianBlur(radius=20))
+					out = ImageEnhance.Brightness(out).enhance(0.97)
+					out.save(self.__texture_url, 'PNG', quality=1)
 
 	def __toplevel_window(self) -> Window:
-		w = Window()
-		w.id_ = self.__toplevel_id
-		w.type_ = '0'
-		w.x = self.__toplevel.x()
-		w.y = self.__toplevel.y()
-		w.w = self.__toplevel.width()
-		w.h = self.__toplevel.height()
-		return w
+		window = Window()
+		window.id_ = self.__toplevel_id
+		window.type_ = '0'
+		window.x = self.__toplevel.x()
+		window.y = self.__toplevel.y()
+		window.w = self.__toplevel.width()
+		window.h = self.__toplevel.height()
+		return window
 
 	def __screenshots(self) -> bool:
 		"""..."""
