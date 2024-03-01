@@ -8,7 +8,9 @@ import sys
 from PIL import Image, ImageFilter, ImageEnhance
 from PySide6 import QtCore
 
+import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
+from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 sys.path.append(BASE_DIR.as_posix())
@@ -49,6 +51,16 @@ class Texture(object):
 		self.__alpha = alpha
 		self.__is_using_texture = False
 
+		self.__gui_env = GuiEnv(
+			self.__toplevel.platform().operational_system(),
+			self.__toplevel.platform().desktop_environment())
+
+		self.__is_dark = color.is_dark(
+			self.__gui_env.settings().window_background_color().to_tuple())
+
+		self.__timer = QtCore.QTimer()
+		self.__desktop = Desktop()
+		self.__windows = None
 		self.__texture_name = 'texture.png'
 		self.__path = os.path.join(BASE_DIR, 'textures')
 		self.__texture_url = os.path.join(self.__path, self.__texture_name)
@@ -60,10 +72,6 @@ class Texture(object):
 		self.__background_url = (
 			f'background: url({self.__texture_url}) no-repeat;')
 		self.__background_url_none = self.__background_style()
-
-		self.__desktop = Desktop()
-		self.__windows = None
-		self.__tooltip_timer = QtCore.QTimer()
 
 	def apply_texture(self) -> None:
 		self.__windows = self.__valid_windows()
@@ -118,7 +126,9 @@ class Texture(object):
 				else:
 					self.__alpha = int(rgba[-1])
 
-			self.__alpha = 200 if self.__alpha > 240 else self.__alpha
+			n_alpha = 210 if self.__is_dark else 180
+			self.__alpha = n_alpha if self.__alpha > n_alpha else self.__alpha
+
 			alpha = str(self.__alpha)
 			rgba_color = ', '.join(rgba[:-1] + [alpha])
 			background_color = f'background-color: rgba({rgba_color});'
@@ -148,8 +158,9 @@ class Texture(object):
 					out = imgdesk.crop((x, y, x + w, y + h)).convert('RGBA')
 					out = self.__composite_background_color(out)
 					if out[1]:
+						radius = 15 if self.__is_dark else 10
 						out = out[0].filter(
-							ImageFilter.GaussianBlur(radius=10))
+							ImageFilter.GaussianBlur(radius=radius))
 						# out = ImageEnhance.Brightness(out).enhance(0.97)
 						out.save(self.__texture_url, 'PNG', quality=1)
 						return True
@@ -167,22 +178,12 @@ class Texture(object):
 					color=self.__toplevel_background_color)
 				img = Image.alpha_composite(img, imgcolor)
 
-				self.__tooltip_timer.stop()
+				self.__timer.stop()
 			else:
-				self.__tooltip_timer.timeout.connect(self.apply_texture)
-				self.__tooltip_timer.start(1000)
+				self.__timer.timeout.connect(self.apply_texture)
+				self.__timer.start(1000)
 				return None, False
 		return img, True
-
-	def __toplevel_window(self) -> Window:
-		window = Window()
-		window.id_ = self.__toplevel_id
-		window.type_ = '0'
-		window.x = self.__toplevel.x()
-		window.y = self.__toplevel.y()
-		window.w = self.__toplevel.width()
-		window.h = self.__toplevel.height()
-		return window
 
 	def __screenshots(self) -> bool:
 		"""..."""
@@ -197,6 +198,16 @@ class Texture(object):
 			return True
 		else:
 			return False
+
+	def __toplevel_window(self) -> Window:
+		window = Window()
+		window.id_ = self.__toplevel_id
+		window.type_ = '0'
+		window.x = self.__toplevel.x()
+		window.y = self.__toplevel.y()
+		window.w = self.__toplevel.width()
+		window.h = self.__toplevel.height()
+		return window
 
 	def __valid_windows(self):
 		# wmctrl_lg: marks windows that are not windows using an '-1'

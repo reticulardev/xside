@@ -489,8 +489,9 @@ class ApplicationWindow(BaseShadowWindow):
                         self.__texture.apply_texture()
 
             elif event.type() == QtCore.QEvent.WindowActivate:
-                if self.__handle_texture:
-                    self.__texture.apply_texture()
+                # if self.__handle_texture:
+                #     self.__texture.apply_texture()
+                pass
 
             elif event.type() == QtCore.QEvent.HoverEnter:
                 if self.__handle_texture:
