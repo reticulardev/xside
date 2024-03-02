@@ -3,7 +3,6 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
-from PySideX.QtWidgetsX.modules import texture
 
 
 class WindowMoveArea(QtWidgets.QFrame):
@@ -23,9 +22,6 @@ class WindowMoveArea(QtWidgets.QFrame):
         super().__init__(*args, **kwargs)
         self.__toplevel = toplevel
         self.__enable = True
-        self.__handle_texture = False
-        self.__texture = texture.Texture(
-            self.__toplevel, self.__toplevel.style_sheet())
 
         self.__screen_w = self.__toplevel.screen().size().width()
         self.__screen_h = self.__toplevel.screen().size().height()
@@ -75,8 +71,6 @@ class WindowMoveArea(QtWidgets.QFrame):
         """
         if self.__enable:
             self.mouse_press_event_signal.emit(event)
-            if self.__handle_texture:
-                self.__texture.remove_texture()
 
             if not self.__toplevel.is_server_side_decorated():
                 if (event.button() == QtCore.Qt.LeftButton and

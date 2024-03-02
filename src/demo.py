@@ -327,8 +327,8 @@ class Application(object):
 
         self.application = QtWidgets.QApplication(args)
 
-        # self.base_window = QtWidgetsX.ApplicationWindow()
-        # self.window = Window()
+        self.base_window = QtWidgetsX.ApplicationWindow()
+        self.window = Window()
         self.sideview_window = SideViewWindow(
             server_side_decoration=False, follow_platform=True)
 

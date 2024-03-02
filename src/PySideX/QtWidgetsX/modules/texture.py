@@ -43,11 +43,9 @@ class Desktop(object):
 class Texture(object):
 	"""..."""
 	def __init__(
-			self,
-			toplevel, style_sheet: str, alpha: float | int = None) -> None:
+			self, toplevel, alpha: float | int = None) -> None:
 		"""..."""
 		self.__toplevel = toplevel
-		self.__style_sheet = style_sheet
 		self.__alpha = alpha
 
 		self.__gui_env = GuiEnv(
@@ -57,8 +55,10 @@ class Texture(object):
 		self.__is_dark = color.is_dark(
 			self.__gui_env.settings().window_background_color().to_tuple())
 
-		self.__style_parser = StyleParser(style_sheet)
+		self.__handle_texture = True
 		self.__timer = QtCore.QTimer()
+		self.__style_sheet = self.__toplevel.style_sheet()
+		self.__style_parser = StyleParser(self.__style_sheet)
 		self.__desktop = Desktop()
 		self.__windows = None
 		self.__is_using_texture = False
@@ -76,6 +76,7 @@ class Texture(object):
 
 		self.__toplevel.set_style_signal.connect(self.__set_style_signal)
 		self.__toplevel.reset_style_signal.connect(self.__set_style_signal)
+		self.__toplevel.event_filter_signal.connect(self.__event_filter_signal)
 
 	def apply_texture(self) -> None:
 		self.__windows = self.__valid_windows()
@@ -181,6 +182,33 @@ class Texture(object):
 				self.__timer.start(1000)
 				return None, False
 		return img, True
+
+	def __event_filter_signal(self, event):
+		if not self.__toplevel.is_server_side_decorated():
+			# HoverMove WindowActivate
+			if event.type() == QtCore.QEvent.HoverEnter:
+				if self.__handle_texture and not self.__is_using_texture:
+					self.apply_texture()
+
+			elif event.type() == QtCore.QEvent.HoverLeave:
+				if self.__handle_texture and self.__is_using_texture:
+					self.remove_texture()
+
+			elif event.type() == QtCore.QEvent.Type.Move:
+				if self.__handle_texture and self.__is_using_texture:
+					self.remove_texture()
+
+			elif event.type() == QtCore.QEvent.Resize:
+				if self.__handle_texture and self.__is_using_texture:
+					self.remove_texture()
+
+				if self.__toplevel.is_maximized(
+						) or self.__toplevel.is_full_screen():
+					if self.__handle_texture and not self.__is_using_texture:
+						self.apply_texture()
+
+			elif event.type() == QtCore.QEvent.Close:
+				print('Bye bye')
 
 	def __screenshots(self) -> bool:
 		"""..."""

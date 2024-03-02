@@ -304,9 +304,6 @@ class ApplicationWindow(BaseShadowWindow):
         self.__style_parser = StyleParser(self.__style_sheet)
         self.__style_sheet = self.__style_parser.style_sheet()
 
-        self.__handle_texture = False
-        self.__texture = texture.Texture(self, self.__style_sheet)
-
         self.__style_sheet_fullscreen = (
             self.__dynamic_style.fullscreen_adapted_style(
                 self.__style_sheet))
@@ -314,6 +311,7 @@ class ApplicationWindow(BaseShadowWindow):
         self.__set_window_decoration()
 
         # Events
+        self.__texture = texture.Texture(self)
         self.install_event_filter(self)
 
     def follow_platform(self) -> bool:
@@ -484,22 +482,6 @@ class ApplicationWindow(BaseShadowWindow):
             if event.type() == QtCore.QEvent.HoverMove:
                 self.__set_edge_position(event)
                 self.__update_cursor_shape()
-                if self.__handle_texture:
-                    if not self.__texture.is_using_texture():
-                        self.__texture.apply_texture()
-
-            elif event.type() == QtCore.QEvent.WindowActivate:
-                # if self.__handle_texture:
-                #     self.__texture.apply_texture()
-                pass
-
-            elif event.type() == QtCore.QEvent.HoverEnter:
-                if self.__handle_texture:
-                    self.__texture.apply_texture()
-
-            elif event.type() == QtCore.QEvent.HoverLeave:
-                if self.__handle_texture:
-                    self.__texture.remove_texture()
 
             elif event.type() == QtCore.QEvent.MouseButtonPress:
                 self.__update_cursor_shape()
@@ -509,25 +491,15 @@ class ApplicationWindow(BaseShadowWindow):
 
             elif event.type() == QtCore.QEvent.MouseButtonRelease:
                 self.set_cursor(QtCore.Qt.CursorShape.ArrowCursor)
-                # if self.__handle_texture:
-                #     self.__texture.apply_texture()
-
-            elif event.type() == QtCore.QEvent.Close:
-                print('Bye bye')
 
             elif event.type() == QtCore.QEvent.Resize:
                 self.resize_event_signal.emit(0)
-
-                if self.__handle_texture:
-                    self.__texture.remove_texture()
 
                 if self.is_maximized() or self.is_full_screen():
                     self.__central_widget.set_style_sheet(
                         self.__style_sheet_fullscreen)
 
                     self.__window_shadow_visible(False)
-                    if self.__handle_texture:
-                        self.__texture.apply_texture()
                 else:
                     self.__central_widget.set_style_sheet(self.__style_sheet)
 
