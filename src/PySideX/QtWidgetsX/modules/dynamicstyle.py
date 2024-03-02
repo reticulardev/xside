@@ -324,7 +324,8 @@ class DynamicStyle(object):
     def fullscreen_adapted_style(style: str) -> str:
         # ...
         styleparser = StyleParser(style)
-        style = styleparser.widget_scope('MainWindow')
-        return (
-            'MainWindow {' f'{style}'
-            'border-radius: 0px; border: 0px;}')
+        return style + (
+            'MainWindow {'
+            f'{styleparser.widget_scope("MainWindow")}'
+            'border-radius: 0px;'
+            'border: 0px;}')

@@ -304,7 +304,7 @@ class ApplicationWindow(BaseShadowWindow):
         self.__style_parser = StyleParser(self.__style_sheet)
         self.__style_sheet = self.__style_parser.style_sheet()
 
-        self.__handle_texture = True
+        self.__handle_texture = False
         self.__texture = texture.Texture(self, self.__style_sheet)
 
         self.__style_sheet_fullscreen = (

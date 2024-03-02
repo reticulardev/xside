@@ -144,7 +144,6 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
         accent_color = "#{:02x}{:02x}{:02x}".format(
             color.red(), color.green(), color.blue())
         if self.set_style_button.text() == 'Set style':
-            print(SRC_DIR)
             self.set_sideview_color((0, 0, 0, 0.1))
             self.set_style_sheet(
                 'MainWindow {'

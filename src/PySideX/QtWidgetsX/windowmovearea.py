@@ -23,7 +23,7 @@ class WindowMoveArea(QtWidgets.QFrame):
         super().__init__(*args, **kwargs)
         self.__toplevel = toplevel
         self.__enable = True
-        self.__handle_texture = True
+        self.__handle_texture = False
         self.__texture = texture.Texture(
             self.__toplevel, self.__toplevel.style_sheet())
 
