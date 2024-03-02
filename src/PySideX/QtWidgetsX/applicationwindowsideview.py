@@ -20,7 +20,8 @@ class OverlaySideView(QtWidgets.QFrame):
     side_view_closed_signal = QtCore.Signal(object)
 
     def __init__(
-            self, sideview_widget: QtWidgets.QWidget, *args, **kwargs) -> None:
+            self, sideview_widget: QtWidgets.QWidget,
+            *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         # Param
         self.__sideview_widget = sideview_widget
@@ -86,8 +87,10 @@ class OverlaySideView(QtWidgets.QFrame):
         if not self.__toplevel.is_server_side_decorated():
             if self.__toplevel.is_shadow_visible():
                 self.set_contents_margins(
-                    self.__toplevel.shadow_size(), self.__toplevel.shadow_size(),
-                    self.__toplevel.shadow_size(), self.__toplevel.shadow_size())
+                    self.__toplevel.shadow_size() + 1,
+                    self.__toplevel.shadow_size() + 1,
+                    self.__toplevel.shadow_size(),
+                    self.__toplevel.shadow_size() + 1)
             else:
                 self.set_contents_margins(0, 0, 0, 0)
         else:
@@ -109,11 +112,12 @@ class OverlaySideView(QtWidgets.QFrame):
         self.__sideview_background.set_style_sheet(
             f'{self.__toplevel.style_sheet()}'
             '#__sideviewbgstyle {'
-            'background: url(none);'
+            'background: url();'
             f'{base_style}'
             'border-right: 0px; '
             'border-top-right-radius: 0;'
             'border-bottom-right-radius: 0;'
+            'border: 0px;'
             '}')
 
         self.__close_view_background.set_style_sheet(
@@ -360,6 +364,7 @@ class ApplicationWindowSideView(ApplicationWindow):
         sideview_style_sheet = (
             '#__panelwidthstyle {'
             f'{basestyle}'
+            'background: url();'
             'background-color: rgba('
             f'{self.__sideview_color[0]}, {self.__sideview_color[1]}, '
             f'{self.__sideview_color[2]}, {self.__sideview_color[3]});'
@@ -370,14 +375,14 @@ class ApplicationWindowSideView(ApplicationWindow):
                 f'{sideview_style_sheet}'
                 'border-radius: 0;'
                 'padding: 0px;'
-                'margin: 1px 0px 1px 1px;}')
+                'margin: 0px;}')
         else:
             self.__sideview_width_area.set_style_sheet(
                 f'{sideview_style_sheet}'
                 'border-top-right-radius: 0;'
                 'border-bottom-right-radius: 0;'
                 'padding: 0px;'
-                'margin: 1px 0px 1px 1px;}')
+                'margin: 0px;}')
 
     def __fullscreen_maximized_and_windowed_modes_adjusts(self) -> None:
         if self.is_maximized():

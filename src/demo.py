@@ -325,18 +325,23 @@ class Application(object):
 
         :param args: List of command line arguments
         """
+
         self.application = QtWidgets.QApplication(args)
-        # self.sideview_window = SideViewWindow(
-        #     server_side_decoration=False, follow_platform=True)
-        self.window = Window()
+
+        # self.base_window = QtWidgetsX.ApplicationWindow()
+        # self.window = Window()
+        self.sideview_window = SideViewWindow(
+            server_side_decoration=False, follow_platform=True)
 
     def main(self) -> None:
         """Start the app
 
         Sets basic window details and starts the application.
         """
-        # self.sideview_window.show()
-        self.window.show()
+        # self.base_window.show()
+        # self.window.show()
+        self.sideview_window.show()
+
         sys.exit(self.application.exec())
 
 

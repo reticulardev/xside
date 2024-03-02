@@ -304,8 +304,8 @@ class ApplicationWindow(BaseShadowWindow):
         self.__style_parser = StyleParser(self.__style_sheet)
         self.__style_sheet = self.__style_parser.style_sheet()
 
-        self.__texture = texture.Texture(self, self.__style_sheet)
         self.__handle_texture = True
+        self.__texture = texture.Texture(self, self.__style_sheet)
 
         self.__style_sheet_fullscreen = (
             self.__dynamic_style.fullscreen_adapted_style(
@@ -511,6 +511,9 @@ class ApplicationWindow(BaseShadowWindow):
                 self.set_cursor(QtCore.Qt.CursorShape.ArrowCursor)
                 # if self.__handle_texture:
                 #     self.__texture.apply_texture()
+
+            elif event.type() == QtCore.QEvent.Close:
+                print('Bye bye')
 
             elif event.type() == QtCore.QEvent.Resize:
                 self.resize_event_signal.emit(0)

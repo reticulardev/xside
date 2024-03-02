@@ -89,8 +89,8 @@ class WindowMoveArea(QtWidgets.QFrame):
         """..."""
         if self.__enable:
             self.mouse_release_event_signal.emit(event)
-            if self.__handle_texture:
-                self.__texture.apply_texture()
+            # if self.__handle_texture:
+            #     self.__texture.apply_texture()
 
             if not self.__toplevel.is_server_side_decorated():
                 self.__timer.timeout.connect(self.__shadow_on_release)

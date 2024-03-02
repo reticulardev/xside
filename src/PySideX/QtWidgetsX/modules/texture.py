@@ -49,7 +49,6 @@ class Texture(object):
 		self.__toplevel = toplevel
 		self.__style_sheet = style_sheet
 		self.__alpha = alpha
-		self.__is_using_texture = False
 
 		self.__gui_env = GuiEnv(
 			self.__toplevel.platform().operational_system(),
@@ -58,9 +57,11 @@ class Texture(object):
 		self.__is_dark = color.is_dark(
 			self.__gui_env.settings().window_background_color().to_tuple())
 
+		self.__style_parser = StyleParser(style_sheet)
 		self.__timer = QtCore.QTimer()
 		self.__desktop = Desktop()
 		self.__windows = None
+		self.__is_using_texture = False
 		self.__texture_name = 'texture.png'
 		self.__path = os.path.join(BASE_DIR, 'textures')
 		self.__texture_url = os.path.join(self.__path, self.__texture_name)
@@ -73,18 +74,19 @@ class Texture(object):
 			f'background: url({self.__texture_url}) no-repeat;')
 		self.__background_url_none = self.__background_style()
 
+		self.__toplevel.set_style_signal.connect(self.__set_style_signal)
+		self.__toplevel.reset_style_signal.connect(self.__set_style_signal)
+
 	def apply_texture(self) -> None:
 		self.__windows = self.__valid_windows()
 		if self.__build_texture():
-			toplevel_style = StyleParser(
-				self.__style_sheet).widget_scope('MainWindow')
-
+			toplevel_style = self.__style_parser.widget_scope('MainWindow')
 			toplevel_style += self.__background_url
 			style = self.__style_sheet + (
 				'MainWindow {' f'{toplevel_style}' '}')
-			parser = StyleParser(style)
-			style = parser.style_sheet()
-			self.__toplevel.set_style_sheet(style)
+
+			self.__style_parser.set_style_sheet(style)
+			self.__toplevel.set_style_sheet(self.__style_parser.style_sheet())
 			self.__is_using_texture = True
 
 	def is_using_texture(self) -> bool:
@@ -92,22 +94,17 @@ class Texture(object):
 		return self.__is_using_texture
 
 	def remove_texture(self) -> None:
-		toplevel_style = StyleParser(
-			self.__style_sheet).widget_scope('MainWindow')
-
+		toplevel_style = self.__style_parser.widget_scope('MainWindow')
 		toplevel_style += self.__background_url_none
 		style = self.__style_sheet + (
 			'MainWindow {' f'{toplevel_style}' '}')
 
-		parser = StyleParser(style)
-		style = parser.style_sheet()
-		self.__toplevel.set_style_sheet(style)
+		self.__style_parser.set_style_sheet(style)
+		self.__toplevel.set_style_sheet(self.__style_parser.style_sheet())
 		self.__is_using_texture = False
 
 	def __background_style(self) -> str:
-		toplevel_style = StyleParser(
-			self.__style_sheet).widget_scope('MainWindow')
-
+		toplevel_style = self.__style_parser.widget_scope('MainWindow')
 		background_color = None
 		for x in toplevel_style.split(';'):
 			if 'background-color' in x:
@@ -199,6 +196,12 @@ class Texture(object):
 		else:
 			return False
 
+	def __set_style_signal(self) -> None:
+		# ...
+		self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
+		self.__style_sheet = self.__style_parser.style_sheet()
+		self.__background_url_none = self.__background_style()
+
 	def __toplevel_window(self) -> Window:
 		window = Window()
 		window.id_ = self.__toplevel_id
@@ -226,7 +229,7 @@ class Texture(object):
 
 		# Add windows to the list
 		# Create list of non-windows to remove
-		windows_id_to_remove = []
+		invalid_windows_id = []
 		windows_list = []
 		if wmctrl_lg:
 			for win in wmctrl_lg:
@@ -252,14 +255,14 @@ class Texture(object):
 								self.__desktop.id_ = w.id_
 								windows_list.append(w)
 							else:
-								windows_id_to_remove.append(w.id_)
+								invalid_windows_id.append(w.id_)
 						else:
 							windows_list.append(w)
 
 		# Puts all valid windows in xprop order
 		windows_in_order = []
 		for xprop_id in xprop_root:
-			if xprop_id not in windows_id_to_remove:
+			if xprop_id not in invalid_windows_id:
 				for win in windows_list:
 					if win.id_ == xprop_id:
 						windows_in_order.append(win)
