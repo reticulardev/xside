@@ -71,8 +71,9 @@ class Texture(object):
 
 		self.__is_using_texture = False
 		self.__texture_name = 'texture.png'
-		self.__path = os.path.join(BASE_DIR, 'textures')
-		self.__texture_url = os.path.join(self.__path, self.__texture_name)
+		self.__textures_path = os.path.join(BASE_DIR, 'textures')
+		self.__texture_url = os.path.join(
+			self.__textures_path, self.__texture_name)
 		self.__texture_image = None
 		self.__toplevel_background_color = None
 		self.__background_url = (
@@ -161,10 +162,10 @@ class Texture(object):
 	def __build_texture(self) -> bool:
 		if self.__screenshots():
 			imgdesk = Image.open(
-				os.path.join(self.__path, self.__desktop.id_ + '.png'))
+				os.path.join(self.__textures_path, self.__desktop.id_ + '.png'))
 
 			for win in self.__windows:
-				urlfile = os.path.join(self.__path, win.id_ + '.png')
+				urlfile = os.path.join(self.__textures_path, win.id_ + '.png')
 				if os.path.isfile(urlfile) and win.type_ != '-1':
 					if win.id_ != self.__toplevel_id:
 						imgwin = Image.open(urlfile)
@@ -231,7 +232,8 @@ class Texture(object):
 						self.__timer.start(200)
 
 			elif event.type() == QtCore.QEvent.Close:
-				print('Bye bye')
+				for texture in os.listdir(self.__textures_path):
+					os.remove(os.path.join(self.__textures_path, texture))
 
 	def __timer_to_apply(self):
 		self.apply_texture()
@@ -244,7 +246,7 @@ class Texture(object):
 				try:
 					cli.output_by_args([
 						'import', '-window', window.id_, '-quality', '1',
-						os.path.join(self.__path, window.id_ + '.png')])
+						os.path.join(self.__textures_path, window.id_ + '.png')])
 				except Exception as err:
 					logging.error(err)
 			return True
