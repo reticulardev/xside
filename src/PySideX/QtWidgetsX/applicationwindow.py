@@ -293,6 +293,8 @@ class ApplicationWindow(BaseShadowWindow):
         self.__is_dark = color.is_dark(
             self.__gui_env.settings().window_background_color().to_tuple())
 
+        self.__timer = QtCore.QTimer()
+
         # Layout
         self.__central_widget = self.central_widget()
 
@@ -431,6 +433,28 @@ class ApplicationWindow(BaseShadowWindow):
         else:
             self.__active_resize_border = None
 
+    def __show_shadow_on_condition(self):
+        conditions = [
+            self.x() + self.width() != self.screen().size().width(),
+            self.y() + self.height() != self.screen().size().height(),
+            self.x() != 0, self.y() != 0]
+        if any(conditions):
+            if not self.is_server_side_decorated():
+                self.set_shadow_as_hidden(False)
+        self.__timer.stop()
+
+    def __hide_shadow_on_condition(self):
+        conditions = [
+            self.x() + self.width() == self.screen().size().width(),
+            self.y() + self.height() == self.screen().size().height(),
+            self.x() == 0, self.y() == 0]
+        if any(conditions):
+            self.set_shadow_as_hidden(True)
+        else:
+            if not self.is_server_side_decorated():
+                self.set_shadow_as_hidden(False)
+        self.__timer.stop()
+
     def __window_shadow_visible(self, visible: bool) -> None:
         # if self.__shadow_is_disabled:
         if self.__is_server_side_decorated:
@@ -480,6 +504,10 @@ class ApplicationWindow(BaseShadowWindow):
             if event.type() == QtCore.QEvent.HoverMove:
                 self.__set_edge_position(event)
                 self.__update_cursor_shape()
+
+            elif event.type() == QtCore.QEvent.Type.HoverEnter:
+                self.__timer.timeout.connect(self.__hide_shadow_on_condition)
+                self.__timer.start(100)
 
             elif event.type() == QtCore.QEvent.MouseButtonPress:
                 self.__update_cursor_shape()

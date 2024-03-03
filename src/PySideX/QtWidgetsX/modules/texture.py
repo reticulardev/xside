@@ -227,14 +227,13 @@ class Texture(object):
 				if self.__toplevel.is_maximized(
 						) or self.__toplevel.is_full_screen():
 					if self.__handle_texture and not self.__is_using_texture:
-						self.__timer.timeout.connect(self.xxx)
+						self.__timer.timeout.connect(self.__timer_to_apply)
 						self.__timer.start(200)
-						# self.apply_texture()
 
 			elif event.type() == QtCore.QEvent.Close:
 				print('Bye bye')
 
-	def xxx(self):
+	def __timer_to_apply(self):
 		self.apply_texture()
 		self.__timer.stop()
 

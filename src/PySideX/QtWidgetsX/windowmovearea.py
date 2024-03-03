@@ -29,8 +29,6 @@ class WindowMoveArea(QtWidgets.QFrame):
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(0, 0, 0, 0)
 
-        self.__timer = QtCore.QTimer()
-
     def set_enable(self, enable: bool) -> None:
         """Enable or disable the window moving area.
 
@@ -38,28 +36,6 @@ class WindowMoveArea(QtWidgets.QFrame):
         dragging the mouse cursor.
         """
         self.__enable = enable
-
-    def __shadow_on_press(self):
-        conditions = [
-            self.__toplevel.x() + self.__toplevel.width() != self.__screen_w,
-            self.__toplevel.y() + self.__toplevel.height() != self.__screen_h,
-            self.__toplevel.x() != 0, self.__toplevel.y() != 0]
-        if any(conditions):
-            if not self.__toplevel.is_server_side_decorated():
-                self.__toplevel.set_shadow_as_hidden(False)
-        self.__timer.stop()
-
-    def __shadow_on_release(self):
-        conditions = [
-            self.__toplevel.x() + self.__toplevel.width() == self.__screen_w,
-            self.__toplevel.y() + self.__toplevel.height() == self.__screen_h,
-            self.__toplevel.x() == 0, self.__toplevel.y() == 0]
-        if any(conditions):
-            self.__toplevel.set_shadow_as_hidden(True)
-        else:
-            if not self.__toplevel.is_server_side_decorated():
-                self.__toplevel.set_shadow_as_hidden(False)
-        self.__timer.stop()
 
     def mouse_press_event(self, event: QtGui.QMouseEvent) -> None:
         """This method has changed.
@@ -75,20 +51,7 @@ class WindowMoveArea(QtWidgets.QFrame):
             if not self.__toplevel.is_server_side_decorated():
                 if (event.button() == QtCore.Qt.LeftButton and
                         self.under_mouse()):
-                    self.__timer.timeout.connect(self.__shadow_on_press)
-                    self.__timer.start(100)
                     self.__toplevel.window_handle().start_system_move()
-
-    def mouse_release_event(self, event: QtGui.QMouseEvent) -> None:
-        """..."""
-        if self.__enable:
-            self.mouse_release_event_signal.emit(event)
-            # if self.__handle_texture:
-            #     self.__texture.apply_texture()
-
-            if not self.__toplevel.is_server_side_decorated():
-                self.__timer.timeout.connect(self.__shadow_on_release)
-                self.__timer.start(100)
 
     def mouse_double_click_event(self, event: QtGui.QMouseEvent) -> None:
         """This method has changed.
