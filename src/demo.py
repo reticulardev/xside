@@ -5,6 +5,7 @@ import sys
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
+from PySideX.QtWidgetsX.modules import texture
 from PySideX import QtWidgetsX
 from __feature__ import snake_case
 
@@ -22,6 +23,12 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
         # self.set_maximize_window_button_visible(False)
         # self.set_close_window_button_visible(False)
         # self.set_right_control_buttons_visible(False)
+
+        self.texture = texture.Texture(self)
+        self.texture.set_enable(True)
+
+        r, g, b, _ = self.sideview_color()
+        self.set_sideview_color((r, g, b, 100))
 
         # Icon
         icon_path = os.path.join(SRC_DIR, 'icon_b.svg')
@@ -143,8 +150,8 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
             QtGui.QPalette.Active, QtGui.QPalette.Highlight)
         accent_color = "#{:02x}{:02x}{:02x}".format(
             color.red(), color.green(), color.blue())
+
         if self.set_style_button.text() == 'Set style':
-            self.set_sideview_color((0, 0, 0, 0.1))
             self.set_style_sheet(
                 'MainWindow {'
                 '  background-color: rgba(44, 44, 50, 0.9);'
@@ -175,9 +182,16 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
                 'QPushButton:hover {'
                 f' background-color: {accent_color};' + '}')
             self.set_style_button.set_text('Reset style')
+            self.set_sideview_color((255, 0, 0, 0.1))
+            self.texture.apply_texture()
         else:
             self.reset_style()
             self.set_style_button.set_text('Set style')
+
+            self.set_sideview_color(None)
+            r, g, b, _ = self.sideview_color()
+            self.set_sideview_color((r, g, b, 100))
+            self.texture.apply_texture()
 
     def on_btn(self) -> None:
         self.image.set_pixmap(QtGui.QIcon.from_theme(

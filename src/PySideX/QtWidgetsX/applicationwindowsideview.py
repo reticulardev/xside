@@ -280,6 +280,10 @@ class ApplicationWindowSideView(ApplicationWindow):
             self.sideview_opened_signal.emit('sideview-opened-signal')
             self.__is_sideview_open = True
 
+    def sideview_color(self) -> tuple:
+        """..."""
+        return self.__sideview_color
+
     def sideview_headerbar(self) -> HeaderBar:
         """..."""
         return self.__sideview_headerbar
@@ -334,9 +338,13 @@ class ApplicationWindowSideView(ApplicationWindow):
         """
         self.__is_sideview_close_button_set_as_visible = visible
 
-    def set_sideview_color(self, rgba_color: tuple) -> None:
+    def set_sideview_color(self, rgba_color: tuple | None) -> None:
         """..."""
-        self.__sideview_color = rgba_color
+        if not rgba_color:
+            self.__sideview_color = self.__gui_env.settings(
+                ).window_background_darker_color().to_tuple()
+        else:
+            self.__sideview_color = rgba_color
 
     def set_sideview_fixed_width(self, width: int) -> None:
         """It's just a simple adjustment.

@@ -7,7 +7,6 @@ from PySideX.QtWidgetsX.modules.platform import Platform
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 from PySideX.QtWidgetsX.modules.dynamicstyle import DynamicStyle
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
-from PySideX.QtWidgetsX.modules import texture
 
 
 class MainWindow(QtWidgets.QFrame):
@@ -311,7 +310,6 @@ class ApplicationWindow(BaseShadowWindow):
         self.__set_window_decoration()
 
         # Events
-        self.__texture = texture.Texture(self)
         self.install_event_filter(self)
 
     def follow_platform(self) -> bool:

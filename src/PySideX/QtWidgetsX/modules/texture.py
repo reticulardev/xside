@@ -4,6 +4,7 @@ import os
 import pathlib
 import subprocess
 import sys
+import time
 
 from PIL import Image, ImageFilter, ImageEnhance
 from PySide6 import QtCore
@@ -55,28 +56,40 @@ class Texture(object):
 		self.__is_dark = color.is_dark(
 			self.__gui_env.settings().window_background_color().to_tuple())
 
-		self.__handle_texture = True
-		self.__timer = QtCore.QTimer()
-		self.__style_sheet = self.__toplevel.style_sheet()
-		self.__style_parser = StyleParser(self.__style_sheet)
+		self.__handle_texture = False
 		self.__desktop = Desktop()
 		self.__windows = None
-		self.__is_using_texture = False
-		self.__texture_name = 'texture.png'
-		self.__path = os.path.join(BASE_DIR, 'textures')
-		self.__texture_url = os.path.join(self.__path, self.__texture_name)
+		self.__timer = QtCore.QTimer()
+
 		self.__toplevel_id = hex(self.__toplevel.win_id()).replace('0x', '0x0')
 		self.__screen_w = self.__toplevel.screen().size().width()
 		self.__screen_h = self.__toplevel.screen().size().height()
 		self.__shadow_size = self.__toplevel.shadow_size()
+
+		self.__style_sheet = self.__toplevel.style_sheet()
+		self.__style_parser = StyleParser(self.__style_sheet)
+
+		self.__is_using_texture = False
+		self.__texture_name = 'texture.png'
+		self.__path = os.path.join(BASE_DIR, 'textures')
+		self.__texture_url = os.path.join(self.__path, self.__texture_name)
+		self.__texture_image = None
 		self.__toplevel_background_color = None
 		self.__background_url = (
 			f'background: url({self.__texture_url}) no-repeat;')
-		self.__background_url_none = self.__background_style()
+		self.__background_url_none = self.__background_color()
 
 		self.__toplevel.set_style_signal.connect(self.__set_style_signal)
 		self.__toplevel.reset_style_signal.connect(self.__set_style_signal)
 		self.__toplevel.event_filter_signal.connect(self.__event_filter_signal)
+
+	def set_enable(self, enable: bool) -> None:
+		"""..."""
+		self.__handle_texture = enable
+
+	def enabled(self) -> bool:
+		"""..."""
+		return self.__handle_texture
 
 	def apply_texture(self) -> None:
 		self.__windows = self.__valid_windows()
@@ -89,6 +102,14 @@ class Texture(object):
 			self.__style_parser.set_style_sheet(style)
 			self.__toplevel.set_style_sheet(self.__style_parser.style_sheet())
 			self.__is_using_texture = True
+
+	def background_color(self) -> tuple:
+		"""..."""
+		return self.__toplevel_background_color
+
+	def texture_image(self) -> Image:
+		"""..."""
+		return self.__texture_image
 
 	def is_using_texture(self) -> bool:
 		"""..."""
@@ -104,7 +125,7 @@ class Texture(object):
 		self.__toplevel.set_style_sheet(self.__style_parser.style_sheet())
 		self.__is_using_texture = False
 
-	def __background_style(self) -> str:
+	def __background_color(self) -> str:
 		toplevel_style = self.__style_parser.widget_scope('MainWindow')
 		background_color = None
 		for x in toplevel_style.split(';'):
@@ -161,6 +182,7 @@ class Texture(object):
 							ImageFilter.GaussianBlur(radius=radius))
 						# out = ImageEnhance.Brightness(out).enhance(0.97)
 						out.save(self.__texture_url, 'PNG', quality=1)
+						self.__texture_image = out
 						return True
 					else:
 						return False
@@ -205,10 +227,16 @@ class Texture(object):
 				if self.__toplevel.is_maximized(
 						) or self.__toplevel.is_full_screen():
 					if self.__handle_texture and not self.__is_using_texture:
-						self.apply_texture()
+						self.__timer.timeout.connect(self.xxx)
+						self.__timer.start(200)
+						# self.apply_texture()
 
 			elif event.type() == QtCore.QEvent.Close:
 				print('Bye bye')
+
+	def xxx(self):
+		self.apply_texture()
+		self.__timer.stop()
 
 	def __screenshots(self) -> bool:
 		"""..."""
@@ -228,7 +256,7 @@ class Texture(object):
 		# ...
 		self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
 		self.__style_sheet = self.__style_parser.style_sheet()
-		self.__background_url_none = self.__background_style()
+		self.__background_url_none = self.__background_color()
 
 	def __toplevel_window(self) -> Window:
 		window = Window()
