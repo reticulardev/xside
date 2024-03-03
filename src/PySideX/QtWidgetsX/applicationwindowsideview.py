@@ -110,23 +110,24 @@ class OverlaySideView(QtWidgets.QFrame):
         self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
         base_style = self.__style_parser.widget_scope('MainWindow')
 
-        url = ''
+        url = None
         for x in base_style.split(';'):
-            if x.strip().startswith('background: url('):
+            if x.replace(' ', '').startswith('background:url('):
                 url = x.strip().split('(')[1].split(')')[0]
-                if url:
-                    sideview_texture = Image.open(url)
-                    sideview_texture.putalpha(245)
-                    url = url.replace('.png', 'sideview.png')
-                    sideview_texture.save(url)
-                    break
+            if url:
+                break
+        if url:
+            sideview_texture = Image.open(url)
+            sideview_texture.putalpha(245)
+            url = url.replace('.png', 'sideview.png')
+            sideview_texture.save(url)
 
-        background_url = f'background: url({url});'
+        background = f'background: url({url});'
         self.__sideview_background.set_style_sheet(
             f'{self.__toplevel.style_sheet()}'
             '#__sideviewbgstyle {'
             f'{base_style}'
-            f'{background_url}'
+            f'{background}'
             'border-right: 0px; '
             'border-top-right-radius: 0;'
             'border-bottom-right-radius: 0;'
@@ -358,6 +359,8 @@ class ApplicationWindowSideView(ApplicationWindow):
                 ).window_background_darker_color().to_tuple()
         else:
             self.__sideview_color = rgba_color
+
+        self.__color_sideview()
 
     def set_sideview_fixed_width(self, width: int) -> None:
         """It's just a simple adjustment.

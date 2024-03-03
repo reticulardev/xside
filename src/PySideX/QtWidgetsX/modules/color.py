@@ -44,6 +44,26 @@ def lighten_hex(color: str, step: int = 10) -> str:
         rgba_light[0], rgba_light[1], rgba_light[2], rgba_light[3])
 
 
+def rgba_str_to_tuple(rgba_str: str) -> tuple:
+    """...
+
+    :param rgba_str: "* rgba(0, 0, 0, 0) *" or "(0, 0, 0, 0)" or "0, 0, 0, 0"
+    """
+    if '(' in rgba_str:
+        rgba_str = rgba_str.replace(
+            ' ', '').split('(')[-1].split(')')[0]
+
+    rgba_str = rgba_str.split(',')
+    if rgba_str[-1].startswith('0.'):
+        alpha = round(int('0.95'.lstrip('0.')) * 2.55)
+    elif rgba_str[-1].endswith('.0'):
+        alpha = 255
+    else:
+        alpha = int(rgba_str[-1])
+
+    return rgba_str[0], rgba_str[1], rgba_str[2], alpha
+
+
 def rgba_to_hex(color: tuple) -> str:
     """..."""
     return "#{:02x}{:02x}{:02x}{:02x}".format(

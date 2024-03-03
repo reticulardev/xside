@@ -56,7 +56,7 @@ class Texture(object):
 		self.__is_dark = color.is_dark(
 			self.__gui_env.settings().window_background_color().to_tuple())
 
-		self.__handle_texture = False
+		self.__enable_texture = False
 		self.__desktop = Desktop()
 		self.__windows = None
 		self.__timer = QtCore.QTimer()
@@ -86,23 +86,25 @@ class Texture(object):
 
 	def set_enable(self, enable: bool) -> None:
 		"""..."""
-		self.__handle_texture = enable
+		self.__enable_texture = enable
 
 	def enabled(self) -> bool:
 		"""..."""
-		return self.__handle_texture
+		return self.__enable_texture
 
-	def apply_texture(self) -> None:
-		self.__windows = self.__valid_windows()
-		if self.__build_texture():
-			toplevel_style = self.__style_parser.widget_scope('MainWindow')
-			toplevel_style += self.__background_url
-			style = self.__style_sheet + (
-				'MainWindow {' f'{toplevel_style}' '}')
+	def update(self) -> None:
+		if self.__enable_texture:
+			self.__windows = self.__valid_windows()
+			if self.__build_texture():
+				toplevel_style = self.__style_parser.widget_scope('MainWindow')
+				toplevel_style += self.__background_url
+				style = self.__style_sheet + (
+					'MainWindow {' f'{toplevel_style}' '}')
 
-			self.__style_parser.set_style_sheet(style)
-			self.__toplevel.set_style_sheet(self.__style_parser.style_sheet())
-			self.__is_using_texture = True
+				self.__style_parser.set_style_sheet(style)
+				self.__toplevel.set_style_sheet(
+					self.__style_parser.style_sheet())
+				self.__is_using_texture = True
 
 	def background_color(self) -> tuple:
 		"""..."""
@@ -128,35 +130,27 @@ class Texture(object):
 
 	def __background_color(self) -> str:
 		toplevel_style = self.__style_parser.widget_scope('MainWindow')
-		background_color = None
+		bg_color = None
 		for x in toplevel_style.split(';'):
 			if 'background-color' in x:
-				background_color = x + ';'
+				bg_color = x + ';'
 				break
 
-		if background_color and 'rgba' in background_color:
-			rgba = background_color.replace(
-				' ', '').split('(')[-1].split(')')[0].split(',')
+		if bg_color and 'rgba' in bg_color:
+			rgba = color.rgba_str_to_tuple(bg_color)
+			self.__alpha = rgba[3]
 
-			if not self.__alpha:
-				if rgba[-1].startswith('0.'):
-					self.__alpha = round(int('0.95'.lstrip('0.')) * 2.55)
-				elif rgba[-1].endswith('.0'):
-					self.__alpha = 255
-				else:
-					self.__alpha = int(rgba[-1])
+			n_alpha = 245 if self.__is_dark else 225
+			if self.__alpha > n_alpha:
+				self.__alpha = n_alpha
 
-			n_alpha = 210 if self.__is_dark else 180
-			self.__alpha = n_alpha if self.__alpha > n_alpha else self.__alpha
-
-			alpha = str(self.__alpha)
-			rgba_color = ', '.join(rgba[:-1] + [alpha])
-			background_color = f'background-color: rgba({rgba_color});'
+			rgb = ", ".join([str(x) for x in rgba[:-1]])
+			bg_color = f'background-color: rgba({rgb}, {self.__alpha});'
 			self.__toplevel_background_color = (
 				int(rgba[-4]), int(rgba[-3]), int(rgba[-2]), self.__alpha)
 
-		if background_color:
-			return 'background: url();' + background_color
+		if bg_color:
+			return 'background: url();' + bg_color
 		return 'background: url();'
 
 	def __build_texture(self) -> bool:
@@ -201,7 +195,7 @@ class Texture(object):
 
 				self.__timer.stop()
 			else:
-				self.__timer.timeout.connect(self.apply_texture)
+				self.__timer.timeout.connect(self.update)
 				self.__timer.start(1000)
 				return None, False
 		return img, True
@@ -210,28 +204,28 @@ class Texture(object):
 		if not self.__toplevel.is_server_side_decorated():
 			# HoverMove WindowActivate
 			if event.type() == QtCore.QEvent.WindowActivate:
-				if self.__handle_texture and not self.__is_using_texture:
+				if self.__enable_texture and not self.__is_using_texture:
 					self.remove_texture()
 
 			elif event.type() == QtCore.QEvent.HoverEnter:
-				if self.__handle_texture and not self.__is_using_texture:
-					self.apply_texture()
+				if self.__enable_texture and not self.__is_using_texture:
+					self.update()
 
 			elif event.type() == QtCore.QEvent.HoverLeave:
-				if self.__handle_texture and self.__is_using_texture:
+				if self.__enable_texture and self.__is_using_texture:
 					self.remove_texture()
 
 			elif event.type() == QtCore.QEvent.Type.Move:
-				if self.__handle_texture and self.__is_using_texture:
+				if self.__enable_texture and self.__is_using_texture:
 					self.remove_texture()
 
 			elif event.type() == QtCore.QEvent.Resize:
-				if self.__handle_texture and self.__is_using_texture:
+				if self.__enable_texture and self.__is_using_texture:
 					self.remove_texture()
 
 				if self.__toplevel.is_maximized(
 						) or self.__toplevel.is_full_screen():
-					if self.__handle_texture and not self.__is_using_texture:
+					if self.__enable_texture and not self.__is_using_texture:
 						self.__timer.timeout.connect(self.__timer_to_apply)
 						self.__timer.start(200)
 
@@ -240,7 +234,7 @@ class Texture(object):
 					os.remove(os.path.join(self.__textures_path, texture))
 
 	def __timer_to_apply(self):
-		self.apply_texture()
+		self.update()
 		self.__timer.stop()
 
 	def __screenshots(self) -> bool:

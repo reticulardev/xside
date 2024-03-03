@@ -154,7 +154,7 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
         if self.set_style_button.text() == 'Set style':
             self.set_style_sheet(
                 'MainWindow {'
-                '  background-color: rgba(44, 44, 50, 0.9);'
+                '  background-color: rgba(44, 44, 50, 100);'
                 '  border: 1px solid #283690;'
                 '  border-radius: 10px;}'
                 'QToolButton {'
@@ -183,7 +183,7 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
                 f' background-color: {accent_color};' + '}')
             self.set_style_button.set_text('Reset style')
             self.set_sideview_color((255, 0, 0, 100))
-            self.texture.apply_texture()
+            self.texture.update()
         else:
             self.reset_style()
             self.set_style_button.set_text('Set style')
@@ -191,7 +191,7 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
             self.set_sideview_color(None)
             r, g, b, _ = self.sideview_color()
             self.set_sideview_color((r, g, b, 100))
-            self.texture.apply_texture()
+            self.texture.update()
 
     def on_btn(self) -> None:
         self.image.set_pixmap(QtGui.QIcon.from_theme(
