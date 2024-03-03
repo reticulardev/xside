@@ -116,10 +116,10 @@ class OverlaySideView(QtWidgets.QFrame):
                 url = x.strip().split('(')[1].split(')')[0]
                 if url:
                     sideview_texture = Image.open(url)
-                    sideview_texture.putalpha(230)
+                    sideview_texture.putalpha(245)
                     url = url.replace('.png', 'sideview.png')
                     sideview_texture.save(url)
-                break
+                    break
 
         background_url = f'background: url({url});'
         self.__sideview_background.set_style_sheet(
