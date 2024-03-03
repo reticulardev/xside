@@ -3,6 +3,7 @@ import logging
 import os
 import sys
 
+from PIL import Image
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
@@ -109,11 +110,23 @@ class OverlaySideView(QtWidgets.QFrame):
         self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
         base_style = self.__style_parser.widget_scope('MainWindow')
 
+        url = ''
+        for x in base_style.split(';'):
+            if x.strip().startswith('background: url('):
+                url = x.strip().split('(')[1].split(')')[0]
+                if url:
+                    sideview_texture = Image.open(url)
+                    sideview_texture.putalpha(230)
+                    url = url.replace('.png', 'sideview.png')
+                    sideview_texture.save(url)
+                break
+
+        background_url = f'background: url({url});'
         self.__sideview_background.set_style_sheet(
             f'{self.__toplevel.style_sheet()}'
             '#__sideviewbgstyle {'
-            'background: url();'
             f'{base_style}'
+            f'{background_url}'
             'border-right: 0px; '
             'border-top-right-radius: 0;'
             'border-bottom-right-radius: 0;'

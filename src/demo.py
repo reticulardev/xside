@@ -182,7 +182,7 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
                 'QPushButton:hover {'
                 f' background-color: {accent_color};' + '}')
             self.set_style_button.set_text('Reset style')
-            self.set_sideview_color((255, 0, 0, 0.1))
+            self.set_sideview_color((255, 0, 0, 100))
             self.texture.apply_texture()
         else:
             self.reset_style()

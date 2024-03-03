@@ -209,7 +209,11 @@ class Texture(object):
 	def __event_filter_signal(self, event):
 		if not self.__toplevel.is_server_side_decorated():
 			# HoverMove WindowActivate
-			if event.type() == QtCore.QEvent.HoverEnter:
+			if event.type() == QtCore.QEvent.WindowActivate:
+				if self.__handle_texture and not self.__is_using_texture:
+					self.remove_texture()
+
+			elif event.type() == QtCore.QEvent.HoverEnter:
 				if self.__handle_texture and not self.__is_using_texture:
 					self.apply_texture()
 
