@@ -80,7 +80,7 @@ class Texture(object):
 		self.__toplevel_background_color = None
 		self.__background_url = (
 			f'background: url({self.__texture_url}) no-repeat;')
-		self.__background_url_none = self.__background_color()
+		self.__normal_style = self.__get_normal_style()
 
 		self.__toplevel.set_style_signal.connect(self.__set_style_signal)
 		self.__toplevel.reset_style_signal.connect(self.__set_style_signal)
@@ -114,13 +114,7 @@ class Texture(object):
 		return self.__is_using_texture
 
 	def remove_texture(self) -> None:
-		toplevel_style = self.__style_parser.widget_scope('MainWindow')
-		toplevel_style += self.__background_url_none
-		style = self.__style_sheet + (
-			'MainWindow {' f'{toplevel_style}' '}')
-
-		self.__style_parser.set_style_sheet(style)
-		self.__toplevel.set_style_sheet(self.__style_parser.style_sheet())
+		self.__toplevel.set_style_sheet(self.__normal_style)
 		self.__is_using_texture = False
 
 	def __background_color(self) -> str:
@@ -197,7 +191,6 @@ class Texture(object):
 
 	def __event_filter_signal(self, event):
 		if not self.__toplevel.is_server_side_decorated():
-			# HoverMove WindowActivate
 			if event.type() == QtCore.QEvent.WindowActivate:
 				if self.__enable_texture and not self.__is_using_texture:
 					self.remove_texture()
@@ -207,8 +200,13 @@ class Texture(object):
 					self.update()
 
 			elif event.type() == QtCore.QEvent.HoverLeave:
-				if self.__enable_texture and self.__is_using_texture:
-					self.remove_texture()
+				print('saiu')
+				if self.__enable_texture:
+					if self.__is_using_texture:
+						self.remove_texture()
+					else:
+						time.sleep(0.5)
+						self.remove_texture()
 
 			elif event.type() == QtCore.QEvent.Type.Move:
 				if self.__enable_texture and self.__is_using_texture:
@@ -228,6 +226,14 @@ class Texture(object):
 				for texture in os.listdir(self.__textures_path):
 					os.remove(os.path.join(self.__textures_path, texture))
 
+	def __get_normal_style(self) -> str:
+		toplevel_style = self.__style_parser.widget_scope('MainWindow')
+		toplevel_style += self.__background_color()
+		style = self.__style_sheet + (
+			'MainWindow {' f'{toplevel_style}' '}')
+		self.__style_parser.set_style_sheet(style)
+		return self.__style_parser.style_sheet()
+
 	def __screenshots(self) -> bool:
 		"""..."""
 		if self.__windows:
@@ -246,7 +252,7 @@ class Texture(object):
 		# ...
 		self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
 		self.__style_sheet = self.__style_parser.style_sheet()
-		self.__background_url_none = self.__background_color()
+		self.__normal_style = self.__get_normal_style()
 
 	def __timer_to_apply(self):
 		self.update()
