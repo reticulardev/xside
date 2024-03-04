@@ -10,19 +10,12 @@ from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 
 
 class MainWindow(QtWidgets.QFrame):
-    """..."""
     def __init__(self, *args, **kwargs):
-        """Class constructor
-
-        Initialize class attributes
-        """
         super().__init__(*args, **kwargs)
 
 
 class Shadow(QtWidgets.QFrame):
-    """..."""
     def __init__(self, position: str, *args, **kwargs) -> None:
-        """..."""
         super().__init__(*args, **kwargs)
         self.set_object_name('toplevelwindowshadow')
         self.__shadow_color = 'rgba(0, 0, 0, 20)'
@@ -110,7 +103,7 @@ class Shadow(QtWidgets.QFrame):
                 f'background-color: {self.__shadow_color};'
                 '}')
 
-    def set_background_color_visible(self, visible: bool) -> None:
+    def set_background_shadow_visible(self, visible: bool) -> None:
         if visible:
             self.set_style_sheet(
                 '#toplevelwindowshadow {'
@@ -124,13 +117,14 @@ class Shadow(QtWidgets.QFrame):
 
 
 class BaseShadowWindow(QtWidgets.QMainWindow):
+    """..."""
     def __init__(self, *args, **kwargs) -> None:
+        """..."""
         super().__init__(*args, **kwargs)
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_window_flags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window)
         self.set_contents_margins(0, 0, 0, 0)
 
-        self.__is_shadow_has_removed = False
         self.__is_shadow_has_added = True
 
         self.__border_radius = (10, 10, 0, 0)
@@ -214,12 +208,13 @@ class BaseShadowWindow(QtWidgets.QMainWindow):
         return self.__central_widget
 
     def is_shadow_visible(self) -> bool:
+        """..."""
         return self.__is_shadow_has_added
 
     def set_shadow_as_hidden(self, hide_value: bool) -> None:
         """..."""
         if hide_value:
-            self.__center_shadow.set_background_color_visible(False)
+            self.__center_shadow.set_background_shadow_visible(False)
 
             self.__bottom_left_shadow.set_visible(False)
             self.__bottom_shadow.set_visible(False)
@@ -232,11 +227,10 @@ class BaseShadowWindow(QtWidgets.QMainWindow):
             self.__left_shadow.set_visible(False)
             self.__right_shadow.set_visible(False)
 
-            self.__is_shadow_has_removed = True
             self.__is_shadow_has_added = False
 
         else:
-            self.__center_shadow.set_background_color_visible(True)
+            self.__center_shadow.set_background_shadow_visible(True)
 
             self.__bottom_left_shadow.set_visible(True)
             self.__bottom_shadow.set_visible(True)
@@ -250,7 +244,6 @@ class BaseShadowWindow(QtWidgets.QMainWindow):
             self.__right_shadow.set_visible(True)
 
             self.__is_shadow_has_added = True
-            self.__is_shadow_has_removed = False
 
 
 class ApplicationWindow(BaseShadowWindow):
@@ -263,6 +256,7 @@ class ApplicationWindow(BaseShadowWindow):
     reset_style_signal = QtCore.Signal(object)
     resize_event_signal = QtCore.Signal(object)
     set_style_signal = QtCore.Signal(object)
+    shadow_visibility_signal = QtCore.Signal(object)
 
     def __init__(
             self,
@@ -449,10 +443,14 @@ class ApplicationWindow(BaseShadowWindow):
             self.y() + self.height() == self.screen().size().height(),
             self.x() == 0, self.y() == 0]
         if any(conditions):
-            self.set_shadow_as_hidden(True)
+            if self.is_shadow_visible():
+                self.set_shadow_as_hidden(True)
+                self.shadow_visibility_signal.emit(False)
         else:
             if not self.is_server_side_decorated():
-                self.set_shadow_as_hidden(False)
+                if not self.is_shadow_visible():
+                    self.set_shadow_as_hidden(False)
+                    self.shadow_visibility_signal.emit(True)
         self.__timer.stop()
 
     def __window_shadow_visible(self, visible: bool) -> None:

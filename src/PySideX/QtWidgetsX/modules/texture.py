@@ -200,12 +200,11 @@ class Texture(object):
 					self.update()
 
 			elif event.type() == QtCore.QEvent.HoverLeave:
-				print('saiu')
 				if self.__enable_texture:
 					if self.__is_using_texture:
 						self.remove_texture()
 					else:
-						time.sleep(0.5)
+						time.sleep(1)
 						self.remove_texture()
 
 			elif event.type() == QtCore.QEvent.Type.Move:

@@ -71,6 +71,8 @@ class OverlaySideView(QtWidgets.QFrame):
         self.__close_view_box.add_widget(CloseArea(self.__toplevel))
 
         self.__toplevel.resize_event_signal.connect(self.__resize_sig)
+        self.__toplevel.shadow_visibility_signal.connect(
+            self.__set_shadow_visible)
 
     def set_sideview_fixed_width(self, width: int) -> None:
         """..."""
@@ -86,14 +88,7 @@ class OverlaySideView(QtWidgets.QFrame):
     def open(self) -> None:
         """..."""
         if not self.__toplevel.is_server_side_decorated():
-            if self.__toplevel.is_shadow_visible():
-                self.set_contents_margins(
-                    self.__toplevel.shadow_size() + 1,
-                    self.__toplevel.shadow_size() + 1,
-                    self.__toplevel.shadow_size(),
-                    self.__toplevel.shadow_size() + 1)
-            else:
-                self.set_contents_margins(0, 0, 0, 0)
+            self.__set_shadow_visible(self.__toplevel.is_shadow_visible())
         else:
             self.set_contents_margins(0, 0, 0, 0)
 
@@ -154,6 +149,16 @@ class OverlaySideView(QtWidgets.QFrame):
 
     def __resize_sig(self) -> None:
         self.resize(self.__toplevel.width(), self.__toplevel.height())
+
+    def __set_shadow_visible(self, visible) -> None:
+        if visible:
+            self.set_contents_margins(
+                self.__toplevel.shadow_size() + 1,
+                self.__toplevel.shadow_size() + 1,
+                self.__toplevel.shadow_size(),
+                self.__toplevel.shadow_size() + 1)
+        else:
+            self.set_contents_margins(1, 1, 1, 1)
 
 
 class ApplicationWindowSideView(ApplicationWindow):
