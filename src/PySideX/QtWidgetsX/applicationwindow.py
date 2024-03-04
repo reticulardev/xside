@@ -312,6 +312,10 @@ class ApplicationWindow(BaseShadowWindow):
         """..."""
         return self.__follow_platform
 
+    def is_dark(self) -> bool:
+        """..."""
+        return self.__is_dark
+
     def is_server_side_decorated(self) -> bool:
         """..."""
         return self.__is_server_side_decorated

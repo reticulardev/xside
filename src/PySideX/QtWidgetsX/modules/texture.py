@@ -8,11 +8,10 @@ import time
 import threading
 
 from PIL import Image, ImageFilter, ImageEnhance
-from PySide6 import QtCore, QtGui
+from PySide6 import QtCore
 
 import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
-from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 sys.path.append(BASE_DIR.as_posix())
@@ -50,13 +49,6 @@ class Texture(object):
 		self.__toplevel = toplevel
 		self.__alpha = alpha
 
-		self.__gui_env = GuiEnv(
-			self.__toplevel.platform().operational_system(),
-			self.__toplevel.platform().desktop_environment())
-
-		self.__is_dark = color.is_dark(
-			self.__gui_env.settings().window_background_color().to_tuple())
-
 		self.__enable_texture = False
 		self.__desktop = Desktop()
 		self.__windows = None
@@ -72,14 +64,10 @@ class Texture(object):
 		self.__style_parser = StyleParser(self.__style_sheet)
 
 		self.__is_using_texture = False
-		self.__texture_name = 'texture.png'
 		self.__textures_path = os.path.join(BASE_DIR, 'textures')
-		self.__texture_url = os.path.join(
-			self.__textures_path, self.__texture_name)
+		self.__texture_url = os.path.join(self.__textures_path, 'texture.png')
 		self.__texture_image = None
 		self.__toplevel_background_color = None
-		self.__background_url = (
-			f'background: url({self.__texture_url}) no-repeat;')
 		self.__normal_style = self.__get_normal_style()
 
 		self.__toplevel.set_style_signal.connect(self.__set_style_signal)
@@ -113,7 +101,7 @@ class Texture(object):
 		"""..."""
 		return self.__is_using_texture
 
-	def remove_texture(self) -> None:
+	def remove(self) -> None:
 		self.__toplevel.set_style_sheet(self.__normal_style)
 		self.__is_using_texture = False
 
@@ -129,7 +117,7 @@ class Texture(object):
 			rgba = color.rgba_str_to_tuple(bg_color)
 			self.__alpha = rgba[3]
 
-			n_alpha = 245 if self.__is_dark else 225
+			n_alpha = 245 if self.__toplevel.is_dark() else 225
 			if self.__alpha > n_alpha:
 				self.__alpha = n_alpha
 
@@ -161,9 +149,9 @@ class Texture(object):
 					out = imgdesk.crop((x, y, x + w, y + h)).convert('RGBA')
 					out = self.__composite_background_color(out)
 					if out[1]:
-						radius = 15 if self.__is_dark else 10
+						radius = 15 if self.__toplevel.is_dark() else 10
 						out = out[0].filter(
-							ImageFilter.GaussianBlur(radius=radius + 10))
+							ImageFilter.GaussianBlur(radius=radius))
 						# out = ImageEnhance.Brightness(out).enhance(0.97)
 						out.save(self.__texture_url, 'PNG', quality=1)
 						self.__texture_image = out
@@ -193,7 +181,7 @@ class Texture(object):
 		if not self.__toplevel.is_server_side_decorated():
 			if event.type() == QtCore.QEvent.WindowActivate:
 				if self.__enable_texture and not self.__is_using_texture:
-					self.remove_texture()
+					self.remove()
 
 			elif event.type() == QtCore.QEvent.HoverEnter:
 				if self.__enable_texture:
@@ -202,18 +190,18 @@ class Texture(object):
 			elif event.type() == QtCore.QEvent.HoverLeave:
 				if self.__enable_texture:
 					if self.__is_using_texture:
-						self.remove_texture()
+						self.remove()
 					else:
 						time.sleep(1)
-						self.remove_texture()
+						self.remove()
 
 			elif event.type() == QtCore.QEvent.Type.Move:
 				if self.__enable_texture and self.__is_using_texture:
-					self.remove_texture()
+					self.remove()
 
 			elif event.type() == QtCore.QEvent.Resize:
 				if self.__enable_texture and self.__is_using_texture:
-					self.remove_texture()
+					self.remove()
 
 				if self.__toplevel.is_maximized(
 						) or self.__toplevel.is_full_screen():
@@ -271,12 +259,11 @@ class Texture(object):
 		if self.__enable_texture:
 			self.__windows = self.__valid_windows()
 			if self.__build_texture():
-				toplevel_style = self.__style_parser.widget_scope('MainWindow')
-				toplevel_style += self.__background_url
-				style = self.__style_sheet + (
-					'MainWindow {' f'{toplevel_style}' '}')
-
-				self.__style_parser.set_style_sheet(style)
+				self.__style_parser.set_style_sheet(
+					'MainWindow {'
+					f'{self.__style_parser.widget_scope("MainWindow")}'
+					f'background: url({self.__texture_url}) no-repeat;'
+					'}')
 				self.__toplevel.set_style_sheet(
 					self.__style_parser.style_sheet())
 				self.__is_using_texture = True
