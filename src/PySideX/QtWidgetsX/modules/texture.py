@@ -74,28 +74,13 @@ class Texture(object):
 		self.__toplevel.reset_style_signal.connect(self.__set_style_signal)
 		self.__toplevel.event_filter_signal.connect(self.__event_filter_signal)
 
-	def set_enable(self, enable: bool) -> None:
-		"""..."""
-		self.__enable_texture = enable
-
-	def enabled(self) -> bool:
-		"""..."""
-		return self.__enable_texture
-
-	def update(self) -> None:
-		"""..."""
-		if not self.__updating:
-			self.__updating = True
-			thread = threading.Thread(target=self.__update)
-			thread.start()
-
 	def background_color(self) -> tuple:
 		"""..."""
 		return self.__toplevel_background_color
 
-	def texture_image(self) -> Image:
+	def enabled(self) -> bool:
 		"""..."""
-		return self.__texture_image
+		return self.__enable_texture
 
 	def is_using_texture(self) -> bool:
 		"""..."""
@@ -104,6 +89,21 @@ class Texture(object):
 	def remove(self) -> None:
 		self.__toplevel.set_style_sheet(self.__normal_style)
 		self.__is_using_texture = False
+
+	def set_enable(self, enable: bool) -> None:
+		"""..."""
+		self.__enable_texture = enable
+
+	def texture_image(self) -> Image:
+		"""..."""
+		return self.__texture_image
+
+	def update(self) -> None:
+		"""..."""
+		if not self.__updating:
+			self.__updating = True
+			thread = threading.Thread(target=self.__update)
+			thread.start()
 
 	def __background_color(self) -> str:
 		toplevel_style = self.__style_parser.widget_scope('MainWindow')
