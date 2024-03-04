@@ -8,7 +8,7 @@ import time
 import threading
 
 from PIL import Image, ImageFilter, ImageEnhance
-from PySide6 import QtCore
+from PySide6 import QtCore, QtGui
 
 import PySideX.QtWidgetsX.modules.color as color
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
@@ -101,22 +101,6 @@ class Texture(object):
 			thread = threading.Thread(target=self.__update)
 			thread.start()
 
-	def __update(self) -> None:
-		if self.__enable_texture:
-			self.__windows = self.__valid_windows()
-			if self.__build_texture():
-				toplevel_style = self.__style_parser.widget_scope('MainWindow')
-				toplevel_style += self.__background_url
-				style = self.__style_sheet + (
-					'MainWindow {' f'{toplevel_style}' '}')
-
-				self.__style_parser.set_style_sheet(style)
-				self.__toplevel.set_style_sheet(
-					self.__style_parser.style_sheet())
-				self.__is_using_texture = True
-
-		self.__updating = False
-
 	def background_color(self) -> tuple:
 		"""..."""
 		return self.__toplevel_background_color
@@ -185,7 +169,7 @@ class Texture(object):
 					if out[1]:
 						radius = 15 if self.__is_dark else 10
 						out = out[0].filter(
-							ImageFilter.GaussianBlur(radius=radius))
+							ImageFilter.GaussianBlur(radius=radius + 10))
 						# out = ImageEnhance.Brightness(out).enhance(0.97)
 						out.save(self.__texture_url, 'PNG', quality=1)
 						self.__texture_image = out
@@ -219,7 +203,7 @@ class Texture(object):
 					self.remove_texture()
 
 			elif event.type() == QtCore.QEvent.HoverEnter:
-				if self.__enable_texture and not self.__is_using_texture:
+				if self.__enable_texture:
 					self.update()
 
 			elif event.type() == QtCore.QEvent.HoverLeave:
@@ -244,10 +228,6 @@ class Texture(object):
 				for texture in os.listdir(self.__textures_path):
 					os.remove(os.path.join(self.__textures_path, texture))
 
-	def __timer_to_apply(self):
-		self.update()
-		self.__timer.stop()
-
 	def __screenshots(self) -> bool:
 		"""..."""
 		if self.__windows:
@@ -268,6 +248,10 @@ class Texture(object):
 		self.__style_sheet = self.__style_parser.style_sheet()
 		self.__background_url_none = self.__background_color()
 
+	def __timer_to_apply(self):
+		self.update()
+		self.__timer.stop()
+
 	def __toplevel_window(self) -> Window:
 		window = Window()
 		window.id_ = self.__toplevel_id
@@ -277,6 +261,22 @@ class Texture(object):
 		window.w = self.__toplevel.width()
 		window.h = self.__toplevel.height()
 		return window
+
+	def __update(self) -> None:
+		if self.__enable_texture:
+			self.__windows = self.__valid_windows()
+			if self.__build_texture():
+				toplevel_style = self.__style_parser.widget_scope('MainWindow')
+				toplevel_style += self.__background_url
+				style = self.__style_sheet + (
+					'MainWindow {' f'{toplevel_style}' '}')
+
+				self.__style_parser.set_style_sheet(style)
+				self.__toplevel.set_style_sheet(
+					self.__style_parser.style_sheet())
+				self.__is_using_texture = True
+
+		self.__updating = False
 
 	def __valid_windows(self):
 		# wmctrl_lg: marks windows that are not windows using an '-1'
