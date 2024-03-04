@@ -5,6 +5,7 @@ import pathlib
 import subprocess
 import sys
 import time
+import threading
 
 from PIL import Image, ImageFilter, ImageEnhance
 from PySide6 import QtCore
@@ -60,6 +61,7 @@ class Texture(object):
 		self.__desktop = Desktop()
 		self.__windows = None
 		self.__timer = QtCore.QTimer()
+		self.__updating = False
 
 		self.__toplevel_id = hex(self.__toplevel.win_id()).replace('0x', '0x0')
 		self.__screen_w = self.__toplevel.screen().size().width()
@@ -93,6 +95,13 @@ class Texture(object):
 		return self.__enable_texture
 
 	def update(self) -> None:
+		"""..."""
+		if not self.__updating:
+			self.__updating = True
+			thread = threading.Thread(target=self.__update)
+			thread.start()
+
+	def __update(self) -> None:
 		if self.__enable_texture:
 			self.__windows = self.__valid_windows()
 			if self.__build_texture():
@@ -105,6 +114,8 @@ class Texture(object):
 				self.__toplevel.set_style_sheet(
 					self.__style_parser.style_sheet())
 				self.__is_using_texture = True
+
+		self.__updating = False
 
 	def background_color(self) -> tuple:
 		"""..."""
@@ -154,9 +165,9 @@ class Texture(object):
 		return 'background: url();'
 
 	def __build_texture(self) -> bool:
-		if self.__screenshots():
-			imgdesk = Image.open(
-				os.path.join(self.__textures_path, self.__desktop.id_ + '.png'))
+		url = os.path.join(self.__textures_path, self.__desktop.id_ + '.png')
+		if self.__screenshots() and os.path.isfile(url):
+			imgdesk = Image.open(url)
 
 			for win in self.__windows:
 				urlfile = os.path.join(self.__textures_path, win.id_ + '.png')
