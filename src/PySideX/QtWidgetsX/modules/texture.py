@@ -52,7 +52,6 @@ class Texture(object):
 		self.__enable_texture = False
 		self.__desktop = Desktop()
 		self.__windows = None
-		self.__timer = QtCore.QTimer()
 		self.__updating = False
 
 		self.__toplevel_id = hex(self.__toplevel.win_id()).replace('0x', '0x0')
@@ -169,11 +168,9 @@ class Texture(object):
 						self.__toplevel.height()),
 					color=self.__toplevel_background_color)
 				img = Image.alpha_composite(img, imgcolor)
-
-				self.__timer.stop()
 			else:
-				self.__timer.timeout.connect(self.update)
-				self.__timer.start(1000)
+				t = threading.Thread(target=self.__update_thread, args=(1.0,))
+				t.start()
 				return None, False
 		return img, True
 
@@ -206,8 +203,8 @@ class Texture(object):
 				if self.__toplevel.is_maximized(
 						) or self.__toplevel.is_full_screen():
 					if self.__enable_texture and not self.__is_using_texture:
-						self.__timer.timeout.connect(self.__timer_to_apply)
-						self.__timer.start(200)
+						t = threading.Thread(target=self.__update_thread)
+						t.start()
 
 			elif event.type() == QtCore.QEvent.Close:
 				for texture in os.listdir(self.__textures_path):
@@ -241,9 +238,9 @@ class Texture(object):
 		self.__style_sheet = self.__style_parser.style_sheet()
 		self.__normal_style = self.__get_normal_style()
 
-	def __timer_to_apply(self):
+	def __update_thread(self, step: float = 0.2):
+		time.sleep(step)
 		self.update()
-		self.__timer.stop()
 
 	def __toplevel_window(self) -> Window:
 		window = Window()
