@@ -32,6 +32,14 @@ class OverlaySideView(QtWidgets.QFrame):
         self.__toplevel = self.__sideview_widget.parent().window()
         self.__style_parser = StyleParser(self.__toplevel.style_sheet())
 
+        # Anim
+        self.anim_open = QtCore.QPropertyAnimation(self, b"size")
+        self.anim_open_group = QtCore.QSequentialAnimationGroup()
+        self.anim_close = QtCore.QPropertyAnimation(self, b"size")
+        self.anim_close_group = QtCore.QSequentialAnimationGroup()
+
+        self.__close_timer = QtCore.QTimer()
+
         # Main layout
         self.__main_box = QtWidgets.QHBoxLayout()
         self.__main_box.set_contents_margins(0, 0, 0, 0)
@@ -80,6 +88,21 @@ class OverlaySideView(QtWidgets.QFrame):
 
     def close(self) -> None:
         """..."""
+        self.anim_close.set_start_value(
+            QtCore.QSize(
+                self.__toplevel.width() - 1, self.__toplevel.height()))
+        self.anim_close.set_end_value(
+            QtCore.QSize(
+                5, self.__toplevel.height()))
+        self.anim_close.set_duration(100)
+        self.anim_close_group.add_animation(self.anim_close)
+        self.anim_close_group.start()
+
+        self.__close_timer.timeout.connect(self.__close)
+        self.__close_timer.start(100)
+
+    def __close(self):
+        self.__close_timer.stop()
         self.__sideview_widget.set_visible(False)
         self.__sideview_box.remove_widget(self.__sideview_widget)
         self.__sideview_widget_box.insert_widget(0, self.__sideview_widget)
@@ -99,6 +122,15 @@ class OverlaySideView(QtWidgets.QFrame):
         self.__sideview_box.add_widget(self.__sideview_widget)
         self.set_visible(True)
         self.move(0, 0)
+
+        self.anim_open.set_start_value(
+            QtCore.QSize(50, self.__toplevel.height()))
+        self.anim_open.set_end_value(
+            QtCore.QSize(
+                self.__toplevel.width() - 1, self.__toplevel.height()))
+        self.anim_open.set_duration(50)
+        self.anim_open_group.add_animation(self.anim_open)
+        self.anim_open_group.start()
 
     def __update_style(self) -> None:
         # ...
