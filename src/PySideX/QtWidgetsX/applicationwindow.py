@@ -275,9 +275,9 @@ class ApplicationWindow(BaseShadowWindow):
 
         # Flags
         self.__shadow_size = 8
-        self.__active_resize_border = None
-        self.__default_resize_border_size = 5
-        self.__resize_border_size = self.__default_resize_border_size
+        self.__edge_cursor_position = None
+        self.__default_edge_resize_size = 5
+        self.__edge_resize_size = self.__default_edge_resize_size
 
         self.__gui_env = GuiEnv(
             self.__platform.operational_system(),
@@ -386,10 +386,11 @@ class ApplicationWindow(BaseShadowWindow):
                 QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window)
             self.__window_shadow_visible(True)
 
-    def __set_edge_position(self, event: QtCore.QEvent) -> None:
+    def __set_edge_cursor_position(self, event: QtCore.QEvent) -> None:
         # Saves the position of the window where the mouse cursor is
+        shadow_size = self.__shadow_size if self.is_shadow_visible() else 0
         resize_area = (
-            -3 if self.__is_server_side_decorated else self.__shadow_size - 3)
+            -3 if self.__is_server_side_decorated else shadow_size - 3)
         pos = event.position().to_point()  # QtGui.QHoverEvent(ev.clone())
         window_area = [
             resize_area < pos.x() < self.width() - resize_area,
@@ -400,36 +401,36 @@ class ApplicationWindow(BaseShadowWindow):
 
         if all(window_area):
             # top-right, top-left, bottom-right, bottom-left
-            if (pos.x() > (self.width() - self.__resize_border_size) and
-                    pos.y() < self.__resize_border_size):
-                self.__active_resize_border = (
+            if (pos.x() > (self.width() - self.__edge_resize_size) and
+                    pos.y() < self.__edge_resize_size):
+                self.__edge_cursor_position = (
                         QtCore.Qt.Edge.RightEdge | QtCore.Qt.Edge.TopEdge)
-            elif (pos.x() < self.__resize_border_size and
-                  pos.y() < self.__resize_border_size):
-                self.__active_resize_border = (
+            elif (pos.x() < self.__edge_resize_size and
+                  pos.y() < self.__edge_resize_size):
+                self.__edge_cursor_position = (
                         QtCore.Qt.Edge.LeftEdge | QtCore.Qt.Edge.TopEdge)
-            elif (pos.x() > (self.width() - self.__resize_border_size) and
-                  pos.y() > (self.height() - self.__resize_border_size)):
-                self.__active_resize_border = (
+            elif (pos.x() > (self.width() - self.__edge_resize_size) and
+                  pos.y() > (self.height() - self.__edge_resize_size)):
+                self.__edge_cursor_position = (
                         QtCore.Qt.Edge.RightEdge | QtCore.Qt.Edge.BottomEdge)
-            elif (pos.x() < self.__resize_border_size and
-                  pos.y() > (self.height() - self.__resize_border_size)):
-                self.__active_resize_border = (
+            elif (pos.x() < self.__edge_resize_size and
+                  pos.y() > (self.height() - self.__edge_resize_size)):
+                self.__edge_cursor_position = (
                         QtCore.Qt.Edge.LeftEdge | QtCore.Qt.Edge.BottomEdge)
 
             # left, right, top, bottom
-            elif pos.x() <= self.__resize_border_size:
-                self.__active_resize_border = QtCore.Qt.Edge.LeftEdge
-            elif pos.x() >= (self.width() - self.__resize_border_size):
-                self.__active_resize_border = QtCore.Qt.Edge.RightEdge
-            elif pos.y() <= self.__resize_border_size:
-                self.__active_resize_border = QtCore.Qt.Edge.TopEdge
-            elif pos.y() >= (self.height() - self.__resize_border_size):
-                self.__active_resize_border = QtCore.Qt.Edge.BottomEdge
+            elif pos.x() <= self.__edge_resize_size:
+                self.__edge_cursor_position = QtCore.Qt.Edge.LeftEdge
+            elif pos.x() >= (self.width() - self.__edge_resize_size):
+                self.__edge_cursor_position = QtCore.Qt.Edge.RightEdge
+            elif pos.y() <= self.__edge_resize_size:
+                self.__edge_cursor_position = QtCore.Qt.Edge.TopEdge
+            elif pos.y() >= (self.height() - self.__edge_resize_size):
+                self.__edge_cursor_position = QtCore.Qt.Edge.BottomEdge
             else:
-                self.__active_resize_border = None
+                self.__edge_cursor_position = None
         else:
-            self.__active_resize_border = None
+            self.__edge_cursor_position = None
 
     def __show_shadow_on_condition(self):
         conditions = [
@@ -460,37 +461,37 @@ class ApplicationWindow(BaseShadowWindow):
     def __window_shadow_visible(self, visible: bool) -> None:
         # if self.__shadow_is_disabled:
         if self.__is_server_side_decorated:
-            self.__resize_border_size = self.__default_resize_border_size
+            self.__edge_resize_size = self.__default_edge_resize_size
         else:
             self.set_shadow_as_hidden(False if visible else True)
             if visible:
-                self.__resize_border_size = (
-                        self.__default_resize_border_size + self.__shadow_size)
+                self.__edge_resize_size = (
+                        self.__default_edge_resize_size + self.__shadow_size)
             else:
-                self.__resize_border_size = self.__default_resize_border_size
+                self.__edge_resize_size = self.__default_edge_resize_size
 
     def __update_cursor_shape(self) -> None:
         # Updates the mouse cursor appearance
-        if not self.__active_resize_border:
+        if not self.__edge_cursor_position:
             self.set_cursor(QtCore.Qt.CursorShape.ArrowCursor)
         else:
-            if (self.__active_resize_border == QtCore.Qt.Edge.LeftEdge or
-                    self.__active_resize_border == QtCore.Qt.Edge.RightEdge):
+            if (self.__edge_cursor_position == QtCore.Qt.Edge.LeftEdge or
+                    self.__edge_cursor_position == QtCore.Qt.Edge.RightEdge):
                 self.set_cursor(QtCore.Qt.CursorShape.SizeHorCursor)
 
-            elif (self.__active_resize_border == QtCore.Qt.Edge.TopEdge or
-                  self.__active_resize_border == QtCore.Qt.Edge.BottomEdge):
+            elif (self.__edge_cursor_position == QtCore.Qt.Edge.TopEdge or
+                  self.__edge_cursor_position == QtCore.Qt.Edge.BottomEdge):
                 self.set_cursor(QtCore.Qt.CursorShape.SizeVerCursor)
 
-            elif (self.__active_resize_border == QtCore.Qt.Edge.LeftEdge |
+            elif (self.__edge_cursor_position == QtCore.Qt.Edge.LeftEdge |
                   QtCore.Qt.Edge.TopEdge or
-                  self.__active_resize_border == QtCore.Qt.Edge.RightEdge |
+                  self.__edge_cursor_position == QtCore.Qt.Edge.RightEdge |
                   QtCore.Qt.Edge.BottomEdge):
                 self.set_cursor(QtCore.Qt.CursorShape.SizeFDiagCursor)
 
-            elif (self.__active_resize_border == QtCore.Qt.Edge.RightEdge |
+            elif (self.__edge_cursor_position == QtCore.Qt.Edge.RightEdge |
                   QtCore.Qt.Edge.TopEdge or
-                  self.__active_resize_border == QtCore.Qt.Edge.LeftEdge |
+                  self.__edge_cursor_position == QtCore.Qt.Edge.LeftEdge |
                   QtCore.Qt.Edge.BottomEdge):
                 self.set_cursor(QtCore.Qt.CursorShape.SizeBDiagCursor)
 
@@ -504,7 +505,7 @@ class ApplicationWindow(BaseShadowWindow):
                 self.resize_event_signal.emit(event)
         else:
             if event.type() == QtCore.QEvent.HoverMove:
-                self.__set_edge_position(event)
+                self.__set_edge_cursor_position(event)
                 self.__update_cursor_shape()
 
             elif event.type() == QtCore.QEvent.Type.HoverEnter:
@@ -513,9 +514,9 @@ class ApplicationWindow(BaseShadowWindow):
 
             elif event.type() == QtCore.QEvent.MouseButtonPress:
                 self.__update_cursor_shape()
-                if self.__active_resize_border:
+                if self.__edge_cursor_position:
                     self.window_handle().start_system_resize(
-                        self.__active_resize_border)
+                        self.__edge_cursor_position)
 
             elif event.type() == QtCore.QEvent.MouseButtonRelease:
                 self.set_cursor(QtCore.Qt.CursorShape.ArrowCursor)
