@@ -39,11 +39,7 @@ class Tooltip(QtWidgets.QFrame):
         self.set_window_flags(
             QtCore.Qt.FramelessWindowHint | QtCore.Qt.ToolTip)
 
-        self.__gui_env = GuiEnv(
-            self.__toplevel.platform().operational_system(),
-            self.__toplevel.platform().desktop_environment())
-
-        self.__is_dark = self.__gui_env.settings().window_is_dark()
+        self.__is_dark = self.__toplevel.is_dark()
         self.__style_saved = self.__toplevel.style_sheet()
         self.__style_parser = StyleParser(self.__style_saved)
 

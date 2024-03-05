@@ -141,7 +141,7 @@ class ContextMenuButton(QtWidgets.QFrame):
     def __configure_icon(self):
         # ...
         if not self.__icon:
-            sym = '-symbolic' if self.__env.settings().window_is_dark() else ''
+            sym = '-symbolic' if self.__toplevel.is_dark() else ''
             icon_path = os.path.join(
                 SRC_DIR, 'modules', 'static', f'context-menu-item{sym}.svg')
             self.__icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
@@ -235,10 +235,6 @@ class ContextMenuGroup(QtWidgets.QFrame):
         self.__group_id = group_id
         self.__title_on_top = title_on_top
 
-        self.__env = GuiEnv(
-            self.__toplevel.platform().operational_system(),
-            self.__toplevel.platform().desktop_environment())
-
         self.__box = QtWidgets.QVBoxLayout()
         self.__box.set_contents_margins(0, 0, 0, 0)
         self.set_layout(self.__box)
@@ -287,10 +283,6 @@ class ContextMenu(QtWidgets.QFrame):
             QtCore.Qt.FramelessWindowHint | QtCore.Qt.Popup)
         self.set_minimum_width(50)
         self.set_minimum_height(35)
-
-        self.__gui_env = GuiEnv(
-            self.__toplevel.platform().operational_system(),
-            self.__toplevel.platform().desktop_environment())
 
         self.__quick_mode = self.__is_quick_mode()
         self.__style_saved = self.__toplevel.style_sheet()
@@ -351,7 +343,7 @@ class ContextMenu(QtWidgets.QFrame):
         self.__shadow_effect.set_blur_radius(5)
         self.__shadow_effect.set_offset(QtCore.QPointF(0.0, 0.0))
 
-        if self.__gui_env.settings().window_is_dark():
+        if self.__toplevel.is_dark():
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 100))
         else:
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 70))

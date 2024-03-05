@@ -149,8 +149,8 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
         if self.set_style_button.text() == 'Set style':
             self.set_style_sheet(
                 'MainWindow {'
-                '  background-color: rgba(20, 80, 50, 100);'
-                '  border: 1px solid rgba(50, 110, 80, 100);'
+                '  background-color: rgba(20, 80, 50, 150);'
+                '  border: 1px solid rgba(50, 110, 80, 200);'
                 '  border-radius: 10px;}'
                 'QToolButton {'
                 '  background: transparent;'
@@ -181,8 +181,7 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
                 '  border-radius: 3px;}'
                 'QPushButton:hover {'
                 '  border: 1px solid rgba(50, 110, 80, 255);'
-                '  background-color: rgba(20, 80, 50, 200);}'
-            )
+                '  background-color: rgba(20, 80, 50, 150);}')
             self.set_style_button.set_text('Reset style')
             self.set_sideview_color((0, 0, 0, 20))
             self.texture.update()
