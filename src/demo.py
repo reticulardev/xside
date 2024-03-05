@@ -146,16 +146,11 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
         self.context_menu_label.set_text(text)
 
     def on_set_style_button(self) -> None:
-        color = self.palette().color(
-            QtGui.QPalette.Active, QtGui.QPalette.Highlight)
-        accent_color = "#{:02x}{:02x}{:02x}".format(
-            color.red(), color.green(), color.blue())
-
         if self.set_style_button.text() == 'Set style':
             self.set_style_sheet(
                 'MainWindow {'
-                '  background-color: rgba(44, 44, 50, 100);'
-                '  border: 1px solid #283690;'
+                '  background-color: rgba(20, 80, 50, 100);'
+                '  border: 1px solid rgba(50, 110, 80, 100);'
                 '  border-radius: 10px;}'
                 'QToolButton {'
                 '  background: transparent;'
@@ -168,21 +163,28 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
                 '  background-color: rgba(100, 100, 100, 0.3);}'
                 'ContextMenu {'
                 '  padding: 4;'
-                '  background-color: rgba(44, 44, 50, 0.9);'
-                '  border: 1px solid #283690;}'
+                '  background-color: rgba(20, 80, 50, 100);'
+                '  border: 1px solid rgba(50, 110, 80, 100);}'
                 'ContextMenuButton:hover {'
-                '  border: 1px solid green;'
-                '  background-color: darkgreen;}'
+                '  border: 1px solid rgba(50, 110, 80, 200);'
+                '  background-color: rgba(20, 80, 50, 200);}'
+                'ContextMenuSeparatorLine {'
+                '  color: rgba(50, 110, 80, 100);}'
                 'ContextMenuButtonLabel {'
                 '  color: white;}'
                 'ContextMenuButtonLabel:hover {'
-                '  color: yellow;}'
+                '  color: rgba(150, 255, 150, 255);}'
                 'QPushButton {'
-                '  background-color: #363636;}'
+                '  border: 1px solid rgba(50, 110, 80, 200);'
+                '  background-color: rgba(20, 80, 50, 100);'
+                '  padding: 3px;'
+                '  border-radius: 3px;}'
                 'QPushButton:hover {'
-                f' background-color: {accent_color};' + '}')
+                '  border: 1px solid rgba(50, 110, 80, 255);'
+                '  background-color: rgba(20, 80, 50, 200);}'
+            )
             self.set_style_button.set_text('Reset style')
-            self.set_sideview_color((255, 0, 0, 100))
+            self.set_sideview_color((0, 0, 0, 20))
             self.texture.update()
         else:
             self.reset_style()

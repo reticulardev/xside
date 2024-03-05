@@ -113,8 +113,15 @@ class Texture(object):
 					bg_color = x + ';'
 					break
 
+			rgba = None
 			if bg_color and 'rgba' in bg_color:
 				rgba = color.rgba_str_to_tuple(bg_color)
+			elif bg_color and '#' in bg_color:
+				hexa = bg_color.replace(' ', '').split(':')[-1].split(';')[0]
+				print('HEX:', hexa)
+				rgba = color.hex_to_rgba(hexa)
+
+			if rgba:
 				self.__alpha = rgba[3]
 
 				n_alpha = 245 if self.__toplevel.is_dark() else 225
