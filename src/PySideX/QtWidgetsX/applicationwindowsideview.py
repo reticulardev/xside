@@ -128,7 +128,7 @@ class OverlaySideView(QtWidgets.QFrame):
         self.anim_open.set_end_value(
             QtCore.QSize(
                 self.__toplevel.width() - 1, self.__toplevel.height()))
-        self.anim_open.set_duration(50)
+        self.anim_open.set_duration(40)
         self.anim_open_group.add_animation(self.anim_open)
         self.anim_open_group.start()
 

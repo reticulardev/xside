@@ -106,27 +106,28 @@ class Texture(object):
 
 	def __background_color(self) -> str:
 		toplevel_style = self.__style_parser.widget_scope('MainWindow')
-		bg_color = None
-		for x in toplevel_style.split(';'):
-			if 'background-color' in x:
-				bg_color = x + ';'
-				break
+		if toplevel_style:
+			bg_color = None
+			for x in toplevel_style.split(';'):
+				if 'background-color' in x:
+					bg_color = x + ';'
+					break
 
-		if bg_color and 'rgba' in bg_color:
-			rgba = color.rgba_str_to_tuple(bg_color)
-			self.__alpha = rgba[3]
+			if bg_color and 'rgba' in bg_color:
+				rgba = color.rgba_str_to_tuple(bg_color)
+				self.__alpha = rgba[3]
 
-			n_alpha = 245 if self.__toplevel.is_dark() else 225
-			if self.__alpha > n_alpha:
-				self.__alpha = n_alpha
+				n_alpha = 245 if self.__toplevel.is_dark() else 225
+				if self.__alpha > n_alpha:
+					self.__alpha = n_alpha
 
-			rgb = ", ".join([str(x) for x in rgba[:-1]])
-			bg_color = f'background-color: rgba({rgb}, {self.__alpha});'
-			self.__toplevel_background_color = (
-				int(rgba[-4]), int(rgba[-3]), int(rgba[-2]), self.__alpha)
+				rgb = ", ".join([str(x) for x in rgba[:-1]])
+				bg_color = f'background-color: rgba({rgb}, {self.__alpha});'
+				self.__toplevel_background_color = (
+					int(rgba[-4]), int(rgba[-3]), int(rgba[-2]), self.__alpha)
 
-		if bg_color:
-			return 'background: url();' + bg_color
+			if bg_color:
+				return 'background: url();' + bg_color
 		return 'background: url();'
 
 	def __build_texture(self) -> bool:
@@ -212,10 +213,11 @@ class Texture(object):
 
 	def __get_normal_style(self) -> str:
 		toplevel_style = self.__style_parser.widget_scope('MainWindow')
-		toplevel_style += self.__background_color()
-		style = self.__style_sheet + (
-			'MainWindow {' f'{toplevel_style}' '}')
-		self.__style_parser.set_style_sheet(style)
+		if toplevel_style:
+			toplevel_style += self.__background_color()
+			style = self.__style_sheet + (
+				'MainWindow {' f'{toplevel_style}' '}')
+			self.__style_parser.set_style_sheet(style)
 		return self.__style_parser.style_sheet()
 
 	def __screenshots(self) -> bool:
@@ -256,14 +258,16 @@ class Texture(object):
 		if self.__enable_texture:
 			self.__windows = self.__valid_windows()
 			if self.__build_texture():
-				self.__style_parser.set_style_sheet(
-					'MainWindow {'
-					f'{self.__style_parser.widget_scope("MainWindow")}'
-					f'background: url({self.__texture_url}) no-repeat;'
-					'}')
-				self.__toplevel.set_style_sheet(
-					self.__style_parser.style_sheet())
-				self.__is_using_texture = True
+				scope = self.__style_parser.widget_scope("MainWindow")
+				if scope:
+					self.__style_parser.set_style_sheet(
+						'MainWindow {'
+						f'{scope}'
+						f'background: url({self.__texture_url}) no-repeat;'
+						'}')
+					self.__toplevel.set_style_sheet(
+						self.__style_parser.style_sheet())
+					self.__is_using_texture = True
 
 		self.__updating = False
 
