@@ -1,7 +1,6 @@
 .directory
 .idea/
-textures/
-src/PySideX/QtWidgetsX/modules/textures/
+src/PySideX/QtWidgetsX/modules/tmp/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

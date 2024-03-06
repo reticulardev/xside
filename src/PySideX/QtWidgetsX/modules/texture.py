@@ -63,7 +63,7 @@ class Texture(object):
 		self.__style_parser = StyleParser(self.__style_sheet)
 
 		self.__is_using_texture = False
-		self.__textures_path = os.path.join(BASE_DIR, 'textures')
+		self.__textures_path = os.path.join(BASE_DIR, 'tmp')
 		self.__texture_url = os.path.join(self.__textures_path, 'texture.png')
 		self.__texture_image = None
 		self.__toplevel_background_color = None
