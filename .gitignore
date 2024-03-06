@@ -1,6 +1,5 @@
 .directory
 .idea/
-src/PySideX/QtWidgetsX/modules/tmp/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
