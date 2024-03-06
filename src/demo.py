@@ -116,13 +116,13 @@ class SideViewWindow(QtWidgetsX.ApplicationWindowSideView):
         self.qcontext_menu.add_separator()
         self.qcontext_menu.add_group_action(
             'color', 'RED', lambda: self.__context_menu_cal('RED'),
-            icon=QtGui.QIcon('red.png'))
+            icon=QtGui.QIcon(os.path.join(SRC_DIR, 'red.png')))
         self.qcontext_menu.add_group_action(
             'color', 'GREEN', lambda: self.__context_menu_cal('GREEN'),
-            icon=QtGui.QIcon('green.png'))
+            icon=QtGui.QIcon(os.path.join(SRC_DIR, 'green.png')))
         self.qcontext_menu.add_group_action(
             'color', 'BLUE', lambda: self.__context_menu_cal('BLUE'),
-            icon=QtGui.QIcon('blue.png'))
+            icon=QtGui.QIcon(os.path.join(SRC_DIR, 'blue.png')))
         self.qcontext_menu.add_group_action(
             'color', 'More', lambda: self.__context_menu_cal('More'),
             icon=QtGui.QIcon.from_theme('list-add-symbolic'))
