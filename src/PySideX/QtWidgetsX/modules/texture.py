@@ -235,7 +235,8 @@ class Texture(object):
 				try:
 					cli.output_by_args([
 						'import', '-window', window.id_, '-quality', '1',
-						os.path.join(self.__textures_path, window.id_ + '.png')])
+						os.path.join(
+							self.__textures_path, window.id_ + '.png')])
 				except Exception as err:
 					logging.error(err)
 			return True
