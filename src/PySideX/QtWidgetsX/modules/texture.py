@@ -216,7 +216,8 @@ class Texture(object):
 
 			elif event.type() == QtCore.QEvent.Close:
 				for texture in os.listdir(self.__textures_path):
-					os.remove(os.path.join(self.__textures_path, texture))
+					if texture != 'tmp':
+						os.remove(os.path.join(self.__textures_path, texture))
 
 	def __get_normal_style(self) -> str:
 		toplevel_style = self.__style_parser.widget_scope('MainWindow')
