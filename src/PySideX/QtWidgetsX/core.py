@@ -248,8 +248,8 @@ class BaseTopFrame(QtWidgets.QFrame):
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
         self.set_window_flags(QtCore.Qt.FramelessWindowHint)
         self.set_contents_margins(0, 0, 0, 0)
-        self.set_minimum_width(100)
-        self.set_minimum_height(100)
+        self.set_minimum_width(10)
+        self.set_minimum_height(10)
 
         self.__is_shadow_has_added = True
 
@@ -370,12 +370,3 @@ class BaseTopFrame(QtWidgets.QFrame):
             self.__right_shadow.set_visible(True)
 
             self.__is_shadow_has_added = True
-
-
-if __name__ == '__main__':
-    import sys
-
-    application = QtWidgets.QApplication(sys.argv)
-    fr = BaseTopFrame()
-    fr.show()
-    sys.exit(application.exec())

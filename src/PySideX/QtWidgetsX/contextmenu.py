@@ -6,6 +6,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
+from PySideX.QtWidgetsX.topframe import TopFrame
 from PySideX.QtWidgetsX.label import ContextLabel
 from PySideX.QtWidgetsX.tooltip import Tooltip
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
@@ -258,7 +259,7 @@ class ContextMenuGroup(QtWidgets.QFrame):
         self.__hbox.add_widget(widget)
 
 
-class ContextMenu(QtWidgets.QFrame):
+class ContextMenu(TopFrame):
     """..."""
 
     def __init__(
@@ -296,18 +297,13 @@ class ContextMenu(QtWidgets.QFrame):
         self.__quick_buttons_on_top = True
 
         # Main layout
-        self.__main_layout = QtWidgets.QHBoxLayout()
-        self.set_layout(self.__main_layout)
-
-        self.__main_widget = QtWidgets.QFrame()
-        self.__main_widget.set_object_name('ContextMenu')
-        self.__main_layout.add_widget(self.__main_widget)
+        self.central_widget().set_object_name('ContextMenu')
 
         # Layout
         self.__menu_context_box = QtWidgets.QVBoxLayout()
         self.__menu_context_box.set_contents_margins(0, 0, 0, 0)
         self.__menu_context_box.set_spacing(0)
-        self.__main_widget.set_layout(self.__menu_context_box)
+        self.central_widget().set_layout(self.__menu_context_box)
 
         # Top
         self.__quick_actions_top_hbox = QtWidgets.QHBoxLayout()
@@ -347,7 +343,7 @@ class ContextMenu(QtWidgets.QFrame):
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 100))
         else:
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 70))
-        self.__main_widget.set_graphics_effect(self.__shadow_effect)
+        self.central_widget().set_graphics_effect(self.__shadow_effect)
 
         self.__toplevel.set_style_signal.connect(self.__set_style_signal)
         self.__toplevel.reset_style_signal.connect(self.__set_style_signal)
@@ -412,7 +408,7 @@ class ContextMenu(QtWidgets.QFrame):
         self.__point_x = point.x()
         self.__point_y = point.y()
 
-        self.__main_widget.set_style_sheet(self.__set_style())
+        self.central_widget().set_style_sheet(self.__set_style())
         for btn in self.__action_buttons:
             if btn.tooltip_widget():
                 btn.tooltip_widget().set_style_sheet(self.__style_saved)

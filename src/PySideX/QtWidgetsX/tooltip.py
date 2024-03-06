@@ -7,12 +7,13 @@ from __feature__ import snake_case
 
 from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
 from PySideX.QtWidgetsX.label import ContextLabel
+from PySideX.QtWidgetsX.topframe import TopFrame
 from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
 from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
 import PySideX.QtWidgetsX.modules.color as color
 
 
-class Tooltip(QtWidgets.QFrame):
+class Tooltip(TopFrame):
     """..."""
     def __init__(
             self,
@@ -47,14 +48,16 @@ class Tooltip(QtWidgets.QFrame):
         self.__main_box = QtWidgets.QHBoxLayout()
         self.set_layout(self.__main_box)
 
-        self.__main_widget = QtWidgets.QFrame()
-        self.__main_widget.set_object_name('QTooltip')
-        self.__main_box.add_widget(self.__main_widget)
+        # self.__main_widget = QtWidgets.QFrame()
+        # self.__main_widget.set_object_name('QTooltip')
+        # self.__main_box.add_widget(self.__main_widget)
+
+        self.central_widget().set_object_name('QTooltip')
 
         # Layout
         self.__body_box = QtWidgets.QVBoxLayout()
         self.__body_box.set_contents_margins(0, 0, 0, 0)
-        self.__main_widget.set_layout(self.__body_box)
+        self.central_widget().set_layout(self.__body_box)
 
         # Label box
         self.__label_box = QtWidgets.QHBoxLayout()
@@ -81,7 +84,7 @@ class Tooltip(QtWidgets.QFrame):
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 100))
         else:
             self.__shadow_effect.set_color(QtGui.QColor(10, 10, 10, 70))
-        self.__main_widget.set_graphics_effect(self.__shadow_effect)
+        self.central_widget().set_graphics_effect(self.__shadow_effect)
 
         self.__toplevel.set_style_signal.connect(self.__set_style_signal)
         self.__toplevel.reset_style_signal.connect(self.__set_style_signal)
@@ -89,7 +92,7 @@ class Tooltip(QtWidgets.QFrame):
 
     def exec(self) -> None:
         """..."""
-        self.__main_widget.set_style_sheet(self.__set_style())
+        self.central_widget().set_style_sheet(self.__set_style())
         point = QtGui.QCursor.pos()
         self.show()
         self.move(

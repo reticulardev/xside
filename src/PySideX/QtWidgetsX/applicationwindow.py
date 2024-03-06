@@ -53,9 +53,6 @@ class ApplicationWindow(BaseWindow):
 
         self.__timer = QtCore.QTimer()
 
-        # Layout
-        self.__central_widget = self.central_widget()
-
         # Style
         self.__dynamic_style = DynamicStyle(self)
         self.__style_sheet = self.__dynamic_style.build_style()
@@ -93,10 +90,10 @@ class ApplicationWindow(BaseWindow):
         self.__reset_style_properties()
 
         if self.is_maximized() or self.is_full_screen():
-            self.__central_widget.set_style_sheet(
+            self.central_widget().set_style_sheet(
                 self.__style_sheet_fullscreen)
         else:
-            self.__central_widget.set_style_sheet(self.__style_sheet)
+            self.central_widget().set_style_sheet(self.__style_sheet)
 
         self.reset_style_signal.emit(0)
 
@@ -119,10 +116,10 @@ class ApplicationWindow(BaseWindow):
             self.__style_sheet = self.__style_sheet_fullscreen
 
         if self.is_maximized() or self.is_full_screen():
-            self.__central_widget.set_style_sheet(
+            self.central_widget().set_style_sheet(
                 self.__style_sheet_fullscreen)
         else:
-            self.__central_widget.set_style_sheet(self.__style_sheet)
+            self.central_widget().set_style_sheet(self.__style_sheet)
 
         self.set_style_signal.emit(0)
 
@@ -264,7 +261,7 @@ class ApplicationWindow(BaseWindow):
         self.event_filter_signal.emit(event)
 
         if self.__is_server_side_decorated:
-            self.__central_widget.set_style_sheet(self.__style_sheet)
+            self.central_widget().set_style_sheet(self.__style_sheet)
             if event.type() == QtCore.QEvent.Resize:
                 self.resize_event_signal.emit(event)
         else:
@@ -289,12 +286,12 @@ class ApplicationWindow(BaseWindow):
                 self.resize_event_signal.emit(0)
 
                 if self.is_maximized() or self.is_full_screen():
-                    self.__central_widget.set_style_sheet(
+                    self.central_widget().set_style_sheet(
                         self.__style_sheet_fullscreen)
 
                     self.__window_shadow_visible(False)
                 else:
-                    self.__central_widget.set_style_sheet(self.__style_sheet)
+                    self.central_widget().set_style_sheet(self.__style_sheet)
 
                     if not self.__is_server_side_decorated:
                         self.__window_shadow_visible(True)
