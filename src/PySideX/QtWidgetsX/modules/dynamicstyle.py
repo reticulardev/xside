@@ -171,7 +171,8 @@ class DynamicStyle(object):
 
     def build_style(self) -> str:
         """..."""
-        if self.__toplevel.is_server_side_decorated():
+        att = hasattr(self.__toplevel, 'is_server_side_decorated')
+        if att and self.__toplevel.is_server_side_decorated():
             window_style = (
                 'MainWindow {'
                 'background-color: rgba('

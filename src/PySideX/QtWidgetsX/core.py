@@ -238,3 +238,144 @@ class BaseWindow(QtWidgets.QMainWindow):
             self.__right_shadow.set_visible(True)
 
             self.__is_shadow_has_added = True
+
+
+class BaseTopFrame(QtWidgets.QFrame):
+    """..."""
+    def __init__(self, *args, **kwargs) -> None:
+        """..."""
+        super().__init__(*args, **kwargs)
+        self.set_attribute(QtCore.Qt.WA_TranslucentBackground)
+        self.set_window_flags(QtCore.Qt.FramelessWindowHint)
+        self.set_contents_margins(0, 0, 0, 0)
+        self.set_minimum_width(100)
+        self.set_minimum_height(100)
+
+        self.__is_shadow_has_added = True
+
+        self.__border_radius = (10, 10, 0, 0)
+        self.__width = 500
+        self.__height = 500
+        self.__shadow_size = 8
+
+        # self.__mainwidget = QtWidgets.QWidget()
+        # self.__mainwidget.set_contents_margins(0, 0, 0, 0)
+        # self.set_central_widget(self.__mainwidget)
+
+        self.__main_box = QtWidgets.QVBoxLayout()
+        self.__main_box.set_contents_margins(0, 0, 0, 0)
+        self.__main_box.set_spacing(0)
+        self.set_layout(self.__main_box)
+
+        # Top
+        self.__top_box = QtWidgets.QHBoxLayout()
+        self.__main_box.add_layout(self.__top_box)
+
+        self.__top_left_shadow = Shadow('top-left')
+        self.__top_left_shadow.set_fixed_width(self.__shadow_size)
+        self.__top_left_shadow.set_fixed_height(self.__shadow_size)
+        self.__top_box.add_widget(self.__top_left_shadow)
+
+        self.__top_shadow = Shadow('top')
+        self.__top_shadow.set_fixed_height(self.__shadow_size)
+        self.__top_box.add_widget(self.__top_shadow)
+
+        self.__top_right_shadow = Shadow('top-right')
+        self.__top_right_shadow.set_fixed_width(self.__shadow_size)
+        self.__top_right_shadow.set_fixed_height(self.__shadow_size)
+        self.__top_box.add_widget(self.__top_right_shadow)
+
+        # Left
+        self.__left_center_right_box = QtWidgets.QHBoxLayout()
+        self.__main_box.add_layout(self.__left_center_right_box)
+
+        self.__left_shadow = Shadow('left')
+        self.__left_shadow.set_fixed_width(self.__shadow_size)
+        self.__left_center_right_box.add_widget(self.__left_shadow)
+
+        # Center
+        self.__center_shadow = Shadow('center')
+        self.__center_shadow.resize(self.__width, self.__height)
+        self.__left_center_right_box.add_widget(self.__center_shadow)
+
+        self.__central_widget_box = QtWidgets.QVBoxLayout()
+        self.__central_widget_box.set_contents_margins(0, 0, 0, 0)
+        self.__central_widget_box.set_spacing(0)
+        self.__center_shadow.set_layout(self.__central_widget_box)
+
+        self.__central_widget = MainWindow()
+        self.__central_widget_box.add_widget(self.__central_widget)
+
+        # Right
+        self.__right_shadow = Shadow('right')
+        self.__right_shadow.set_fixed_width(self.__shadow_size)
+        self.__left_center_right_box.add_widget(self.__right_shadow)
+
+        # Bottom
+        self.__bottom_box = QtWidgets.QHBoxLayout()
+        self.__main_box.add_layout(self.__bottom_box)
+
+        self.__bottom_left_shadow = Shadow('bottom-left')
+        self.__bottom_left_shadow.set_fixed_width(self.__shadow_size)
+        self.__bottom_left_shadow.set_fixed_height(self.__shadow_size)
+        self.__bottom_box.add_widget(self.__bottom_left_shadow)
+
+        self.__bottom_shadow = Shadow('bottom')
+        self.__bottom_shadow.set_fixed_height(self.__shadow_size)
+        self.__bottom_box.add_widget(self.__bottom_shadow)
+
+        self.__bottom_right_shadow = Shadow('bottom-right')
+        self.__bottom_right_shadow.set_fixed_width(self.__shadow_size)
+        self.__bottom_right_shadow.set_fixed_height(self.__shadow_size)
+        self.__bottom_box.add_widget(self.__bottom_right_shadow)
+
+    def central_widget(self) -> QtWidgets:
+        """..."""
+        return self.__central_widget
+
+    def is_shadow_visible(self) -> bool:
+        """..."""
+        return self.__is_shadow_has_added
+
+    def set_shadow_as_hidden(self, hide_value: bool) -> None:
+        """..."""
+        if hide_value:
+            self.__center_shadow.set_background_shadow_visible(False)
+
+            self.__bottom_left_shadow.set_visible(False)
+            self.__bottom_shadow.set_visible(False)
+            self.__bottom_right_shadow.set_visible(False)
+
+            self.__top_left_shadow.set_visible(False)
+            self.__top_shadow.set_visible(False)
+            self.__top_right_shadow.set_visible(False)
+
+            self.__left_shadow.set_visible(False)
+            self.__right_shadow.set_visible(False)
+
+            self.__is_shadow_has_added = False
+
+        else:
+            self.__center_shadow.set_background_shadow_visible(True)
+
+            self.__bottom_left_shadow.set_visible(True)
+            self.__bottom_shadow.set_visible(True)
+            self.__bottom_right_shadow.set_visible(True)
+
+            self.__top_left_shadow.set_visible(True)
+            self.__top_shadow.set_visible(True)
+            self.__top_right_shadow.set_visible(True)
+
+            self.__left_shadow.set_visible(True)
+            self.__right_shadow.set_visible(True)
+
+            self.__is_shadow_has_added = True
+
+
+if __name__ == '__main__':
+    import sys
+
+    application = QtWidgets.QApplication(sys.argv)
+    fr = BaseTopFrame()
+    fr.show()
+    sys.exit(application.exec())

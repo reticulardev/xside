@@ -342,17 +342,16 @@ class Application(object):
 
         self.application = QtWidgets.QApplication(args)
 
-        self.base_window = QtWidgetsX.ApplicationWindow()
+        self.topframe = QtWidgetsX.TopFrame()
         self.window = Window()
-        self.sideview_window = SideViewWindow(
-            server_side_decoration=False, follow_platform=True)
+        self.sideview_window = SideViewWindow()
 
     def main(self) -> None:
         """Start the app
 
         Sets basic window details and starts the application.
         """
-        # self.base_window.show()
+        # self.topframe.show()
         # self.window.show()
         self.sideview_window.show()
 
