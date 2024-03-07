@@ -1,0 +1,8 @@
+QControlButton {
+  background: transparent;
+  border-radius: 10px;
+  border: 0px;
+  }
+QControlButton:hover {
+  background-color: rgba(127, 127, 127, 0.5);
+  }

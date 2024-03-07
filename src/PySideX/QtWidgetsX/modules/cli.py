@@ -16,6 +16,7 @@ def output_by_args(args: list) -> str | None:
     except ValueError as er:
         print(er)
         print(f'Error in command args: "{command_args}"')
+        return None
     else:
         if not stderr.decode():
             return stdout.decode().strip().strip("'").strip()
