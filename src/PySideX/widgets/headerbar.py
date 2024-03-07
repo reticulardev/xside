@@ -5,8 +5,8 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from PySideX.modules.env import GuiEnv
-from PySideX.widgets.windowcontrolbuttons import WindowControlButtons
-from PySideX.widgets.windowmovearea import WindowMoveArea
+from PySideX.widgets.controlbuttons import ControlButtons
+from PySideX.widgets.movearea import MoveArea
 
 
 class HeaderBar(QtWidgets.QFrame):
@@ -54,7 +54,7 @@ class HeaderBar(QtWidgets.QFrame):
         self.__bar_item_layout_center.set_contents_margins(0, 0, 0, 0)
         self.__layout.add_layout(self.__bar_item_layout_center)
 
-        self.__window_move_area = WindowMoveArea(
+        self.__window_move_area = MoveArea(
             self.__toplevel)
         self.__bar_item_layout_center.add_widget(self.__window_move_area, 9)
 
@@ -71,11 +71,11 @@ class HeaderBar(QtWidgets.QFrame):
         self.__bar_item_layout_right.set_contents_margins(0, 0, 0, 0)
         self.__layout.add_layout(self.__bar_item_layout_right)
 
-        self.__left_ctrl_buttons = WindowControlButtons(
+        self.__left_ctrl_buttons = ControlButtons(
             self.__toplevel, side='left')
         self.__bar_item_layout_left.add_widget(self.__left_ctrl_buttons)
 
-        self.__right_ctrl_buttons = WindowControlButtons(
+        self.__right_ctrl_buttons = ControlButtons(
             self.__toplevel, side='right')
         self.__bar_item_layout_right.add_widget(self.__right_ctrl_buttons)
 
@@ -209,7 +209,7 @@ class HeaderBar(QtWidgets.QFrame):
     def set_text(self, text: str) -> None:
         """Sets a text in the center
 
-        :param text: The text to be shown in the center of the WindowMoveArea
+        :param text: The text to be shown in the center of the MoveArea
         """
         if not self.__toplevel.is_server_side_decorated():
             self.__window_move_area_text.set_text(text)
@@ -223,9 +223,9 @@ class HeaderBar(QtWidgets.QFrame):
         self.__left_ctrl_buttons.update_window_icon(icon)
 
     def text(self) -> str:
-        """Get the WindowMoveArea's text
+        """Get the MoveArea's text
 
-        The text shown in the center of the WindowMoveArea
+        The text shown in the center of the MoveArea
         """
         return self.__window_move_area.text()
 

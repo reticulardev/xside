@@ -11,7 +11,7 @@ class WindowIcon(QtWidgets.QLabel):
         super().__init__(*args, **kwargs)
 
 
-class WindowControlButtons(QtWidgets.QFrame):
+class ControlButtons(QtWidgets.QFrame):
     """window control buttons
 
     Contains minimize, maximize and close buttons

@@ -3,7 +3,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 
-class WindowMoveArea(QtWidgets.QFrame):
+class MoveArea(QtWidgets.QFrame):
     """Window move area"""
     mouse_double_click_event_signal = QtCore.Signal(object)
     mouse_press_event_signal = QtCore.Signal(object)
