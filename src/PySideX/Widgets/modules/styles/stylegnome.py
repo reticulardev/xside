@@ -4,8 +4,8 @@ import logging
 from PySide6 import QtGui
 from __feature__ import snake_case
 
-from PySideX import Widgets, Tools
 import PySideX.Widgets.modules.styles.style as style
+import PySideX.Widgets.modules.cli as cli
 
 
 class EnvStyleGnome(style.EnvStyle):
@@ -67,7 +67,7 @@ class EnvStyleGnome(style.EnvStyle):
 
         (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
         """
-        button_layout = Tools.cli.output_by_args(
+        button_layout = cli.output_by_args(
             ["gsettings", "get", "org.gnome.desktop.wm.preferences",
              "button-layout"]).split(':')
 

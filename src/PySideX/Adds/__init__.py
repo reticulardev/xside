@@ -1,1 +1,1 @@
-from PySideX.Adds.texture import Texture
+from .texture import Texture

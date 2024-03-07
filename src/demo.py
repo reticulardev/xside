@@ -5,7 +5,7 @@ import sys
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX import Widgets, Adds, Tools
+from PySideX import Widgets, Adds
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
@@ -147,7 +147,7 @@ class SideViewWindow(Widgets.ApplicationWindowSideView):
         if self.set_style_button.text() == 'Set style':
             self.set_style_sheet(
                 'MainWindow {'
-                '  background-color: rgba(20, 80, 50, 150);'
+                '  background-color: rgba(20, 80, 50, 100);'
                 '  border: 1px solid rgba(50, 110, 80, 200);'
                 '  border-radius: 10px;}'
                 'QToolButton {'

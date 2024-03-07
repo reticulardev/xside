@@ -1,9 +1,8 @@
-from PySideX.Widgets.applicationwindow import ApplicationWindow
-from PySideX.Widgets.applicationwindowsideview import (
-    ApplicationWindowSideView)
-from PySideX.Widgets.controlbutton import ControlButton
-from PySideX.Widgets.headerbar import HeaderBar
-from PySideX.Widgets.contextmenu import ContextMenu
-from PySideX.Widgets.topframe import TopFrame
-from PySideX.Widgets.windowcontrolbuttons import WindowControlButtons
-from PySideX.Widgets.windowmovearea import WindowMoveArea
+from .applicationwindow import ApplicationWindow
+from .applicationwindowsideview import ApplicationWindowSideView
+from .controlbutton import ControlButton
+from .headerbar import HeaderBar
+from .contextmenu import ContextMenu
+from .topframe import TopFrame
+from .windowcontrolbuttons import WindowControlButtons
+from .windowmovearea import WindowMoveArea

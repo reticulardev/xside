@@ -11,7 +11,7 @@ from PIL import Image, ImageFilter, ImageEnhance
 from PySide6 import QtCore
 from __feature__ import snake_case
 
-from PySideX import Widgets, Tools
+from PySideX import Widgets
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 sys.path.append(BASE_DIR.as_posix())
@@ -55,7 +55,6 @@ class Texture(object):
 		self.__toplevel_id = hex(self.__toplevel.win_id()).replace('0x', '0x0')
 		self.__screen_w = self.__toplevel.screen().size().width()
 		self.__screen_h = self.__toplevel.screen().size().height()
-		self.__cli = Tools.cli
 
 		self.__style_sheet = self.__toplevel.style_sheet()
 		self.__style_parser = Widgets.modules.dynamicstyle.StyleParser(
@@ -166,6 +165,27 @@ class Texture(object):
 					else:
 						return False
 
+	@staticmethod
+	def __cli_output_by_args(args: list) -> str | None:
+		"""output of command arguments
+
+		by_args(['echo', '$HOME']) -> "/home/user"
+
+		:param args: list args like: ['ls', '-l']
+		"""
+		try:
+			command = subprocess.Popen(
+				args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			stdout, stderr = command.communicate()
+		except ValueError as er:
+			print(er)
+			print(f'Error in command args: "{command_args}"')
+			return None
+		else:
+			if not stderr.decode():
+				return stdout.decode().strip().strip("'").strip()
+			return None
+
 	def __composite_background_color(self, img) -> tuple:
 		if self.__toplevel_background_color:
 			if img.width == self.__toplevel.width(
@@ -233,7 +253,7 @@ class Texture(object):
 		if self.__windows:
 			for window in self.__windows:
 				try:
-					self.__cli.output_by_args([
+					self.__cli_output_by_args([
 						'import', '-window', window.id_, '-quality', '1',
 						os.path.join(
 							self.__textures_path, window.id_ + '.png')])
@@ -284,11 +304,11 @@ class Texture(object):
 		# wmctrl_lg: marks windows that are not windows using an '-1'
 		# xprop_root: list windows in order (z-index)
 		try:
-			wmctrl_lg = self.__cli.output_by_args(
+			wmctrl_lg = self.__cli_output_by_args(
 				['wmctrl', '-lG']).split('\n')
 			xprop_root = [
 				x.split()[-1].replace('0x', '0x0') for x in [
-					x for x in self.__cli.output_by_args(
+					x for x in self.__cli_output_by_args(
 						['xprop', '-root']).split('\n')
 					if '_NET_CLIENT_LIST_STACKING(WINDOW)' in x][0].split(',')
 			]
@@ -310,7 +330,7 @@ class Texture(object):
 				else:
 					try:
 						minimized_state = [
-							x for x in self.__cli.output_by_args(
+							x for x in self.__cli_output_by_args(
 								['xwininfo', '-id', w.id_, '-stats']
 							).split('\n') if 'Map State: IsUnMapped' in x]
 					except Exception as err:
