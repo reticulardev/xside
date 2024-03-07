@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import PySideX.QtWidgetsX.modules.styles.style as style
+import PySideX.Widgets.modules.styles.style as style
 
 
 class EnvStyleMac(style.EnvStyle):

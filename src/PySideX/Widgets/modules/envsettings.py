@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import PySideX.QtWidgetsX.modules.styles as styles
+import PySideX.Widgets.modules.styles as styles
 
 
 class GuiEnv(object):
@@ -36,7 +36,7 @@ class GuiEnv(object):
                 if self.__desktop_environment == 'mate':
                     return styles.EnvStyleMate()
 
-                return EnvSettingsGnome()
+                return EnvStyleGnome()
 
             if self.__operational_system == 'mac':
                 return styles.EnvStyleMac()

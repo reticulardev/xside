@@ -4,8 +4,8 @@ import logging
 from PySide6 import QtGui
 from __feature__ import snake_case
 
-import PySideX.QtWidgetsX.modules.color as color
-import PySideX.QtWidgetsX.modules.styles.style as style
+import PySideX.Widgets.modules.color as color
+import PySideX.Widgets.modules.styles.style as style
 
 
 class EnvStyleXFCE(style.EnvStyle):

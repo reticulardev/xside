@@ -2,10 +2,10 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.QtWidgetsX.core import BaseTopFrame
-from PySideX.QtWidgetsX.modules.platform import Platform
-from PySideX.QtWidgetsX.modules.dynamicstyle import DynamicStyle
-from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
+from PySideX.Widgets.core import BaseTopFrame
+from PySideX.Widgets.modules.platform import Platform
+from PySideX.Widgets.modules.dynamicstyle import DynamicStyle
+from PySideX.Widgets.modules.dynamicstyle import StyleParser
 
 
 class TopFrame(BaseTopFrame):

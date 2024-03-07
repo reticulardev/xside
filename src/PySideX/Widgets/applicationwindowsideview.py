@@ -7,11 +7,11 @@ from PIL import Image
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
-import PySideX.QtWidgetsX.modules.color as color
-from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
-from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
-from PySideX.QtWidgetsX.headerbar import HeaderBar
+from PySideX.Widgets.modules.envsettings import GuiEnv
+import PySideX.Widgets.modules.color as color
+from PySideX.Widgets.modules.dynamicstyle import StyleParser
+from PySideX.Widgets.applicationwindow import ApplicationWindow
+from PySideX.Widgets.headerbar import HeaderBar
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 

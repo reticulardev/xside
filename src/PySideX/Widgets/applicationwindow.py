@@ -2,12 +2,12 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-import PySideX.QtWidgetsX.modules.color as color
-from PySideX.QtWidgetsX.modules.platform import Platform
-from PySideX.QtWidgetsX.modules.envsettings import GuiEnv
-from PySideX.QtWidgetsX.modules.dynamicstyle import DynamicStyle
-from PySideX.QtWidgetsX.modules.dynamicstyle import StyleParser
-from PySideX.QtWidgetsX.core import BaseWindow
+import PySideX.Widgets.modules.color as color
+from PySideX.Widgets.modules.platform import Platform
+from PySideX.Widgets.modules.envsettings import GuiEnv
+from PySideX.Widgets.modules.dynamicstyle import DynamicStyle
+from PySideX.Widgets.modules.dynamicstyle import StyleParser
+from PySideX.Widgets.core import BaseWindow
 
 
 class ApplicationWindow(BaseWindow):

@@ -2,7 +2,7 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.QtWidgetsX.applicationwindow import ApplicationWindow
+from PySideX.Widgets.applicationwindow import ApplicationWindow
 
 
 class WindowMoveArea(QtWidgets.QFrame):
