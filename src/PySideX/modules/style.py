@@ -7,8 +7,8 @@ import sys
 from PySide6 import QtGui, QtWidgets
 from __feature__ import snake_case
 
-import PySideX.Widgets.modules.color as color
-from PySideX.Widgets.modules.envsettings import GuiEnv
+import PySideX.modules.color as color
+import PySideX.modules.env as env
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -103,13 +103,13 @@ class StyleParser(object):
         return 'StyleParser(object)'
 
 
-class DynamicStyle(object):
+class Style(object):
     """..."""
     def __init__(self, toplevel: QtWidgets.QMainWindow) -> None:
         """..."""
         self.__toplevel = toplevel
 
-        self.__env = GuiEnv(
+        self.__env = env.GuiEnv(
             self.__toplevel.platform().operational_system(),
             self.__toplevel.platform().desktop_environment(),
             self.__toplevel.follow_platform())

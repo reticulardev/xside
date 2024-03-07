@@ -4,7 +4,7 @@ import logging
 from PySide6 import QtGui
 from __feature__ import snake_case
 
-import PySideX.Widgets.modules.styles.stylexfce as stylexfce
+import PySideX.modules.styles.stylexfce as stylexfce
 
 
 class EnvStyleMate(stylexfce.EnvStyleXFCE):

@@ -5,13 +5,13 @@ import sys
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX import Widgets, Adds
+from PySideX import widgets, adds
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)
 
 
-class SideViewWindow(Widgets.ApplicationWindowSideView):
+class SideViewWindow(widgets.ApplicationWindowSideView):
     """..."""
 
     def __init__(self, *args, **kwargs) -> None:
@@ -22,7 +22,7 @@ class SideViewWindow(Widgets.ApplicationWindowSideView):
         # self.set_close_window_button_visible(False)
         # self.set_right_control_buttons_visible(False)
 
-        self.texture = Adds.Texture(self)
+        self.texture = adds.Texture(self)
         self.texture.set_enable(True)
 
         r, g, b, _ = self.sideview_color()
@@ -56,7 +56,7 @@ class SideViewWindow(Widgets.ApplicationWindowSideView):
         self.frameview_layout().set_alignment(QtCore.Qt.AlignCenter)
 
         # Image: context menu
-        self.image_qcontext = Widgets.ContextMenu(self)
+        self.image_qcontext = widgets.ContextMenu(self)
         self.image_qcontext.add_action(
             'Delete', lambda: self.__context_menu_cal('Delete'))
         self.image_qcontext.add_action(
@@ -80,7 +80,7 @@ class SideViewWindow(Widgets.ApplicationWindowSideView):
         self.context_menu_label = QtWidgets.QLabel('Menu text here')
         self.frameview_layout().add_widget(self.context_menu_label)
 
-        self.qcontext_menu = Widgets.ContextMenu(
+        self.qcontext_menu = widgets.ContextMenu(
             self, quick_action_label_as_tooltip=True, force_quick_mode=True)
         self.qcontext_menu.add_action(
             'Copy', lambda: self.__context_menu_cal('Copy'),
@@ -198,7 +198,7 @@ class SideViewWindow(Widgets.ApplicationWindowSideView):
         self.close_sideview()
 
 
-class Window(Widgets.ApplicationWindow):
+class Window(widgets.ApplicationWindow):
     """App window instance"""
 
     def __init__(self, *args, **kwargs) -> None:
@@ -225,7 +225,7 @@ class Window(Widgets.ApplicationWindow):
         self.main_layout.set_alignment(QtCore.Qt.AlignTop)
         self.central_widget().set_layout(self.main_layout)
 
-        self.headerbar = Widgets.HeaderBar(self)
+        self.headerbar = widgets.HeaderBar(self)
         self.main_layout.add_widget(self.headerbar)
         self.headerbar.set_text(self.window_title())
 
@@ -258,7 +258,7 @@ class Window(Widgets.ApplicationWindow):
         self.context_menu_label = QtWidgets.QLabel('Context menu text here')
         self.body_layout.add_widget(self.context_menu_label)
 
-        self.ctx_menu = Widgets.ContextMenu(self)
+        self.ctx_menu = widgets.ContextMenu(self)
         self.ctx_menu.add_action(
             'Copy', lambda: self.context_menu_cal('Copy'),
             icon=QtGui.QIcon.from_theme('edit-copy'),
@@ -340,7 +340,7 @@ class Application(object):
 
         self.application = QtWidgets.QApplication(args)
 
-        self.topframe = Widgets.TopFrame()
+        self.topframe = widgets.TopFrame()
         self.window = Window()
         self.sideview_window = SideViewWindow()
 

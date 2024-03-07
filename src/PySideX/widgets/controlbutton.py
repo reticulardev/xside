@@ -7,9 +7,8 @@ import sys
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.Widgets.applicationwindow import ApplicationWindow
-import PySideX.Widgets.modules.color as color
-from PySideX.Widgets.modules.envsettings import GuiEnv
+from PySideX.modules import color
+from PySideX.modules.env import GuiEnv
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -23,7 +22,7 @@ class ControlButton(QtWidgets.QToolButton):
     leave_event_signal = QtCore.Signal(object)
 
     def __init__(
-            self, toplevel: ApplicationWindow, button_id: int,
+            self, toplevel: QtWidgets.QMainWindow, button_id: int,
             *args, **kwargs) -> None:
         """Class constructor
 
@@ -94,6 +93,7 @@ class ControlButton(QtWidgets.QToolButton):
 
     def __is_dark_tone(self) -> bool:
         # ...
+
         return color.is_dark(
             self.__gui_env.settings().window_background_color().to_tuple())
 

@@ -1,2 +1,2 @@
-from . import Widgets
-from . import Adds
+from . import widgets
+from . import adds

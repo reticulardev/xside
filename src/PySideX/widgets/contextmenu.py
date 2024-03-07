@@ -5,14 +5,13 @@ import os
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.Widgets.applicationwindow import ApplicationWindow
-from PySideX.Widgets.topframe import TopFrame
-from PySideX.Widgets.label import ContextLabel
-from PySideX.Widgets.tooltip import Tooltip
-from PySideX.Widgets.modules.envsettings import GuiEnv
-from PySideX.Widgets.modules.dynamicstyle import StyleParser
-import PySideX.Widgets.modules.color as color
-
+from PySideX.modules import color
+from PySideX.modules.env import GuiEnv
+from PySideX.modules.style import StyleParser
+from PySideX.widgets.applicationwindow import ApplicationWindow
+from PySideX.widgets.label import ContextLabel
+from PySideX.widgets.tooltip import Tooltip
+from PySideX.widgets.topframe import TopFrame
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -144,7 +143,7 @@ class ContextMenuButton(QtWidgets.QFrame):
         if not self.__icon:
             sym = '-symbolic' if self.__toplevel.is_dark() else ''
             icon_path = os.path.join(
-                SRC_DIR, 'modules', 'static', f'context-menu-item{sym}.svg')
+                SRC_DIR, '../modules', 'static', f'context-menu-item{sym}.svg')
             self.__icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
 
     def __set_style_signal(self) -> None:

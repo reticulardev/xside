@@ -2,8 +2,6 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.Widgets.applicationwindow import ApplicationWindow
-
 
 class WindowMoveArea(QtWidgets.QFrame):
     """Window move area"""
@@ -12,7 +10,8 @@ class WindowMoveArea(QtWidgets.QFrame):
     mouse_release_event_signal = QtCore.Signal(object)
 
     def __init__(
-            self, toplevel: ApplicationWindow, *args, **kwargs) -> None:
+            self, toplevel: QtWidgets.QMainWindow,
+            *args, **kwargs) -> None:
         """Class constructor
 
         Initialize class attributes

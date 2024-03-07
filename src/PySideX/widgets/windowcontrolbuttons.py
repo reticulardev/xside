@@ -2,9 +2,8 @@
 from PySide6 import QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.Widgets.controlbutton import ControlButton
-from PySideX.Widgets.applicationwindow import ApplicationWindow
-from PySideX.Widgets.modules.envsettings import GuiEnv
+from PySideX.modules.env import GuiEnv
+from PySideX.widgets.controlbutton import ControlButton
 
 
 class WindowIcon(QtWidgets.QLabel):
@@ -19,7 +18,7 @@ class WindowControlButtons(QtWidgets.QFrame):
     """
 
     def __init__(
-            self, toplevel: ApplicationWindow,
+            self, toplevel: QtWidgets.QMainWindow,
             button_order: tuple = None,
             side: str = 'right',
             *args, **kwargs) -> None:

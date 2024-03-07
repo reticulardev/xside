@@ -11,7 +11,7 @@ from PIL import Image, ImageFilter, ImageEnhance
 from PySide6 import QtCore
 from __feature__ import snake_case
 
-from PySideX import Widgets
+from PySideX import widgets, modules
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 sys.path.append(BASE_DIR.as_posix())
@@ -57,11 +57,11 @@ class Texture(object):
 		self.__screen_h = self.__toplevel.screen().size().height()
 
 		self.__style_sheet = self.__toplevel.style_sheet()
-		self.__style_parser = Widgets.modules.dynamicstyle.StyleParser(
+		self.__style_parser = modules.style.StyleParser(
 			self.__style_sheet)
 
 		self.__is_using_texture = False
-		self.__textures_path = os.path.join(BASE_DIR, '../Widgets/modules/tmp')
+		self.__textures_path = os.path.join(BASE_DIR, '../modules/tmp')
 		self.__texture_url = os.path.join(self.__textures_path, 'texture.png')
 		self.__texture_image = None
 		self.__toplevel_background_color = None
@@ -112,7 +112,7 @@ class Texture(object):
 					break
 
 			rgba = None
-			color = Widgets.modules.color
+			color = modules.color
 			if bg_color and 'rgba' in bg_color:
 				rgba = color.rgba_str_to_tuple(bg_color)
 			elif bg_color and '#' in bg_color:

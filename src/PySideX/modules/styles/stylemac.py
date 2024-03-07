@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import PySideX.Widgets.modules.styles.style as style
+import PySideX.modules.styles.style as style
 
 
 class EnvStyleMac(style.EnvStyle):

@@ -5,19 +5,16 @@ import os
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.Widgets.applicationwindow import ApplicationWindow
-from PySideX.Widgets.label import ContextLabel
-from PySideX.Widgets.topframe import TopFrame
-from PySideX.Widgets.modules.envsettings import GuiEnv
-from PySideX.Widgets.modules.dynamicstyle import StyleParser
-import PySideX.Widgets.modules.color as color
+from PySideX.modules.style import StyleParser
+from PySideX.widgets.label import ContextLabel
+from PySideX.widgets.topframe import TopFrame
 
 
 class Tooltip(TopFrame):
     """..."""
     def __init__(
             self,
-            toplevel: ApplicationWindow,
+            toplevel: QtWidgets.QWidget,
             parent: QtWidgets.QWidget,
             text: str,
             complement_text: str = None,

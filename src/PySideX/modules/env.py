@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import PySideX.Widgets.modules.styles as styles
+import PySideX.modules.styles as styles
 
 
 class GuiEnv(object):

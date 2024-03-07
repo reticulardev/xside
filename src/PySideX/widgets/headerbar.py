@@ -4,10 +4,9 @@ import logging
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.Widgets.applicationwindow import ApplicationWindow
-from PySideX.Widgets.windowmovearea import WindowMoveArea
-from PySideX.Widgets.windowcontrolbuttons import WindowControlButtons
-from PySideX.Widgets.modules.envsettings import GuiEnv
+from PySideX.modules.env import GuiEnv
+from PySideX.widgets.windowcontrolbuttons import WindowControlButtons
+from PySideX.widgets.windowmovearea import WindowMoveArea
 
 
 class HeaderBar(QtWidgets.QFrame):
@@ -17,7 +16,8 @@ class HeaderBar(QtWidgets.QFrame):
     """
     resize_event_signal = QtCore.Signal(object)
 
-    def __init__(self, toplevel: ApplicationWindow, *args, **kwargs) -> None:
+    def __init__(
+            self, toplevel: QtWidgets.QMainWindow, *args, **kwargs) -> None:
         """Class constructor
 
         Initialize class attributes
@@ -54,7 +54,8 @@ class HeaderBar(QtWidgets.QFrame):
         self.__bar_item_layout_center.set_contents_margins(0, 0, 0, 0)
         self.__layout.add_layout(self.__bar_item_layout_center)
 
-        self.__window_move_area = WindowMoveArea(self.__toplevel)
+        self.__window_move_area = WindowMoveArea(
+            self.__toplevel)
         self.__bar_item_layout_center.add_widget(self.__window_move_area, 9)
 
         self.__window_move_area_text = QtWidgets.QLabel()
@@ -79,14 +80,14 @@ class HeaderBar(QtWidgets.QFrame):
         self.__bar_item_layout_right.add_widget(self.__right_ctrl_buttons)
 
     def add_widget_to_left(self, widget: QtWidgets.QWidget) -> None:
-        """Adds a widget to the left side of the header bar
+        """adds a widget to the left side of the header bar
 
         After the control buttons or window icon.
         """
         self.__left_layout.add_widget(widget)
 
     def add_widget_to_right(self, widget: QtWidgets.QWidget) -> None:
-        """Adds a widget to the right side of the header bar
+        """adds a widget to the right side of the header bar
 
         Before the control buttons or window icon.
         """
