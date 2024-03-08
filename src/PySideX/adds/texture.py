@@ -358,23 +358,25 @@ class Texture(object):
 					if win.id_ == xprop_id:
 						windows_in_order.append(win)
 
-		toplevel_window = self.__toplevel_window()
-		windows_in_order.append(toplevel_window)
+		# windows_in_order.append(self.__toplevel_window())
+		windows_in_order = self.__keep_only_windows_below(windows_in_order)
 
-		return self.__keep_only_windows_below(
-			toplevel_window, windows_in_order)
+		return windows_in_order
 
-	@staticmethod
-	def __keep_only_windows_below(toplevel_window, windows_in_order):
-		topwin = toplevel_window
+	def __keep_only_windows_below(self, windows_in_order) -> list:
+		topwin = self.__toplevel_window()
 		x, y = topwin.x, topwin.y
 		w, h = topwin.w + topwin.x, topwin.h + topwin.y
+
+		desk = None
+		for win in windows_in_order:
+			if win.id_ == self.__desktop.id_:
+				desk = win
 
 		new_windows = []
 		for item in range(len(windows_in_order) - 2, -1, -1):
 			win = windows_in_order[item]
 			if win.id_ != topwin.id_ and win.type_ != '-1':
-
 				winx, winy = int(win.x), int(win.y)
 				winw, winh = int(win.w), int(win.h)
 
@@ -388,6 +390,9 @@ class Texture(object):
 					x < topwin.x, y < topwin.y,
 					w > topwin.w + topwin.x, h > topwin.h + topwin.y]):
 					break
+
+		if len(new_windows) == 1:
+			new_windows.insert(0, desk)
 
 		new_windows.append(topwin)
 		return new_windows
