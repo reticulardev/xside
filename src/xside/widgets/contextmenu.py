@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import logging
 import os
+import pathlib
 
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
@@ -9,11 +10,9 @@ from xside.modules import color
 from xside.modules.env import GuiEnv
 from xside.modules.style import StyleParser
 from xside.widgets.applicationwindow import ApplicationWindow
-from xside.widgets.label import ContextLabel
+from xside.widgets.contextlabel import ContextLabel
 from xside.widgets.tooltip import Tooltip
 from xside.widgets.topframe import TopFrame
-
-SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class ContextMenuSeparatorLine(QtWidgets.QFrame):
@@ -143,7 +142,8 @@ class ContextMenuButton(QtWidgets.QFrame):
         if not self.__icon:
             sym = '-symbolic' if self.__toplevel.is_dark() else ''
             icon_path = os.path.join(
-                SRC_DIR, '../modules', 'static', f'context-menu-item{sym}.svg')
+                pathlib.Path(__file__).resolve().parent,
+                '../modules', 'static', f'context-menu-item{sym}.svg')
             self.__icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
 
     def __set_style_signal(self) -> None:

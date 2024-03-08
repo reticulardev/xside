@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import logging
 import os
+import pathlib
 import sys
 
 from PIL import Image
@@ -12,8 +13,6 @@ from xside.modules.env import GuiEnv
 from xside.modules.style import StyleParser
 from xside.widgets.applicationwindow import ApplicationWindow
 from xside.widgets.headerbar import HeaderBar
-
-SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class OverlaySideView(QtWidgets.QFrame):
@@ -229,7 +228,8 @@ class ApplicationWindowSideView(ApplicationWindow):
         self.resize(self.__initial_width(), 500)
 
         # Icon
-        icon_path = os.path.join(SRC_DIR, 'icon.svg')
+        icon_path = os.path.join(
+            pathlib.Path(__file__).resolve().parent, 'icon.svg')
         self.__app_icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
         self.set_window_icon(self.__app_icon)
 

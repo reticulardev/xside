@@ -6,7 +6,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from xside.modules.style import StyleParser
-from xside.widgets.label import ContextLabel
+from xside.widgets.contextlabel import ContextLabel
 from xside.widgets.topframe import TopFrame
 
 

@@ -10,8 +10,6 @@ from __feature__ import snake_case
 from xside.modules import color
 from xside.modules.env import GuiEnv
 
-SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-
 
 class ControlButton(QtWidgets.QToolButton):
     """Control Button

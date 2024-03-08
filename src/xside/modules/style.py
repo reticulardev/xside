@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import logging
 import os
+import pathlib
 import re
 import sys
 
@@ -9,8 +10,6 @@ from __feature__ import snake_case
 
 import xside.modules.color as color
 import xside.modules.env as env
-
-SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class StyleParser(object):
@@ -315,7 +314,8 @@ class Style(object):
             '}'
         )
 
-        style_path = os.path.join(SRC_DIR, 'static', 'style.qss')
+        style_path = os.path.join(
+            pathlib.Path(__file__).resolve().parent, 'static', 'style.qss')
         with open(style_path, 'r') as style_qss_file:
             file_style = style_qss_file.read()
 
