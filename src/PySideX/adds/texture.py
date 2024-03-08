@@ -61,7 +61,7 @@ class Texture(object):
 			self.__style_sheet)
 
 		self.__is_using_texture = False
-		self.__textures_path = os.path.join(BASE_DIR, '../modules/tmp')
+		self.__textures_path = os.path.join(BASE_DIR, 'tmp')
 		self.__texture_url = os.path.join(self.__textures_path, 'texture.png')
 		self.__texture_image = None
 		self.__toplevel_background_color = None
@@ -281,6 +281,7 @@ class Texture(object):
 		window.y = self.__toplevel.y()
 		window.w = self.__toplevel.width()
 		window.h = self.__toplevel.height()
+		window.title = self.__toplevel.window_title()
 		return window
 
 	def __update(self) -> None:
@@ -324,7 +325,8 @@ class Texture(object):
 			for win in wmctrl_lg:
 				w = Window()
 				try:
-					w.id_, w.type_, w.x, w.y, w.w, w.h, *_ = win.split()
+					w.id_, w.type_, w.x, w.y, w.w, w.h, _, *title = win.split()
+					w.title = ' '.join(title)
 				except Exception as err:
 					logging.error(err)
 				else:
@@ -356,5 +358,36 @@ class Texture(object):
 					if win.id_ == xprop_id:
 						windows_in_order.append(win)
 
-		windows_in_order.append(self.__toplevel_window())
-		return windows_in_order
+		toplevel_window = self.__toplevel_window()
+		windows_in_order.append(toplevel_window)
+
+		return self.__keep_only_windows_below(
+			toplevel_window, windows_in_order)
+
+	@staticmethod
+	def __keep_only_windows_below(toplevel_window, windows_in_order):
+		topwin = toplevel_window
+		x, y = topwin.x, topwin.y
+		w, h = topwin.w + topwin.x, topwin.h + topwin.y
+
+		new_windows = []
+		for item in range(len(windows_in_order) - 2, -1, -1):
+			win = windows_in_order[item]
+			if win.id_ != topwin.id_ and win.type_ != '-1':
+
+				winx, winy = int(win.x), int(win.y)
+				winw, winh = int(win.w), int(win.h)
+
+				x = winx if winx < topwin.x else x
+				y = winy if winy < topwin.y else y
+				w = winw + winx if winw + winx > topwin.w + topwin.x else w
+				h = winh + winy if winh + winy > topwin.h + topwin.y else h
+
+				new_windows.insert(0, win)
+				if all([
+					x < topwin.x, y < topwin.y,
+					w > topwin.w + topwin.x, h > topwin.h + topwin.y]):
+					break
+
+		new_windows.append(topwin)
+		return new_windows
