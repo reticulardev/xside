@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 import logging
 import os
+import pathlib
 import sys
 
 import xside.modules.color as color
-import xside.modules.styles.stylegnome as stylegnome
-
-SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(SRC_DIR)
+import xside.modules.desktopstyles.stylegnome as stylegnome
 
 
 class EnvStyleCinnamon(stylegnome.EnvStyleGnome):
@@ -24,7 +22,8 @@ class EnvStyleCinnamon(stylegnome.EnvStyleGnome):
 
         if button_name == 'close':
             url_icon = os.path.join(
-                SRC_DIR, 'static', 'cinnamon-control-buttons',
+                pathlib.Path(__file__).resolve().parent,
+                'static', 'cinnamon-control-buttons',
                 'window-close.svg')
 
             accent = self.window_accent_color()

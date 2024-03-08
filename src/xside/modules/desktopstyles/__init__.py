@@ -1,4 +1,4 @@
-from .style import EnvStyle
+from .stylebase import EnvStyle
 from .stylecinnamon import EnvStyleCinnamon
 from .stylegnome import EnvStyleGnome
 from .stylemac import EnvStyleMac

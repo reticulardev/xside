@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import pathlib
 import sys
 
 from PySide6 import QtCore, QtGui, QtWidgets
@@ -7,8 +8,8 @@ from __feature__ import snake_case
 
 from xside import widgets, adds
 
-SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(SRC_DIR)
+BASE_DIR = pathlib.Path(__file__).resolve().parent
+sys.path.append(BASE_DIR.as_posix())
 
 
 class SideViewWindow(widgets.ApplicationWindowSideView):
@@ -29,7 +30,7 @@ class SideViewWindow(widgets.ApplicationWindowSideView):
         self.set_sideview_color((r, g, b, 100))
 
         # Icon
-        icon_path = os.path.join(SRC_DIR, 'icon_b.svg')
+        icon_path = os.path.join(BASE_DIR, 'icon_b.svg')
         self.__app_icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
         self.set_window_icon(self.__app_icon)
         self.set_headerbar_icon(self.__app_icon)
@@ -114,13 +115,13 @@ class SideViewWindow(widgets.ApplicationWindowSideView):
         self.qcontext_menu.add_separator()
         self.qcontext_menu.add_group_action(
             'color', 'RED', lambda: self.__context_menu_cal('RED'),
-            icon=QtGui.QIcon(os.path.join(SRC_DIR, 'red.png')))
+            icon=QtGui.QIcon(os.path.join(BASE_DIR, 'red.png')))
         self.qcontext_menu.add_group_action(
             'color', 'GREEN', lambda: self.__context_menu_cal('GREEN'),
-            icon=QtGui.QIcon(os.path.join(SRC_DIR, 'green.png')))
+            icon=QtGui.QIcon(os.path.join(BASE_DIR, 'green.png')))
         self.qcontext_menu.add_group_action(
             'color', 'BLUE', lambda: self.__context_menu_cal('BLUE'),
-            icon=QtGui.QIcon(os.path.join(SRC_DIR, 'blue.png')))
+            icon=QtGui.QIcon(os.path.join(BASE_DIR, 'blue.png')))
         self.qcontext_menu.add_group_action(
             'color', 'More', lambda: self.__context_menu_cal('More'),
             icon=QtGui.QIcon.from_theme('list-add-symbolic'))
@@ -211,7 +212,7 @@ class Window(widgets.ApplicationWindow):
         self.set_window_title('My app')
 
         # Icon
-        icon_path = os.path.join(SRC_DIR, 'icon.svg')
+        icon_path = os.path.join(BASE_DIR, 'icon.svg')
         app_icon = QtGui.QIcon(QtGui.QPixmap(icon_path))
         self.set_window_icon(app_icon)
 

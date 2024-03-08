@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import xside.modules.styles as styles
+import xside.modules.desktopstyles as desktopstyles
 
 
 class GuiEnv(object):
@@ -15,40 +15,40 @@ class GuiEnv(object):
         self.__follow_platform = follow_platform
         self.__gui_env_settings = self.__get_gui_env_settings()
 
-    def settings(self) -> styles.EnvStyle:
+    def settings(self) -> desktopstyles.EnvStyle:
         """..."""
         return self.__gui_env_settings
 
-    def __get_gui_env_settings(self) -> styles.EnvStyle:
+    def __get_gui_env_settings(self) -> desktopstyles.EnvStyle:
         # ...
         if self.__follow_platform:
             if self.__operational_system == 'linux':
 
                 if self.__desktop_environment == 'plasma':
-                    return styles.EnvStylePlasma()
+                    return desktopstyles.EnvStylePlasma()
 
                 if self.__desktop_environment == 'cinnamon':
-                    return styles.EnvStyleCinnamon()
+                    return desktopstyles.EnvStyleCinnamon()
 
                 if self.__desktop_environment == 'xfce':
-                    return styles.EnvStyleXFCE()
+                    return desktopstyles.EnvStyleXFCE()
 
                 if self.__desktop_environment == 'mate':
-                    return styles.EnvStyleMate()
+                    return desktopstyles.EnvStyleMate()
 
                 return EnvStyleGnome()
 
             if self.__operational_system == 'mac':
-                return styles.EnvStyleMac()
+                return desktopstyles.EnvStyleMac()
 
             if self.__operational_system == 'windows':
 
                 if self.__desktop_environment == 'windows-7':
-                    return styles.EnvStyleWindows7()
+                    return desktopstyles.EnvStyleWindows7()
 
                 if self.__desktop_environment == 'windows-10':
-                    return styles.EnvStyleWindows10()
+                    return desktopstyles.EnvStyleWindows10()
 
-                return styles.EnvStyleWindows11()
+                return desktopstyles.EnvStyleWindows11()
 
-        return styles.EnvStyle()
+        return desktopstyles.EnvStyle()

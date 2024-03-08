@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import xside.modules.styles.style as style
+import xside.modules.desktopstyles.stylewindows11 as stylewindows11
 
 
-class EnvStyleMac(style.EnvStyle):
+class EnvStyleWindows7(stylewindows11.EnvStyleWindows11):
     """..."""
 
     def __init__(self, *args, **kwargs) -> None:

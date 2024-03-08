@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 import os
+import pathlib
 import sys
 
 from PySide6 import QtGui
 from __feature__ import snake_case
 
 import xside.modules.color as color
-import xside.modules.styles.style as style
-
-SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(SRC_DIR)
+import xside.modules.desktopstyles.stylebase as stylebase
 
 
-class EnvStyleWindows11(style.EnvStyle):
+class EnvStyleWindows11(stylebase.EnvStyle):
     """..."""
 
     def __init__(self, *args, **kwargs) -> None:
@@ -63,7 +61,7 @@ class EnvStyleWindows11(style.EnvStyle):
             button_name += '-symbolic'
 
         url_icon = os.path.join(
-            SRC_DIR, 'static',
+            pathlib.Path(__file__).resolve().parent, 'static',
             'windows-11-control-buttons', button_name + '.svg')
 
         return (

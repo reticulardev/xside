@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import xside.modules.styles.stylewindows11 as stylewindows11
+import xside.modules.desktopstyles.stylewindows11 as stylewindows11
 
 
-class EnvStyleWindows7(stylewindows11.EnvStyleWindows11):
+class EnvStyleWindows10(stylewindows11.EnvStyleWindows11):
     """..."""
 
     def __init__(self, *args, **kwargs) -> None:
