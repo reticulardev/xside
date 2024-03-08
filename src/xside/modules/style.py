@@ -7,8 +7,8 @@ import sys
 from PySide6 import QtGui, QtWidgets
 from __feature__ import snake_case
 
-import PySideX.modules.color as color
-import PySideX.modules.env as env
+import xside.modules.color as color
+import xside.modules.env as env
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 

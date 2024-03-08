@@ -4,8 +4,8 @@ import logging
 from PySide6 import QtGui
 from __feature__ import snake_case
 
-import PySideX.modules.styles.style as style
-import PySideX.modules.cli as cli
+import xside.modules.styles.style as style
+import xside.modules.cli as cli
 
 
 class EnvStyleGnome(style.EnvStyle):

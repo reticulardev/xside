@@ -4,9 +4,9 @@ import logging
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.modules.env import GuiEnv
-from PySideX.widgets.controlbuttons import ControlButtons
-from PySideX.widgets.movearea import MoveArea
+from xside.modules.env import GuiEnv
+from xside.widgets.controlbuttons import ControlButtons
+from xside.widgets.movearea import MoveArea
 
 
 class HeaderBar(QtWidgets.QFrame):

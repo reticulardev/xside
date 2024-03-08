@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import PySideX.modules.styles.stylewindows11 as stylewindows11
+import xside.modules.styles.stylewindows11 as stylewindows11
 
 
 class EnvStyleWindows10(stylewindows11.EnvStyleWindows11):

@@ -5,13 +5,13 @@ import os
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.modules import color
-from PySideX.modules.env import GuiEnv
-from PySideX.modules.style import StyleParser
-from PySideX.widgets.applicationwindow import ApplicationWindow
-from PySideX.widgets.label import ContextLabel
-from PySideX.widgets.tooltip import Tooltip
-from PySideX.widgets.topframe import TopFrame
+from xside.modules import color
+from xside.modules.env import GuiEnv
+from xside.modules.style import StyleParser
+from xside.widgets.applicationwindow import ApplicationWindow
+from xside.widgets.label import ContextLabel
+from xside.widgets.tooltip import Tooltip
+from xside.widgets.topframe import TopFrame
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 

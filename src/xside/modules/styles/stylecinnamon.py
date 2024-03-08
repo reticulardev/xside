@@ -3,8 +3,8 @@ import logging
 import os
 import sys
 
-import PySideX.modules.color as color
-import PySideX.modules.styles.stylegnome as stylegnome
+import xside.modules.color as color
+import xside.modules.styles.stylegnome as stylegnome
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(SRC_DIR)

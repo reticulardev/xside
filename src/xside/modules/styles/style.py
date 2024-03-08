@@ -4,7 +4,7 @@ import logging
 from PySide6 import QtGui
 from __feature__ import snake_case
 
-import PySideX.modules.color as color
+import xside.modules.color as color
 
 
 class Main(object):

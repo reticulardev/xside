@@ -5,9 +5,9 @@ import os
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.modules.style import StyleParser
-from PySideX.widgets.label import ContextLabel
-from PySideX.widgets.topframe import TopFrame
+from xside.modules.style import StyleParser
+from xside.widgets.label import ContextLabel
+from xside.widgets.topframe import TopFrame
 
 
 class Tooltip(TopFrame):

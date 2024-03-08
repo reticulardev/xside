@@ -2,9 +2,9 @@
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.modules.platform import Platform
-from PySideX.modules.style import Style, StyleParser
-from PySideX.widgets.core import BaseTopFrame
+from xside.modules.platform import Platform
+from xside.modules.style import Style, StyleParser
+from xside.widgets.core import BaseTopFrame
 
 
 class TopFrame(BaseTopFrame):

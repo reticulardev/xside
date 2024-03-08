@@ -2,8 +2,8 @@
 from PySide6 import QtGui, QtWidgets
 from __feature__ import snake_case
 
-from PySideX.modules.env import GuiEnv
-from PySideX.widgets.controlbutton import ControlButton
+from xside.modules.env import GuiEnv
+from xside.widgets.controlbutton import ControlButton
 
 
 class WindowIcon(QtWidgets.QLabel):

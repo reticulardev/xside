@@ -11,10 +11,7 @@ from PIL import Image, ImageFilter, ImageEnhance
 from PySide6 import QtCore
 from __feature__ import snake_case
 
-from PySideX import widgets, modules
-
-BASE_DIR = pathlib.Path(__file__).resolve().parent
-sys.path.append(BASE_DIR.as_posix())
+from xside import widgets, modules
 
 
 class Window(object):
@@ -52,12 +49,13 @@ class Texture(object):
 		self.__updating = False
 		self.__is_using_texture = False
 		# Properties
+		self.__path = pathlib.Path(__file__).resolve().parent
 		self.__desktop = Desktop()
 		self.__desktop_windows = []
 		self.__toplevel_id = hex(self.__toplevel.win_id()).replace('0x', '0x0')
 		self.__style_sheet = self.__toplevel.style_sheet()
 		self.__style_parser = modules.style.StyleParser(self.__style_sheet)
-		self.__textures_path = os.path.join(BASE_DIR, 'tmp')
+		self.__textures_path = os.path.join(self.__path, 'tmp')
 		self.__texture_url = os.path.join(self.__textures_path, 'texture.png')
 		self.__texture_image = None
 		self.__background_color = None
