@@ -3,7 +3,6 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from xside.modules import color
-from xside.modules.env import GuiEnv
 from xside.modules.platform import Platform
 from xside.modules.style import Style, StyleParser
 from xside.widgets.core import BaseWindow
@@ -41,11 +40,6 @@ class ApplicationWindow(BaseWindow):
         self.__edge_cursor_position = None
         self.__default_edge_resize_size = 5
         self.__edge_resize_size = self.__default_edge_resize_size
-
-        self.__gui_env = GuiEnv(
-            self.__platform.operational_system(),
-            self.__platform.desktop_environment(),
-            self.__follow_platform)
 
         self.__is_dark = color.is_dark(
             QtGui.QPalette().color(QtGui.QPalette.Window).to_tuple())

@@ -1,0 +1,69 @@
+ContextMenu {
+    * background-color: rgba(); self.window_background_color()
+    * border: 1px solid rgba(); self.window_border_color()
+    * border-radius: {}px; self.window_border_radius()[0]
+    margin: 0px, 0px, 0px, 0px;
+    padding: 4px, 4px, 4px, 4px;
+}
+ContextMenuSeparator {
+    margin: 0px, 4px, 0px, 4px;
+    spacing: 0px;
+}
+ContextMenuSeparatorLine {
+    * color: rgba(); self.window_border_color()
+}
+ContextMenuButton:hover {
+    padding: 4px, 6px, 4px, 6px;
+    * background-color: rgba(); self.window_accent_color()
+    * border: 1px solid rgba(); self.window_accent_color()
+    * border-radius: {}px;
+        ** contextmenu_bdr = self.contextmenu_border_radius()
+        ** return contextmenu_bdr - 4 if contextmenu_bdr > 4 else contextmenu_bdr
+}
+ContextMenuButtonLabel:hover {
+    * color: rgba(); self.label_color()
+}
+ContextMenuGroup {
+    padding: 0px, 6px, 0px, 8px;
+}
+ControlButton {
+  border: 0px;
+  border-radius: 10px;
+  padding: 1px;
+  background-color: rgba(127, 127, 127, 0.2);
+  margin: 2px, 0px, 2px, 0px;
+}
+ControlButton:hover {
+  background-color: rgba(200, 200, 200, 0.2);
+}
+ControlButtons {
+    spacing: 6px;
+}
+HeaderBar {
+    margin: 4px, 4px, 4px, 4px;
+}
+Label {
+    * color: rgba(); self.palette.color(QtGui.QPalette.Active, QtGui.QPalette.WindowText)
+}
+ContextLabel {
+    * color: rgba(); self.label_disabled_color()
+}
+MainWindow {
+    * background-color: rgba(); self.window_background_color()
+    * border: 1px solid rgba(); self.window_accent_color()
+    * border-radius: {}px; self.window_border_radius()[0]
+    margin: 0px, 0px, 0px, 0px;
+}
+WindowIcon {
+    margin: 1px, 0px, 1px, 0px;
+}
+window_accent_color
+window_background_color
+window_background_darker_color
+window_background_lighter_color
+window_border_color
+window_border_radius
+window_is_dark
+desktop_is_using_global_menu
+controlbuttons_order
+icon_theme_name

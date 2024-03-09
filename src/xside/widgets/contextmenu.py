@@ -7,7 +7,6 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from xside.modules import color
-from xside.modules.env import GuiEnv
 from xside.modules.style import StyleParser
 from xside.widgets.applicationwindow import ApplicationWindow
 from xside.widgets.contextlabel import ContextLabel
@@ -79,10 +78,6 @@ class ContextMenuButton(QtWidgets.QFrame):
         self.__tooltip = None
         self.__is_tooltip_open = False
         self.__tooltip_timer = QtCore.QTimer()
-
-        self.__env = GuiEnv(
-            self.__toplevel.platform().operational_system(),
-            self.__toplevel.platform().desktop_environment())
 
         self.__style_parser = StyleParser(self.__toplevel.style_sheet())
         self.__normal_style = self.__updated_normal_style()
@@ -161,27 +156,13 @@ class ContextMenuButton(QtWidgets.QFrame):
 
     def __updated_hover_style(self) -> str:
         # ...
-        updated_hover_style = self.__style_parser.widget_scope(
+        return self.__style_parser.widget_scope(
             'ContextMenuButtonLabel', 'hover')
-        if not updated_hover_style:
-            fg = self.__env.settings().contextmenubutton_label_hover_color()
-            return (
-                'color: rgba'
-                f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
-
-        return updated_hover_style
 
     def __updated_normal_style(self) -> str:
         # ...
-        updated_normal_style = self.__style_parser.widget_scope(
+        return self.__style_parser.widget_scope(
             'ContextMenuButtonLabel')
-        if not updated_normal_style:
-            fg = self.__env.settings().label_color()
-            return (
-                'color: rgba'
-                f'({fg.red()}, {fg.green()}, {fg.blue()}, {fg.alpha()});')
-
-        return updated_normal_style
 
     def enter_event(self, event: QtGui.QEnterEvent) -> None:
         """..."""

@@ -108,14 +108,27 @@ class Style(object):
         """..."""
         self.__toplevel = toplevel
 
-        self.__env = env.GuiEnv(
+        self.__env = env.Env(
             self.__toplevel.platform().operational_system(),
             self.__toplevel.platform().desktop_environment(),
             self.__toplevel.follow_platform())
 
     def build_style(self) -> str:
+        return self.__env.settings('style').style_sheet()
+
+    @staticmethod
+    def fullscreen_adapted_style(style: str) -> str:
+        # ...
+        styleparser = StyleParser(style)
+        return style + (
+            'MainWindow {'
+            f'{styleparser.widget_scope("MainWindow")}'
+            'border-radius: 0px;'
+            'border: 0px;}')
+
+    def build_style_bkp(self) -> str:
         """..."""
-        win_bg_color = self.__env.settings().background_color()
+        win_bg_color = self.__env.settings().window_background_color()
         win_bd_radius = self.__env.settings().window_border_radius()
         win_bd_color = self.__env.settings().window_border_color()
         win_margin = self.__env.settings().window_margin()
@@ -303,13 +316,3 @@ class Style(object):
             file_style = style_qss_file.read()
 
         return style_sheet + file_style
-
-    @staticmethod
-    def fullscreen_adapted_style(style: str) -> str:
-        # ...
-        styleparser = StyleParser(style)
-        return style + (
-            'MainWindow {'
-            f'{styleparser.widget_scope("MainWindow")}'
-            'border-radius: 0px;'
-            'border: 0px;}')

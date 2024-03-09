@@ -2,7 +2,7 @@
 from PySide6 import QtGui, QtWidgets
 from __feature__ import snake_case
 
-from xside.modules.env import GuiEnv
+from xside.modules.env import Env
 from xside.widgets.controlbutton import ControlButton
 
 
@@ -47,11 +47,12 @@ class ControlButtons(QtWidgets.QFrame):
         self.__side = side
 
         # Flags
-        self.__gui_env = GuiEnv(
+        self.__env = Env(
             self.__toplevel.platform().operational_system(),
             self.__toplevel.platform().desktop_environment())
+        self.__env = self.__env.settings()
 
-        self.__env_btn_order = self.__gui_env.settings().controlbuttons_order()
+        self.__env_btn_order = self.__env.control_buttons_order()
         self.__left_system_button_order = self.__env_btn_order[0]
         self.__right_system_button_order = self.__env_btn_order[1]
         self.__set_button_order()
@@ -61,8 +62,8 @@ class ControlButtons(QtWidgets.QFrame):
             self.__toplevel.window_icon().pixmap(20))
 
         self.__layout = QtWidgets.QHBoxLayout(self)
-        self.__layout.set_spacing(
-            self.__gui_env.settings().controlbuttons_spacing())
+        # self.__layout.set_spacing(
+        #     self.__env.controlbuttons_spacing())
         self.__layout.set_contents_margins(0, 0, 0, 0)
 
         self.__minimize_button = ControlButton(self.__toplevel, 0)

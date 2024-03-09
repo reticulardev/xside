@@ -13,187 +13,160 @@ class EnvStyle(object):
     def __init__(self):
         """..."""
         self.palette = QtGui.QPalette()
-
-    def contextmenu_background_color(self) -> QtGui.QColor:
-        """..."""
-        return self.window_background_color()
-
-    def contextmenu_border_color(self) -> QtGui.QColor:
-        """..."""
-        return self.window_border_color()
-
-    def contextmenu_border_radius(self) -> int:
-        """..."""
-        return self.window_border_radius()[0]
-
-    @staticmethod
-    def contextmenu_margin() -> tuple:
-        """..."""
-        return 0, 0, 0, 0
-
-    @staticmethod
-    def contextmenu_padding() -> tuple:
-        """..."""
-        return 4, 4, 4, 4
-
-    def contextmenu_separator_color(self) -> QtGui.QColor:
-        """..."""
-        return self.window_border_color()
-
-    @staticmethod
-    def contextmenu_separator_margin() -> tuple:
-        """Left, top, right and bottom margins tuple"""
-        return 0, 4, 0, 4
-
-    @staticmethod
-    def contextmenu_spacing() -> int:
-        """..."""
-        return 0
-
-    def contextmenubutton_background_hover_color(self) -> QtGui.QColor:
-        """..."""
-        return self.window_accent_color()
-
-    def contextmenubutton_border_hover_color(self) -> QtGui.QColor:
-        """..."""
-        return self.window_accent_color()
-
-    def contextmenubutton_border_radius(self) -> int:
-        """..."""
-        contextmenu_bdr = self.contextmenu_border_radius()
-        return contextmenu_bdr - 4 if contextmenu_bdr > 4 else contextmenu_bdr
-
-    def contextmenubutton_label_hover_color(self) -> QtGui.QColor:
-        """..."""
-        return self.label_color()
-
-    @staticmethod
-    def contextmenubutton_padding() -> tuple:
-        """..."""
-        return 4, 6, 4, 6
-
-    @staticmethod
-    def contextmenugroup_padding() -> tuple:
-        """..."""
-        return 0, 6, 0, 8
-
-    @staticmethod
-    def controlbutton_style(*args, **kwargs) -> str:
-        logging.info(args)
-        logging.info(kwargs)
-        """..."""
-        return (
-            'ControlButton {'
-            '  border: 0px;'
-            '  border-radius: 10px;'
-            '  padding: 1px;'
-            '  background-color: rgba(127, 127, 127, 0.2);'
-            '}'
-            'ControlButton:hover {'
-            '  background-color: rgba(200, 200, 200, 0.2);'
-            '}')
-
-    @staticmethod
-    def controlbuttons_margin() -> tuple:
-        """..."""
-        return 2, 0, 2, 0
-
-    @staticmethod
-    def controlbuttons_order() -> tuple:
-        """XAI M -> (2, 1, 0), (3,)
-
-        Close     Max       Min       Icon      Above all
-        X = 2     A = 1     I = 0     M = 3     F = 4
-
-        (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
-        """
-        return (2, 1, 0), (3,)
-
-    @staticmethod
-    def controlbuttons_spacing() -> int:
-        """..."""
-        return 6
-
-    @staticmethod
-    def desktop_is_using_global_menu() -> bool:
-        """..."""
-        return False
-
-    @staticmethod
-    def headerbar_margin() -> tuple:
-        """..."""
-        return 4, 4, 4, 4
-
-    @staticmethod
-    def icon_theme_name() -> str:
-        """..."""
-        return 'hicolor'
-
-    def label_color(self) -> QtGui.QColor:
-        """..."""
-        return self.palette.color(
-            QtGui.QPalette.Active, QtGui.QPalette.WindowText)
-
-    def label_context_color(self) -> QtGui.QColor:
-        """..."""
-        return self.label_disabled_color()
-
-    def label_disabled_color(self) -> QtGui.QColor:
-        """..."""
-        return self.palette.color(
-            QtGui.QPalette.Disabled, QtGui.QPalette.WindowText)
-
-    def window_accent_color(self) -> QtGui.QColor:
-        """..."""
-        return self.palette.color(
+        self.accent_color = self.palette.color(
             QtGui.QPalette.Active, QtGui.QPalette.Highlight)
 
-    def window_background_color(self) -> QtGui.QColor:
-        """..."""
-        return self.palette.color(QtGui.QPalette.Window)
+        self.__style_sheet = {
+            'ContextLabel':
+                self.context_label(),
+            'ContextMenu':
+                self.contex_menu(),
+            'ContextMenuButton':
+                self.contex_menu_button(),
+            'ContextMenuButton:hover':
+                self.contex_menu_button_hover(),
+            'ContextMenuButtonLabel:hover':
+                self.context_menu_button_label_hover(),
+            'ContextMenuGroup':
+                self.context_menu_group(),
+            'ContextMenuSeparator':
+                self.contex_menu_separator(),
+            'ControlButton':
+                self.control_button(),
+            'ControlButton:hover':
+                self.control_button_hover(),
+            'ControlButtons':
+                self.control_buttons(),
+            'HeaderBar':
+                self.header_bar(),
+            'MainWindow':
+                self.main_window(),
+            'WindowIcon':
+                self.window_icon(),
+        }
 
-    def window_background_darker_color(self) -> QtGui.QColor:
-        """..."""
-        step = 4 if self.window_is_dark() else 10
-        return color.rgba_to_qcolor(color.darken_rgba(
-            self.window_background_color().to_tuple(), step))
+    def style_sheet(self) -> str:
+        style_sheet = ''
+        for widget_name, widget_styles in self.__style_sheet.items():
+            scope = widget_name + ' {'
+            for propertie_name, propertie_value in widget_styles.items():
+                kv = f'{propertie_name}: {propertie_value}; '
+                scope += kv
 
-    def window_background_lighter_color(self) -> QtGui.QColor:
+            style_sheet += scope.strip() + '} '
+        return style_sheet.strip()
+
+    def context_label(self) -> dict:
         """..."""
-        step = 4 if self.window_is_dark() else 5
-        return color.rgba_to_qcolor(color.lighten_rgba(
-            self.window_background_color().to_tuple(), step))
+        r, g, b, a = self.palette.color(
+            QtGui.QPalette.Disabled, QtGui.QPalette.WindowText).to_tuple()
+        return {
+            'color': f'rgba({r}, {g}, {b}, {a})',
+        }
+
+    def contex_menu(self) -> dict:
+        """..."""
+        return {
+            'background-color': self.main_window()['background-color'],
+            'border': self.main_window()['border'],
+            'border-radius': f'{self.main_window()["border-radius"][0]}px',
+            'margin': '0px 0px 0px 0px',
+            'padding': '4px 4px 4px 4px',
+            'spacing': '0px',
+        }
+
+    def contex_menu_button(self) -> dict:
+        """..."""
+        r = self.contex_menu()['border-radius'][0]
+        r = int(r) - 2 if int(r) > 4 else r
+        return {
+            'border-radius': f'{r}px',
+            'padding': '4px 6px 4px 6px',
+        }
+
+    def contex_menu_button_hover(self) -> dict:
+        """..."""
+        r, g, b, a = self.accent_color.to_tuple()
+        return {
+            'background-color': f'rgba({r}, {g}, {b}, {a})',
+        }
+
+    def context_menu_button_label_hover(self) -> dict:
+        """..."""
+        r, g, b, a = self.palette.color(
+            QtGui.QPalette.Active, QtGui.QPalette.WindowText).to_tuple()
+        return {
+            'color': f'rgba({r}, {g}, {b}, {a})',
+        }
 
     @staticmethod
-    def window_border() -> int:
+    def context_menu_group() -> dict:
         """..."""
-        return 1
+        return {
+            'padding': '0px 6px 0px 8px',
+        }
 
-    def window_border_color(self) -> QtGui.QColor:
+    def contex_menu_separator(self) -> dict:
         """..."""
-        if self.window_is_dark():
-            return color.rgba_to_qcolor(
-                color.lighten_rgba(
-                    self.palette.color(QtGui.QPalette.Window).to_tuple(), 15))
+        bg_color = self.palette.color(QtGui.QPalette.Window).to_tuple()
+        step_tone = 15 if color.is_dark(bg_color) else 30
+        r, g, b, a = color.lighten_rgba(bg_color, step_tone)
 
-        return color.rgba_to_qcolor(color.darken_rgba(
-            self.palette.color(QtGui.QPalette.Window).to_tuple(), 30))
-
-    @staticmethod
-    def window_border_radius() -> tuple:
-        """..."""
-        return 5, 5, 5, 5
-
-    def window_is_dark(self) -> bool:
-        """..."""
-        return color.is_dark(self.window_background_color().to_tuple())
+        return {
+            'color': f'rgba({r}, {g}, {b}, {a})',
+            'margin': '0px 4px 0px 4px',
+        }
 
     @staticmethod
-    def window_margin() -> tuple:
+    def control_button() -> dict:
         """..."""
-        return 0, 0, 0, 0
+        return {
+            'border': '0px',
+            'border-radius': '10px',
+            'padding': '1px',
+            'background-color': 'rgba(127, 127, 127, 0.2)',
+        }
 
     @staticmethod
-    def window_icon_margin() -> tuple:
+    def control_button_hover() -> dict:
         """..."""
-        return 1, 0, 1, 0
+        return {
+            'background-color': 'rgba(200, 200, 200, 0.2)',
+        }
+
+    @staticmethod
+    def control_buttons() -> dict:
+        """..."""
+        return {
+            'margin': '2px 0px 2px 0px',
+            'spacing': '6px',
+        }
+
+    @staticmethod
+    def header_bar() -> dict:
+        """..."""
+        return {
+            'margin': '4px 4px 4px 4px',
+        }
+
+    def main_window(self) -> dict:
+        """..."""
+        bg_color = self.palette.color(QtGui.QPalette.Window).to_tuple()
+        bg_r, bg_g, bg_b, bg_a = bg_color
+
+        step_tone = 15 if color.is_dark(bg_color) else 30
+        bd_r, bd_g, bd_b, bd_a = color.lighten_rgba(bg_color, step_tone)
+
+        return {
+            'background-color': f'rgba({bg_r}, {bg_g}, {bg_b}, {bg_a})',
+            'border': f'1px solid rgba({bd_r}, {bd_g}, {bd_b}, {bd_a})',
+            'border-radius': '5px',
+            'margin': '0px 0px 0px 0px',
+        }
+
+    @staticmethod
+    def window_icon() -> dict:
+        """..."""
+        return {
+            'margin': '1px 0px 1px 0px',
+        }

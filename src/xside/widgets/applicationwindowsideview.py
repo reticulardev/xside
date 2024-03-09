@@ -9,7 +9,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from xside.modules import color
-from xside.modules.env import GuiEnv
+from xside.modules.env import Env
 from xside.modules.style import StyleParser
 from xside.widgets.applicationwindow import ApplicationWindow
 from xside.widgets.headerbar import HeaderBar
@@ -206,9 +206,10 @@ class ApplicationWindowSideView(ApplicationWindow):
         """
         super().__init__(*args, **kwargs)
         # Properties
-        self.__gui_env = GuiEnv(
+        self.__env = Env(
             self.platform().operational_system(),
             self.platform().desktop_environment())
+        self.__env = self.__env.settings()
         self.__minimum_width = 350
         self.__minimum_height = 200
         self.__border_size = 12
@@ -218,8 +219,8 @@ class ApplicationWindowSideView(ApplicationWindow):
         self.__is_sideview_headerbar_left_control_set_as_visible = True
         self.__is_sideview_close_button_set_as_visible = False
         self.__sideview_width = 250
-        self.__sideview_color = self.__gui_env.settings(
-            ).background_darker_color().to_tuple()
+        self.__sideview_color = (0, 0, 0, 50)
+        self.__sideview_color_default = self.__sideview_color
 
         # Settings
         self.set_window_title('MPX Application Window')
@@ -392,8 +393,7 @@ class ApplicationWindowSideView(ApplicationWindow):
     def set_sideview_color(self, rgba_color: tuple | None) -> None:
         """..."""
         if not rgba_color:
-            self.__sideview_color = self.__gui_env.settings(
-                ).background_darker_color().to_tuple()
+            self.__sideview_color = self.__sideview_color_default
         else:
             self.__sideview_color = rgba_color
 
@@ -447,7 +447,7 @@ class ApplicationWindowSideView(ApplicationWindow):
 
     def __fullscreen_maximized_and_windowed_modes_adjusts(self) -> None:
         if self.is_maximized():
-            if self.__gui_env.settings().desktop_is_using_global_menu():
+            if self.__env.is_using_global_menu():
                 self.__sideview_headerbar.set_left_control_buttons_visible(
                     False)
                 self.__color_sideview()

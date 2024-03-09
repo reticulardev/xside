@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import xside.modules.desktopstyles as desktopstyles
+import xside.modules.desktopsettings as desktopsettings
 
 
-class GuiEnv(object):
+class Env(object):
     """..."""
     def __init__(
             self,
@@ -13,19 +14,16 @@ class GuiEnv(object):
         self.__operational_system = operational_system
         self.__desktop_environment = desktop_environment
         self.__follow_platform = follow_platform
-        self.__gui_env_settings = self.__get_gui_env_settings()
 
-    def settings(self) -> desktopstyles.EnvStyle:
-        """..."""
-        return self.__gui_env_settings
-
-    def __get_gui_env_settings(self) -> desktopstyles.EnvStyle:
+    def settings(self, style_mode: bool = False) -> desktopstyles.EnvStyle:
         # ...
         if self.__follow_platform:
             if self.__operational_system == 'linux':
 
                 if self.__desktop_environment == 'plasma':
-                    return desktopstyles.EnvStylePlasma()
+                    if style_mode:
+                        return desktopstyles.EnvStylePlasma()
+                    return desktopsettings.EnvSettingsPlasma()
 
                 if self.__desktop_environment == 'cinnamon':
                     return desktopstyles.EnvStyleCinnamon()
@@ -51,4 +49,6 @@ class GuiEnv(object):
 
                 return desktopstyles.EnvStyleWindows11()
 
-        return desktopstyles.EnvStyle()
+        if style_mode:
+            return desktopstyles.EnvStyle()
+        return desktopsettings.EnvSettings()

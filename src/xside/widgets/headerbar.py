@@ -4,7 +4,7 @@ import logging
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from xside.modules.env import GuiEnv
+from xside.modules.env import Env
 from xside.widgets.controlbuttons import ControlButtons
 from xside.widgets.movearea import MoveArea
 
@@ -34,9 +34,10 @@ class HeaderBar(QtWidgets.QFrame):
         self.__left_ctrl_buttons_visibility = True
         self.__right_ctrl_buttons_visibility = True
 
-        self.__gui_env = GuiEnv(
+        self.__env = Env(
             self.__toplevel.platform().operational_system(),
             self.__toplevel.platform().desktop_environment())
+        self.__env = self.__env.settings()
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_contents_margins(0, 0, 0, 0)
@@ -126,7 +127,7 @@ class HeaderBar(QtWidgets.QFrame):
             _50_percent_left = self.__50_percent_left_size(False)
 
             if self.__toplevel.is_maximized():
-                if self.__gui_env.settings().desktop_is_using_global_menu():
+                if self.__env.is_using_global_menu():
                     self.__left_ctrl_buttons.set_visible(False)
                     self.__right_ctrl_buttons.set_visible(False)
                     _50_percent_left = self.__50_percent_left_size(True)

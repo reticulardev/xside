@@ -8,6 +8,7 @@ from __feature__ import snake_case
 
 from xside.modules.parser import DesktopFile
 import xside.modules.desktopstyles.stylebase as stylebase
+import xside.modules.color as color
 
 
 class EnvStylePlasma(stylebase.EnvStyle):
@@ -17,152 +18,88 @@ class EnvStylePlasma(stylebase.EnvStyle):
         """..."""
         super().__init__(*args, **kwargs)
 
-        filerc = os.path.join(os.environ['HOME'], '.config', 'kwinrc')
-        self.__kwinrc = (
-            DesktopFile(url=filerc).content if os.path.isfile(filerc) else {})
-
-        filerc = os.path.join(os.environ['HOME'], '.config', 'breezerc')
-        self.__breezerc = (
-            DesktopFile(url=filerc).content if os.path.isfile(filerc) else {})
-
-        filerc = os.path.join(os.environ['HOME'], '.config', 'kdeglobals')
-        self.__kde_globals = (
-            DesktopFile(url=filerc).content if os.path.isfile(filerc) else {})
-
-    def contextmenu_background_color(self) -> QtGui.QColor:
+    def contex_menu(self) -> dict:
         """..."""
-        cor = self.window_background_color()
-        return QtGui.QColor(cor.red(), cor.green(), cor.blue(), 225)
+        return {
+            'background-color': self.main_window()['background-color'],
+            'border': self.main_window()['border'],
+            'border-radius': '3px',
+            'margin': '0px 0px 0px 0px',
+            'padding': '3px 3px 3px 3px',
+            'spacing': '0px',
+        }
+
+    def contex_menu_separator(self) -> dict:
+        """..."""
+        bg_color = self.palette.color(QtGui.QPalette.Window).to_tuple()
+        step_tone = 15 if color.is_dark(bg_color) else 30
+        r, g, b, a = color.lighten_rgba(bg_color, step_tone)
+
+        return {
+            'color': f'rgba({r}, {g}, {b}, {a})',
+            'margin': '3px 3px 3px 3px',
+        }
+
+    def contex_menu_button(self) -> dict:
+        """..."""
+        r = self.contex_menu()['border-radius'][0]
+        r = int(r) - 2 if int(r) > 4 else r
+        return {
+            'border-radius': f'{r}px',
+            'padding': '2px 6px 2px 6px',
+        }
+
+    def contex_menu_button_hover(self) -> dict:
+        """..."""
+        r, g, b, a = self.accent_color.to_tuple()
+        return {
+            'background-color': f'rgba({r}, {g}, {b}, 100)',
+            'border': f'1px solid rgba({r}, {g}, {b}, {a})',
+        }
 
     @staticmethod
-    def contextmenu_border_radius() -> int:
+    def context_menu_group() -> dict:
         """..."""
-        return 3
+        return {
+            'padding': '2px 6px 2px 8px',
+        }
 
     @staticmethod
-    def contextmenu_padding() -> tuple:
+    def control_buttons() -> dict:
         """..."""
-        return 3, 3, 3, 3
+        return {
+            'margin': '0px 0px 0px 0px',
+            'spacing': '6px',
+        }
 
     @staticmethod
-    def contextmenu_separator_margin() -> tuple:
-        """Left, top, right and bottom margins tuple"""
-        return 3, 3, 3, 3
-
-    def contextmenubutton_background_hover_color(self) -> QtGui.QColor:
+    def header_bar() -> dict:
         """..."""
-        cor = self.window_accent_color()
-        return QtGui.QColor(cor.red(), cor.green(), cor.blue(), 100)
+        return {
+            'margin': '3px 5px 0px 5px',
+        }
 
-    def contextmenubutton_border_hover_color(self) -> QtGui.QColor:
+    def main_window(self) -> dict:
         """..."""
-        return self.window_accent_color()
+        bg_color = self.palette.color(QtGui.QPalette.Window).to_tuple()
+        bg_r, bg_g, bg_b, bg_a = bg_color
+
+        step_tone = 15 if color.is_dark(bg_color) else 30
+        bd_r, bd_g, bd_b, bd_a = color.lighten_rgba(bg_color, step_tone)
+
+        return {
+            'background-color': f'rgba({bg_r}, {bg_g}, {bg_b}, {bg_a})',
+            'border': f'1px solid rgba({bd_r}, {bd_g}, {bd_b}, {bd_a})',
+            'margin': '0px 0px 0px 0px',
+            'border-top-left-radius': '4px',
+            'border-top-right-radius': '4px',
+            'border-bottom-right-radius': '0px',
+            'border-bottom-left-radius': '0px',
+        }
 
     @staticmethod
-    def contextmenubutton_padding() -> tuple:
+    def window_icon() -> dict:
         """..."""
-        return 2, 6, 2, 6
-
-    @staticmethod
-    def contextmenugroup_padding() -> tuple:
-        """..."""
-        return 2, 6, 2, 8
-
-    def controlbutton_style(
-            self, window_is_dark: bool,
-            button_name: str,
-            button_state: str) -> str:
-        """..."""
-        # window_is_dark: True or False
-        # button_name: 'minimize', 'maximize', 'restore' or 'close'
-        # button_state: 'normal', 'hover', 'inactive'
-
-        if button_name == 'minimize':
-            button_name = 'go-down'
-        elif button_name == 'maximize':
-            button_name = 'go-up'
-        elif button_name == 'restore':
-            button_name = 'window-restore'
-        else:
-            button_name = 'window-close-b'
-            top, key = '[Common]', 'OutlineCloseButton'
-            if (top in self.__breezerc and
-                    key in self.__breezerc[top]):
-                if self.__breezerc[top][key] == 'true':
-                    button_name = 'window-close'
-
-        if button_state == 'hover':
-            if button_name == 'window-close-b':
-                button_name = 'window-close'
-            button_name += '-hover'
-        if button_state == 'inactive':
-            button_name += '-inactive'
-
-        if window_is_dark:
-            button_name += '-symbolic'
-
-        url_icon = os.path.join(
-            pathlib.Path(__file__).resolve().parent, 'static',
-            'kde-breeze-control-buttons', button_name + '.svg')
-        return (
-            # f'background: url({url_icon}) top center no-repeat;'
-            'ControlButton {'
-            '  border: 0px;'
-            '  margin: 0px;'
-            '  padding: 0px;'
-            f' background: url({url_icon}) center no-repeat;'
-            '}')
-
-    @staticmethod
-    def controlbuttons_margin() -> tuple:
-        """..."""
-        return 0, 0, 0, 0
-
-    def controlbuttons_order(self) -> tuple:
-        """..."""
-        right_buttons = 'IAX'  # X = close, A = max, I = min
-        left_buttons = 'M'  # M = icon, F = above all
-
-        kdecoration = '[org.kde.kdecoration2]'
-        buttons_on_left, buttons_on_right = 'ButtonsOnLeft', 'ButtonsOnRight'
-        if kdecoration in self.__kwinrc:
-            if buttons_on_left in self.__kwinrc[kdecoration]:
-                left_buttons = self.__kwinrc[kdecoration][buttons_on_left]
-
-            if buttons_on_right in self.__kwinrc[kdecoration]:
-                right_buttons = self.__kwinrc[kdecoration][buttons_on_right]
-
-        d = {'X': 2, 'A': 1, 'I': 0, 'M': 3}
-        return tuple(
-            d[x] for x in left_buttons
-            if x == 'X' or x == 'A' or x == 'I' or x == 'M'), tuple(
-            d[x] for x in right_buttons
-            if x == 'X' or x == 'A' or x == 'I' or x == 'M')
-
-    def desktop_is_using_global_menu(self) -> bool:
-        """..."""
-        group, key = '[Windows]', 'BorderlessMaximizedWindows'
-        if group in self.__kwinrc and key in self.__kwinrc[group]:
-            return True if self.__kwinrc[group][key] == 'true' else False
-
-    @staticmethod
-    def headerbar_margin() -> tuple:
-        """..."""
-        return 3, 5, 0, 5
-
-    def icon_theme_name(self) -> str | None:
-        """..."""
-        group, key = '[Icons]', 'Theme'
-        if group in self.__kde_globals and key in self.__kde_globals[group]:
-            return self.__kde_globals[group][key]
-        return None
-
-    @staticmethod
-    def window_border_radius() -> tuple:
-        """..."""
-        return 4, 4, 0, 0
-
-    @staticmethod
-    def window_icon_margin() -> tuple:
-        """..."""
-        return 0, 0, 0, 0
+        return {
+            'margin': '0px 0px 0px 0px',
+        }
