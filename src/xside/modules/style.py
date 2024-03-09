@@ -113,212 +113,196 @@ class Style(object):
             self.__toplevel.platform().desktop_environment(),
             self.__toplevel.follow_platform())
 
-        self.__win_is_dark = self.__env.settings(
-            ).window_is_dark()
-        self.__win_background_color = self.__env.settings(
-            ).window_background_color()
-        self.__win_border_radius = self.__env.settings(
-            ).window_border_radius()
-        self.__win_border_color = self.__env.settings(
-            ).window_border_color()
-        self.__win_margin = self.__env.settings(
-            ).window_margin()
-
-        self.__win_icon_margin = self.__env.settings(
-            ).window_icon_margin()
-
-        self.__controlbutton_margin = self.__env.settings(
-            ).controlbuttons_margin()
-
-        self.__ctxmenu_margin = self.__env.settings(
-            ).contextmenu_margin()
-        self.__ctxmenu_padding = self.__env.settings(
-            ).contextmenu_padding()
-        self.__ctxmenu_background_color = self.__env.settings(
-            ).contextmenu_background_color()
-        self.__ctxmenu_border_color = self.__env.settings(
-            ).contextmenu_border_color()
-        self.__ctxmenu_border_radius = self.__env.settings(
-            ).contextmenu_border_radius()
-
-        self.__ctxmenu_separator_margin = self.__env.settings(
-            ).contextmenu_separator_margin()
-        self.__ctxmenu_separator_color = self.__env.settings(
-            ).contextmenu_separator_color()
-
-        self.__ctxmenubutton_background_hover_color = self.__env.settings(
-            ).contextmenubutton_background_hover_color()
-        self.__ctxmenubutton_border_hover_color = self.__env.settings(
-            ).contextmenubutton_border_hover_color()
-        self.__ctxmenubutton_border_radius = self.__env.settings(
-            ).contextmenubutton_border_radius()
-        self.__ctxmenubutton_padding = self.__env.settings(
-            ).contextmenubutton_padding()
-
-        self.__ctxtmenubutton_label_hover_color = self.__env.settings(
-            ).contextmenubutton_label_hover_color()
-
-        self.__contextmenugroup_padding = self.__env.settings(
-            ).contextmenugroup_padding()
-
-        self.__headerbar_margin = self.__env.settings(
-            ).headerbar_margin()
-
-        self.__label_context_color = self.__env.settings(
-            ).label_context_color()
-
     def build_style(self) -> str:
         """..."""
+        win_bg_color = self.__env.settings().window_background_color()
+        win_bd_radius = self.__env.settings().window_border_radius()
+        win_bd_color = self.__env.settings().window_border_color()
+        win_margin = self.__env.settings().window_margin()
+
         att = hasattr(self.__toplevel, 'is_server_side_decorated')
         if att and self.__toplevel.is_server_side_decorated():
-            window_style = (
+            style_sheet = (
                 'MainWindow {'
                 'background-color: rgba('
-                f'{self.__win_background_color.red()},'
-                f'{self.__win_background_color.green()},'
-                f'{self.__win_background_color.blue()},'
-                f'{self.__win_background_color.alpha_f()});'
+                f'{win_bg_color.red()},'
+                f'{win_bg_color.green()},'
+                f'{win_bg_color.blue()},'
+                f'{win_bg_color.alpha_f()});'
                 '}')
         else:
-            window_style = (
+            style_sheet = (
                 'MainWindow {'
-                'margin: '
-                f' {self.__win_margin[0]}px'
-                f' {self.__win_margin[1]}px'
-                f' {self.__win_margin[2]}px'
-                f' {self.__win_margin[3]}px;'
                 'background-color: rgba('
-                f'{self.__win_background_color.red()},'
-                f'{self.__win_background_color.green()},'
-                f'{self.__win_background_color.blue()},'
-                f'{self.__win_background_color.alpha_f()});'
+                f'{win_bg_color.red()},'
+                f'{win_bg_color.green()},'
+                f'{win_bg_color.blue()},'
+                f'{win_bg_color.alpha_f()});'
                 f'border: {self.__env.settings().window_border()}px solid'
                 ' rgba('
-                f'{self.__win_border_color.red()},'
-                f'{self.__win_border_color.green()},'
-                f'{self.__win_border_color.blue()},'
-                f'{self.__win_border_color.alpha()});'
-                f'border-top-left-radius: {self.__win_border_radius[0]};'
-                f'border-top-right-radius: {self.__win_border_radius[1]};'
-                f'border-bottom-right-radius: {self.__win_border_radius[2]};'
-                f'border-bottom-left-radius: {self.__win_border_radius[3]};'
+                f'{win_bd_color.red()},'
+                f'{win_bd_color.green()},'
+                f'{win_bd_color.blue()},'
+                f'{win_bd_color.alpha()});'
+                f'border-top-left-radius: {win_bd_radius[0]};'
+                f'border-top-right-radius: {win_bd_radius[1]};'
+                f'border-bottom-right-radius: {win_bd_radius[2]};'
+                f'border-bottom-left-radius: {win_bd_radius[3]};'
+                'margin: '
+                f' {win_margin[0]}px'
+                f' {win_margin[1]}px'
+                f' {win_margin[2]}px'
+                f' {win_margin[3]}px;'
                 '}')
 
-        context_menu_style = (
+        cmenu_margin = self.__env.settings().contextmenu_margin()
+        cmenu_padding = self.__env.settings().contextmenu_padding()
+        cmenu_bg_color = self.__env.settings().contextmenu_background_color()
+        cmenu_bd_color = self.__env.settings().contextmenu_border_color()
+        cmenu_bd_radius = self.__env.settings().contextmenu_border_radius()
+        style_sheet += (
             'ContextMenu {'
             'margin:'
-            f' {self.__ctxmenu_margin[0]}px'
-            f' {self.__ctxmenu_margin[1]}px'
-            f' {self.__ctxmenu_margin[2]}px'
-            f' {self.__ctxmenu_margin[3]}px;'
+            f' {cmenu_margin[0]}px'
+            f' {cmenu_margin[1]}px'
+            f' {cmenu_margin[2]}px'
+            f' {cmenu_margin[3]}px;'
             'padding:'
-            f' {self.__ctxmenu_padding[0]}px'
-            f' {self.__ctxmenu_padding[1]}px'
-            f' {self.__ctxmenu_padding[2]}px'
-            f' {self.__ctxmenu_padding[3]}px;'
+            f' {cmenu_padding[0]}px'
+            f' {cmenu_padding[1]}px'
+            f' {cmenu_padding[2]}px'
+            f' {cmenu_padding[3]}px;'
             'background-color: rgba('
-            f' {self.__ctxmenu_background_color.red()},'
-            f' {self.__ctxmenu_background_color.green()},'
-            f' {self.__ctxmenu_background_color.blue()},'
-            f' {self.__ctxmenu_background_color.alpha()});'
+            f' {cmenu_bg_color.red()},'
+            f' {cmenu_bg_color.green()},'
+            f' {cmenu_bg_color.blue()},'
+            f' {cmenu_bg_color.alpha()});'
             'border: 1px solid rgba('
-            f' {self.__ctxmenu_border_color.red()},'
-            f' {self.__ctxmenu_border_color.green()},'
-            f' {self.__ctxmenu_border_color.blue()},'
-            f' {self.__ctxmenu_border_color.alpha_f()});'
-            f'border-radius: {self.__ctxmenu_border_radius}px;'
-            '}'
+            f' {cmenu_bd_color.red()},'
+            f' {cmenu_bd_color.green()},'
+            f' {cmenu_bd_color.blue()},'
+            f' {cmenu_bd_color.alpha_f()});'
+            f'border-radius: {cmenu_bd_radius}px;'
+            '}')
+
+        cmenusep_margin = self.__env.settings().contextmenu_separator_margin()
+        cmenusep_color = self.__env.settings().contextmenu_separator_color()
+        style_sheet += (
             'ContextMenuSeparator {'
             'margin:'
-            f' {self.__ctxmenu_separator_margin[0]}px'
-            f' {self.__ctxmenu_separator_margin[1]}px'
-            f' {self.__ctxmenu_separator_margin[2]}px'
-            f' {self.__ctxmenu_separator_margin[3]}px;'
+            f' {cmenusep_margin[0]}px'
+            f' {cmenusep_margin[1]}px'
+            f' {cmenusep_margin[2]}px'
+            f' {cmenusep_margin[3]}px;'
             '}'
             'ContextMenuSeparatorLine {'
             'color: rgba('
-            f' {self.__ctxmenu_separator_color.red()},'
-            f' {self.__ctxmenu_separator_color.green()},'
-            f' {self.__ctxmenu_separator_color.blue()},'
-            f' {self.__ctxmenu_separator_color.alpha()});'
-            '}'
+            f' {cmenusep_color.red()},'
+            f' {cmenusep_color.green()},'
+            f' {cmenusep_color.blue()},'
+            f' {cmenusep_color.alpha()});'
+            '}')
+
+        cmenubtn_bdr = self.__env.settings().contextmenubutton_border_radius()
+        cmenubtn_pd = self.__env.settings().contextmenubutton_padding()
+        cmenubtn_bg_hover_color = self.__env.settings(
+            ).contextmenubutton_background_hover_color()
+        cmenubtn_bd_hover_color = self.__env.settings(
+            ).contextmenubutton_border_hover_color()
+        cmenubtn_lbl_hover_color = self.__env.settings(
+            ).contextmenubutton_label_hover_color()
+        style_sheet += (
             'ContextMenuButton {'
             'background: transparent;'
             'padding:'
-            f' {self.__ctxmenubutton_padding[0]}px'
-            f' {self.__ctxmenubutton_padding[1]}px'
-            f' {self.__ctxmenubutton_padding[2]}px'
-            f' {self.__ctxmenubutton_padding[3]}px;'
+            f' {cmenubtn_pd[0]}px'
+            f' {cmenubtn_pd[1]}px'
+            f' {cmenubtn_pd[2]}px'
+            f' {cmenubtn_pd[3]}px;'
             'border: 1px solid rgba(0, 0, 0, 0.0);'
-            f'border-radius: {self.__ctxmenubutton_border_radius}px;'
+            f'border-radius: {cmenubtn_bdr}px;'
             '}'
             'ContextMenuButton:hover {'
             'color: rgba('
-            f' {self.__ctxtmenubutton_label_hover_color.red()},'
-            f' {self.__ctxtmenubutton_label_hover_color.green()},'
-            f' {self.__ctxtmenubutton_label_hover_color.blue()},'
-            f' {self.__ctxtmenubutton_label_hover_color.alpha()});'
+            f' {cmenubtn_lbl_hover_color.red()},'
+            f' {cmenubtn_lbl_hover_color.green()},'
+            f' {cmenubtn_lbl_hover_color.blue()},'
+            f' {cmenubtn_lbl_hover_color.alpha()});'
             'background-color: rgba('
-            f' {self.__ctxmenubutton_background_hover_color.red()},'
-            f' {self.__ctxmenubutton_background_hover_color.green()},'
-            f' {self.__ctxmenubutton_background_hover_color.blue()},'
-            f' {self.__ctxmenubutton_background_hover_color.alpha()});'
+            f' {cmenubtn_bg_hover_color.red()},'
+            f' {cmenubtn_bg_hover_color.green()},'
+            f' {cmenubtn_bg_hover_color.blue()},'
+            f' {cmenubtn_bg_hover_color.alpha()});'
             'border: 1px solid rgba('
-            f' {self.__ctxmenubutton_border_hover_color.red()},'
-            f' {self.__ctxmenubutton_border_hover_color.green()},'
-            f' {self.__ctxmenubutton_border_hover_color.blue()},'
-            f' {self.__ctxmenubutton_border_hover_color.alpha()});'
+            f' {cmenubtn_bd_hover_color.red()},'
+            f' {cmenubtn_bd_hover_color.green()},'
+            f' {cmenubtn_bd_hover_color.blue()},'
+            f' {cmenubtn_bd_hover_color.alpha()});'
             '}'
             'ContextMenuButtonLabel:hover {'
             'color: rgba('
-            f' {self.__ctxtmenubutton_label_hover_color.red()},'
-            f' {self.__ctxtmenubutton_label_hover_color.green()},'
-            f' {self.__ctxtmenubutton_label_hover_color.blue()},'
-            f' {self.__ctxtmenubutton_label_hover_color.alpha()});'
-            '}'
+            f' {cmenubtn_lbl_hover_color.red()},'
+            f' {cmenubtn_lbl_hover_color.green()},'
+            f' {cmenubtn_lbl_hover_color.blue()},'
+            f' {cmenubtn_lbl_hover_color.alpha()});'
+            '}')
+
+        lbl_ctx_color = self.__env.settings().label_context_color()
+        style_sheet += (
             'ContextLabel {'
             'color: rgba('
-            f' {self.__label_context_color.red()},'
-            f' {self.__label_context_color.green()},'
-            f' {self.__label_context_color.blue()},'
-            f' {self.__label_context_color.alpha()});'
-            '}'
+            f' {lbl_ctx_color.red()},'
+            f' {lbl_ctx_color.green()},'
+            f' {lbl_ctx_color.blue()},'
+            f' {lbl_ctx_color.alpha()});'
+            '}')
+
+        contextmenugroup_pd = self.__env.settings().contextmenugroup_padding()
+        style_sheet += (
             'ContextMenuGroup {'
             'padding:'
-            f' {self.__contextmenugroup_padding[0]}px'
-            f' {self.__contextmenugroup_padding[1]}px'
-            f' {self.__contextmenugroup_padding[2]}px'
-            f' {self.__contextmenugroup_padding[3]}px;'
-            '}'
-            'HeaderBar {'
-            f'margin:'
-            f' {self.__headerbar_margin[0]}px'
-            f' {self.__headerbar_margin[1]}px'
-            f' {self.__headerbar_margin[2]}px'
-            f' {self.__headerbar_margin[3]}px;'
-            '}'
+            f' {contextmenugroup_pd[0]}px'
+            f' {contextmenugroup_pd[1]}px'
+            f' {contextmenugroup_pd[2]}px'
+            f' {contextmenugroup_pd[3]}px;'
+            '}')
+
+        controlbutton_margin = self.__env.settings().controlbuttons_margin()
+        style_sheet += (
             'ControlButtons {'
             f'margin:'
-            f' {self.__controlbutton_margin[0]}px'
-            f' {self.__controlbutton_margin[1]}px'
-            f' {self.__controlbutton_margin[2]}px'
-            f' {self.__controlbutton_margin[3]}px;'
-            '}'
+            f' {controlbutton_margin[0]}px'
+            f' {controlbutton_margin[1]}px'
+            f' {controlbutton_margin[2]}px'
+            f' {controlbutton_margin[3]}px;'
+            '}')
+
+        headerbar_margin = self.__env.settings().headerbar_margin()
+        style_sheet += (
+            'HeaderBar {'
+            f'margin:'
+            f' {headerbar_margin[0]}px'
+            f' {headerbar_margin[1]}px'
+            f' {headerbar_margin[2]}px'
+            f' {headerbar_margin[3]}px;'
+            '}')
+
+        win_icon_margin = self.__env.settings().window_icon_margin()
+        style_sheet += (
             'WindowIcon {'
             f'margin:'
-            f' {self.__win_icon_margin[0]}px'
-            f' {self.__win_icon_margin[1]}px'
-            f' {self.__win_icon_margin[2]}px'
-            f' {self.__win_icon_margin[3]}px;'
-            '}'
-        )
+            f' {win_icon_margin[0]}px'
+            f' {win_icon_margin[1]}px'
+            f' {win_icon_margin[2]}px'
+            f' {win_icon_margin[3]}px;'
+            '}')
 
-        style_path = os.path.join(
-            pathlib.Path(__file__).resolve().parent, 'static', 'style.qss')
-        with open(style_path, 'r') as style_qss_file:
+        with open(os.path.join(
+                pathlib.Path(__file__).resolve().parent,
+                'static', 'style.qss'), 'r') as style_qss_file:
             file_style = style_qss_file.read()
 
-        return window_style + context_menu_style + file_style
+        return style_sheet + file_style
 
     @staticmethod
     def fullscreen_adapted_style(style: str) -> str:
