@@ -45,10 +45,6 @@ class Tooltip(TopFrame):
         self.__main_box = QtWidgets.QHBoxLayout()
         self.set_layout(self.__main_box)
 
-        # self.__main_widget = QtWidgets.QFrame()
-        # self.__main_widget.set_object_name('QTooltip')
-        # self.__main_box.add_widget(self.__main_widget)
-
         self.central_widget().set_object_name('QTooltip')
 
         # Layout
@@ -65,12 +61,15 @@ class Tooltip(TopFrame):
         self.__label = QtWidgets.QLabel(self.__text)
         self.__label_box.add_widget(self.__label)
 
+        self.__shortcut_label = ContextLabel(
+            self.__shortcut if self.__shortcut else '')
         if self.__shortcut:
-            self.__shortcut_label = ContextLabel(self.__shortcut)
             self.__label_box.add_widget(self.__shortcut_label)
 
+        self.__complement_label = ContextLabel(
+            self.__complement_text if self.__complement_text else '')
         if self.__complement_text:
-            self.__body_box.add_widget(ContextLabel(self.__complement_text))
+            self.__body_box.add_widget(self.__complement_label)
 
         # Shadow
         self.__shadow_effect = QtWidgets.QGraphicsDropShadowEffect(self)
@@ -89,7 +88,14 @@ class Tooltip(TopFrame):
 
     def exec(self) -> None:
         """..."""
-        self.central_widget().set_style_sheet(self.__set_style())
+        self.central_widget().set_style_sheet(
+            '#QTooltip {'
+            f'{self.__style_parser.widget_scope("ContextMenu")}'
+            '}'
+            'ContextLabel {'
+            f'{self.__style_parser.widget_scope("ContextLabel")}'
+            '}')
+
         point = QtGui.QCursor.pos()
         self.show()
         self.move(
@@ -119,11 +125,3 @@ class Tooltip(TopFrame):
         # ...
         self.__style_saved = self.__toplevel.style_sheet()
         self.__style_parser.set_style_sheet(self.__style_saved)
-
-    def __set_style(self) -> str:
-        # ...
-        if not self.__style_saved:
-            self.__set_style_signal()
-
-        return ('#QTooltip {'
-                f'{self.__style_parser.widget_scope("ContextMenu")}' '}')
