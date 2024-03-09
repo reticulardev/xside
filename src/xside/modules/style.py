@@ -121,6 +121,14 @@ class Style(object):
             ).window_border_radius()
         self.__win_border_color = self.__env.settings(
             ).window_border_color()
+        self.__win_margin = self.__env.settings(
+            ).window_margin()
+
+        self.__win_icon_margin = self.__env.settings(
+            ).window_icon_margin()
+
+        self.__controlbutton_margin = self.__env.settings(
+            ).controlbuttons_margin()
 
         self.__ctxmenu_margin = self.__env.settings(
             ).contextmenu_margin()
@@ -159,15 +167,6 @@ class Style(object):
         self.__label_context_color = self.__env.settings(
             ).label_context_color()
 
-        self.__windowcontrolbutton_margin = self.__env.settings(
-            ).windowcontrolbutton_margin()
-
-        self.__window_margin = self.__env.settings(
-            ).window_margin()
-
-        self.__window_icon_margin = self.__env.settings(
-            ).window_icon_margin()
-
     def build_style(self) -> str:
         """..."""
         att = hasattr(self.__toplevel, 'is_server_side_decorated')
@@ -184,10 +183,10 @@ class Style(object):
             window_style = (
                 'MainWindow {'
                 'margin: '
-                f' {self.__window_margin[0]}px'
-                f' {self.__window_margin[1]}px'
-                f' {self.__window_margin[2]}px'
-                f' {self.__window_margin[3]}px;'
+                f' {self.__win_margin[0]}px'
+                f' {self.__win_margin[1]}px'
+                f' {self.__win_margin[2]}px'
+                f' {self.__win_margin[3]}px;'
                 'background-color: rgba('
                 f'{self.__win_background_color.red()},'
                 f'{self.__win_background_color.green()},'
@@ -298,19 +297,19 @@ class Style(object):
             f' {self.__headerbar_margin[2]}px'
             f' {self.__headerbar_margin[3]}px;'
             '}'
-            'WindowControlButtons {'
+            'ControlButtons {'
             f'margin:'
-            f' {self.__windowcontrolbutton_margin[0]}px'
-            f' {self.__windowcontrolbutton_margin[1]}px'
-            f' {self.__windowcontrolbutton_margin[2]}px'
-            f' {self.__windowcontrolbutton_margin[3]}px;'
+            f' {self.__controlbutton_margin[0]}px'
+            f' {self.__controlbutton_margin[1]}px'
+            f' {self.__controlbutton_margin[2]}px'
+            f' {self.__controlbutton_margin[3]}px;'
             '}'
             'WindowIcon {'
             f'margin:'
-            f' {self.__window_icon_margin[0]}px'
-            f' {self.__window_icon_margin[1]}px'
-            f' {self.__window_icon_margin[2]}px'
-            f' {self.__window_icon_margin[3]}px;'
+            f' {self.__win_icon_margin[0]}px'
+            f' {self.__win_icon_margin[1]}px'
+            f' {self.__win_icon_margin[2]}px'
+            f' {self.__win_icon_margin[3]}px;'
             '}'
         )
 

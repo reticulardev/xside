@@ -51,7 +51,7 @@ class ControlButtons(QtWidgets.QFrame):
             self.__toplevel.platform().operational_system(),
             self.__toplevel.platform().desktop_environment())
 
-        self.__env_btn_order = self.__gui_env.settings().controlbutton_order()
+        self.__env_btn_order = self.__gui_env.settings().controlbuttons_order()
         self.__left_system_button_order = self.__env_btn_order[0]
         self.__right_system_button_order = self.__env_btn_order[1]
         self.__set_button_order()
@@ -62,7 +62,7 @@ class ControlButtons(QtWidgets.QFrame):
 
         self.__layout = QtWidgets.QHBoxLayout(self)
         self.__layout.set_spacing(
-            self.__gui_env.settings().windowcontrolbutton_spacing())
+            self.__gui_env.settings().controlbuttons_spacing())
         self.__layout.set_contents_margins(0, 0, 0, 0)
 
         self.__minimize_button = ControlButton(self.__toplevel, 0)

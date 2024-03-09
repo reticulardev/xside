@@ -23,17 +23,6 @@ class EnvStyleWindows11(stylebase.EnvStyle):
         return 0, 0, 0, 0
 
     @staticmethod
-    def controlbutton_order() -> tuple:
-        """XAI M -> (2, 1, 0), (3,)
-
-        Close     Max       Min       Icon      Above all
-        X = 2     A = 1     I = 0     M = 3     F = 4
-
-        (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
-        """
-        return (3,), (0, 1, 2)
-
-    @staticmethod
     def controlbutton_style(
             window_is_dark: bool,
             button_name: str,
@@ -66,7 +55,7 @@ class EnvStyleWindows11(stylebase.EnvStyle):
 
         return (
             'ControlButton {'
-            f'background: url({url_icon}) center no-repeat;'
+            f'background: url("{url_icon}") center no-repeat;'
             f'width: 42px;'
             'height: 26px;'
             'border-radius: 0px;'
@@ -75,19 +64,30 @@ class EnvStyleWindows11(stylebase.EnvStyle):
             '}')
 
     @staticmethod
+    def controlbuttons_margin() -> tuple:
+        """..."""
+        return 0, 0, 0, 0
+
+    @staticmethod
+    def controlbuttons_order() -> tuple:
+        """XAI M -> (2, 1, 0), (3,)
+
+        Close     Max       Min       Icon      Above all
+        X = 2     A = 1     I = 0     M = 3     F = 4
+
+        (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
+        """
+        return (3,), (0, 1, 2)
+
+    @staticmethod
+    def controlbuttons_spacing() -> int:
+        """..."""
+        return 0
+
+    @staticmethod
     def headerbar_margin() -> tuple:
         """..."""
         return 0, 0, 0, 0
-
-    @staticmethod
-    def windowcontrolbutton_margin() -> tuple:
-        """..."""
-        return 0, 0, 0, 0
-
-    @staticmethod
-    def windowcontrolbutton_spacing() -> int:
-        """..."""
-        return 0
 
     @staticmethod
     def window_border() -> int:

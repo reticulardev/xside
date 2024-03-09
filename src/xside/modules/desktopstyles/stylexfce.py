@@ -73,17 +73,6 @@ class EnvStyleXFCE(stylebase.EnvStyle):
         return 2, 4, 2, 6
 
     @staticmethod
-    def controlbutton_order() -> tuple:
-        """XAI M -> (2, 1, 0), (3,)
-
-        Close     Max       Min       Icon      Above all
-        X = 2     A = 1     I = 0     M = 3     F = 4
-
-        (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
-        """
-        return (3,), (0, 1, 2)
-
-    @staticmethod
     def controlbutton_style(*args, **kwargs) -> str:
         logging.info(args)
         logging.info(kwargs)
@@ -99,6 +88,17 @@ class EnvStyleXFCE(stylebase.EnvStyle):
             'ControlButton:hover {'
             '  background-color: rgba(127, 127, 127, 0.2);'
             '}')
+
+    @staticmethod
+    def controlbuttons_order() -> tuple:
+        """XAI M -> (2, 1, 0), (3,)
+
+        Close     Max       Min       Icon      Above all
+        X = 2     A = 1     I = 0     M = 3     F = 4
+
+        (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
+        """
+        return (3,), (0, 1, 2)
 
     def window_border_color(self) -> QtGui.QColor:
         """..."""

@@ -59,7 +59,24 @@ class EnvStyleGnome(stylebase.EnvStyle):
         return 6, 12, 6, 14
 
     @staticmethod
-    def controlbutton_order() -> tuple:
+    def controlbutton_style(*args, **kwargs) -> str:
+        """..."""
+        logging.info(args)
+        logging.info(kwargs)
+        return (
+            'ControlButton {'
+            '  border: 0px;'
+            '  border-radius: 10px;'
+            '  background-color: rgba(127, 127, 127, 0.2);'
+            '  margin: 5px 4px 5px 4px;'
+            '  padding: 2px 1px 1px 2px;'
+            '}'
+            'ControlButton:hover {'
+            '  background-color: rgba(127, 127, 127, 0.3);'
+            '}')
+
+    @staticmethod
+    def controlbuttons_order() -> tuple:
         """XAI M -> (2, 1, 0), (3,)
 
         Close     Max       Min       Icon      Above all
@@ -90,23 +107,6 @@ class EnvStyleGnome(stylebase.EnvStyle):
                 right.append(3)
 
         return tuple(left), tuple(right)
-
-    @staticmethod
-    def controlbutton_style(*args, **kwargs) -> str:
-        """..."""
-        logging.info(args)
-        logging.info(kwargs)
-        return (
-            'ControlButton {'
-            '  border: 0px;'
-            '  border-radius: 10px;'
-            '  background-color: rgba(127, 127, 127, 0.2);'
-            '  margin: 5px 4px 5px 4px;'
-            '  padding: 2px 1px 1px 2px;'
-            '}'
-            'ControlButton:hover {'
-            '  background-color: rgba(127, 127, 127, 0.3);'
-            '}')
 
     def icon_theme_name(self) -> str | None:
         """..."""

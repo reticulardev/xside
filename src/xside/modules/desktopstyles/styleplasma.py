@@ -68,27 +68,6 @@ class EnvStylePlasma(stylebase.EnvStyle):
         """..."""
         return 2, 6, 2, 8
 
-    def controlbutton_order(self) -> tuple:
-        """..."""
-        right_buttons = 'IAX'  # X = close, A = max, I = min
-        left_buttons = 'M'  # M = icon, F = above all
-
-        kdecoration = '[org.kde.kdecoration2]'
-        buttons_on_left, buttons_on_right = 'ButtonsOnLeft', 'ButtonsOnRight'
-        if kdecoration in self.__kwinrc:
-            if buttons_on_left in self.__kwinrc[kdecoration]:
-                left_buttons = self.__kwinrc[kdecoration][buttons_on_left]
-
-            if buttons_on_right in self.__kwinrc[kdecoration]:
-                right_buttons = self.__kwinrc[kdecoration][buttons_on_right]
-
-        d = {'X': 2, 'A': 1, 'I': 0, 'M': 3}
-        return tuple(
-            d[x] for x in left_buttons
-            if x == 'X' or x == 'A' or x == 'I' or x == 'M'), tuple(
-            d[x] for x in right_buttons
-            if x == 'X' or x == 'A' or x == 'I' or x == 'M')
-
     def controlbutton_style(
             self, window_is_dark: bool,
             button_name: str,
@@ -134,6 +113,32 @@ class EnvStylePlasma(stylebase.EnvStyle):
             f' background: url({url_icon}) center no-repeat;'
             '}')
 
+    @staticmethod
+    def controlbuttons_margin() -> tuple:
+        """..."""
+        return 0, 0, 0, 0
+
+    def controlbuttons_order(self) -> tuple:
+        """..."""
+        right_buttons = 'IAX'  # X = close, A = max, I = min
+        left_buttons = 'M'  # M = icon, F = above all
+
+        kdecoration = '[org.kde.kdecoration2]'
+        buttons_on_left, buttons_on_right = 'ButtonsOnLeft', 'ButtonsOnRight'
+        if kdecoration in self.__kwinrc:
+            if buttons_on_left in self.__kwinrc[kdecoration]:
+                left_buttons = self.__kwinrc[kdecoration][buttons_on_left]
+
+            if buttons_on_right in self.__kwinrc[kdecoration]:
+                right_buttons = self.__kwinrc[kdecoration][buttons_on_right]
+
+        d = {'X': 2, 'A': 1, 'I': 0, 'M': 3}
+        return tuple(
+            d[x] for x in left_buttons
+            if x == 'X' or x == 'A' or x == 'I' or x == 'M'), tuple(
+            d[x] for x in right_buttons
+            if x == 'X' or x == 'A' or x == 'I' or x == 'M')
+
     def desktop_is_using_global_menu(self) -> bool:
         """..."""
         group, key = '[Windows]', 'BorderlessMaximizedWindows'
@@ -156,11 +161,6 @@ class EnvStylePlasma(stylebase.EnvStyle):
     def window_border_radius() -> tuple:
         """..."""
         return 4, 4, 0, 0
-
-    @staticmethod
-    def windowcontrolbutton_margin() -> tuple:
-        """..."""
-        return 0, 0, 0, 0
 
     @staticmethod
     def window_icon_margin() -> tuple:

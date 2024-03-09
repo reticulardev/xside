@@ -82,17 +82,6 @@ class EnvStyle(Main):
         return 0, 6, 0, 8
 
     @staticmethod
-    def controlbutton_order() -> tuple:
-        """XAI M -> (2, 1, 0), (3,)
-
-        Close     Max       Min       Icon      Above all
-        X = 2     A = 1     I = 0     M = 3     F = 4
-
-        (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
-        """
-        return (2, 1, 0), (3,)
-
-    @staticmethod
     def controlbutton_style(*args, **kwargs) -> str:
         logging.info(args)
         logging.info(kwargs)
@@ -107,6 +96,27 @@ class EnvStyle(Main):
             'ControlButton:hover {'
             '  background-color: rgba(200, 200, 200, 0.2);'
             '}')
+
+    @staticmethod
+    def controlbuttons_margin() -> tuple:
+        """..."""
+        return 2, 0, 2, 0
+
+    @staticmethod
+    def controlbuttons_order() -> tuple:
+        """XAI M -> (2, 1, 0), (3,)
+
+        Close     Max       Min       Icon      Above all
+        X = 2     A = 1     I = 0     M = 3     F = 4
+
+        (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
+        """
+        return (2, 1, 0), (3,)
+
+    @staticmethod
+    def controlbuttons_spacing() -> int:
+        """..."""
+        return 6
 
     @staticmethod
     def desktop_is_using_global_menu() -> bool:
@@ -136,16 +146,6 @@ class EnvStyle(Main):
         """..."""
         return self.palette.color(
             QtGui.QPalette.Disabled, QtGui.QPalette.WindowText)
-
-    @staticmethod
-    def windowcontrolbutton_margin() -> tuple:
-        """..."""
-        return 2, 0, 2, 0
-
-    @staticmethod
-    def windowcontrolbutton_spacing() -> int:
-        """..."""
-        return 6
 
     def window_accent_color(self) -> QtGui.QColor:
         """..."""
