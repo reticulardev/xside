@@ -115,7 +115,7 @@ class Style(object):
 
     def build_style(self) -> str:
         """..."""
-        win_bg_color = self.__env.settings().window_background_color()
+        win_bg_color = self.__env.settings().background_color()
         win_bd_radius = self.__env.settings().window_border_radius()
         win_bd_color = self.__env.settings().window_border_color()
         win_margin = self.__env.settings().window_margin()

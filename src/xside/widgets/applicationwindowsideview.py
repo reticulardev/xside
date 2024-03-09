@@ -219,7 +219,7 @@ class ApplicationWindowSideView(ApplicationWindow):
         self.__is_sideview_close_button_set_as_visible = False
         self.__sideview_width = 250
         self.__sideview_color = self.__gui_env.settings(
-            ).window_background_darker_color().to_tuple()
+            ).background_darker_color().to_tuple()
 
         # Settings
         self.set_window_title('MPX Application Window')
@@ -393,7 +393,7 @@ class ApplicationWindowSideView(ApplicationWindow):
         """..."""
         if not rgba_color:
             self.__sideview_color = self.__gui_env.settings(
-                ).window_background_darker_color().to_tuple()
+                ).background_darker_color().to_tuple()
         else:
             self.__sideview_color = rgba_color
 

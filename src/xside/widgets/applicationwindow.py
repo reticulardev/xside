@@ -48,7 +48,7 @@ class ApplicationWindow(BaseWindow):
             self.__follow_platform)
 
         self.__is_dark = color.is_dark(
-            self.__gui_env.settings().window_background_color().to_tuple())
+            QtGui.QPalette().color(QtGui.QPalette.Window).to_tuple())
 
         self.__timer = QtCore.QTimer()
 

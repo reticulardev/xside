@@ -7,16 +7,12 @@ from __feature__ import snake_case
 import xside.modules.color as color
 
 
-class Main(object):
-    def __init__(self, *args, **kwargs):
-        self.palette = QtGui.QPalette()
-
-
-class EnvStyle(Main):
+class EnvStyle(object):
     """Base environment settings"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        """..."""
+        self.palette = QtGui.QPalette()
 
     def contextmenu_background_color(self) -> QtGui.QColor:
         """..."""
