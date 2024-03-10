@@ -5,6 +5,7 @@ from PySide6 import QtGui
 from __feature__ import snake_case
 
 import xside.modules.desktopstyles.stylexfce as stylexfce
+import xside.modules.color as color
 
 
 class EnvStyleMate(stylexfce.EnvStyleXFCE):
@@ -14,55 +15,52 @@ class EnvStyleMate(stylexfce.EnvStyleXFCE):
         """..."""
         super().__init__(*args, **kwargs)
 
-    def contextmenu_border_color(self) -> QtGui.QColor:
+    def contex_menu(self) -> dict:
         """..."""
-        if self.window_is_dark():
-            return QtGui.QColor(80, 80, 80, 255)
-        return QtGui.QColor(180, 180, 180, 255)
-
-    def contextmenu_border_radius(self) -> int:
-        """..."""
-        return self.window_border_radius()[0]
-
-    def contextmenu_separator_color(self) -> QtGui.QColor:
-        """..."""
-        if self.window_is_dark():
-            return QtGui.QColor(80, 80, 80, 255)
-        return QtGui.QColor(200, 200, 200, 255)
-
-    def contextmenubutton_background_hover_color(self) -> QtGui.QColor:
-        """..."""
-        if self.window_is_dark():
-            return QtGui.QColor(62, 62, 62, 255)
-        return QtGui.QColor(222, 222, 222, 255)
-
-    def contextmenubutton_border_hover_color(self) -> QtGui.QColor:
-        """..."""
-        return self.contextmenubutton_background_hover_color()
+        bg_color = self.palette.color(QtGui.QPalette.Window).to_tuple()
+        bd_r, bd_g, bd_b, bd_a = (80, 80, 80, 255) if color.is_dark(
+            bg_color) else (180, 180, 180, 255)
+        return {
+            'background-color': self.main_window()['background-color'],
+            'border': f'1px solid rgba({bd_r}, {bd_g}, {bd_b}, {bd_a})',
+            'border-radius': f'{self.main_window()["border-radius"]}',
+            'margin': '0px 0px 0px 0px',
+            'padding': '4px 4px 4px 4px',
+            'spacing': '0px',
+        }
 
     @staticmethod
-    def contextmenubutton_border_radius() -> int:
+    def contex_menu_button() -> dict:
         """..."""
-        return 0
+        return {
+            'border-radius': '0px',
+            'padding': '4px 6px 4px 6px',
+        }
 
-    def contextmenubutton_label_hover_color(self) -> QtGui.QColor:
+    def contex_menu_button_hover(self) -> dict:
         """..."""
-        return self.label_color()
+        bg_color = self.palette.color(QtGui.QPalette.Window).to_tuple()
+        r, g, b, a = (62, 62, 62, 255) if color.is_dark(bg_color) else (
+            222, 222, 222, 255)
+        return {
+            'background-color': f'rgba({r}, {g}, {b}, {a})',
+            'border': f'1px solid rgba({r}, {g}, {b}, {a})',
+        }
 
-    @staticmethod
-    def controlbutton_style(*args, **kwargs) -> str:
-        logging.info(args)
-        logging.info(kwargs)
-
+    def context_menu_button_label_hover(self) -> dict:
         """..."""
-        return (
-            'ControlButton {'
-            '  border: 0px;'
-            '  border-radius: 10px;'
-            '  background-color: rgba(127, 127, 127, 0.2);'
-            '  margin: 3px 4px 3px 4px;'
-            '  padding: 1px 0px 0px 1px;'
-            '}'
-            'ControlButton:hover {'
-            '  background-color: rgba(127, 127, 127, 0.3);'
-            '}')
+        r, g, b, a = self.palette.color(
+            QtGui.QPalette.Active, QtGui.QPalette.WindowText).to_tuple()
+        return {
+            'color': f'rgba({r}, {g}, {b}, {a})',
+        }
+
+    def contex_menu_separator(self) -> dict:
+        """..."""
+        bg_color = self.palette.color(QtGui.QPalette.Window).to_tuple()
+        r, g, b, a = (80, 80, 80, 255) if color.is_dark(bg_color) else (
+            200, 200, 200, 255)
+        return {
+            'color': f'rgba({r}, {g}, {b}, {a})',
+            'margin': '0px 4px 0px 4px',
+        }

@@ -79,6 +79,7 @@ class EnvStyleXFCE(stylebase.EnvStyle):
             'background-color': f'rgba({bg_r}, {bg_g}, {bg_b}, {bg_a})',
             'border': f'1px solid rgba({bd_r}, {bd_g}, {bd_b}, {bd_a})',
             'margin': '0px 0px 0px 0px',
+            'border-radius': '8px',
             'border-top-left-radius': '8px',
             'border-top-right-radius': '8px',
             'border-bottom-right-radius': '0px',
