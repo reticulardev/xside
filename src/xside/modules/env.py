@@ -22,8 +22,8 @@ class Env(object):
 
                 if self.__desktop_environment == 'plasma':
                     if style_mode:
-                        return desktopstyles.EnvStylePlasma()
-                    return desktopsettings.EnvSettingsPlasma()
+                        return desktopstyles.EnvStyleXFCE()
+                    return desktopsettings.EnvSettingsXFCE()
 
                 if self.__desktop_environment == 'cinnamon':
                     if style_mode:
@@ -31,7 +31,9 @@ class Env(object):
                     return desktopsettings.EnvSettingsCinnamon()
 
                 if self.__desktop_environment == 'xfce':
-                    return desktopstyles.EnvStyleXFCE()
+                    if style_mode:
+                        return desktopstyles.EnvStyleXFCE()
+                    return desktopsettings.EnvSettingsXFCE()
 
                 if self.__desktop_environment == 'mate':
                     return desktopstyles.EnvStyleMate()
