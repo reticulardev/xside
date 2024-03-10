@@ -18,98 +18,44 @@ class EnvStyleWindows11(stylebase.EnvStyle):
         super().__init__(*args, **kwargs)
 
     @staticmethod
-    def controlbutton_margin() -> tuple:
+    def control_buttons() -> dict:
         """..."""
-        return 0, 0, 0, 0
+        return {
+            'margin': '0px 0px 0px 0px',
+            'spacing': '0px',
+            'border': '0px',
+        }
 
     @staticmethod
-    def controlbutton_style(
-            window_is_dark: bool,
-            button_name: str,
-            button_state: str) -> str:
+    def header_bar() -> dict:
         """..."""
-        # window_is_dark: True or False
-        # button_name: 'minimize', 'maximize', 'restore' or 'close'
-        # button_state: 'normal', 'hover', 'inactive'
+        return {
+            'margin': '0px 0px 0px 0px',
+        }
 
-        if button_name == 'minimize':
-            button_name = 'go-down'
-        elif button_name == 'maximize':
-            button_name = 'go-up'
-        elif button_name == 'restore':
-            button_name = 'window-restore'
-        else:
-            button_name = 'window-close'
+    def main_window(self) -> dict:
+        """..."""
+        bg_color = self.palette.color(QtGui.QPalette.Window).to_tuple()
+        bg_r, bg_g, bg_b, bg_a = bg_color
 
-        if button_state == 'hover':
-            button_name += '-hover'
-        if button_state == 'inactive':
-            button_name += '-inactive'
+        bd_r, bd_g, bd_b, bd_a = color.lighten_rgba(
+            bg_color, 15) if color.is_dark(bg_color) else color.darken_rgba(
+            bg_color, 50)
 
-        if window_is_dark:
-            button_name += '-symbolic'
-
-        url_icon = os.path.join(
-            pathlib.Path(__file__).resolve().parent, 'static',
-            'windows-11-control-buttons', button_name + '.svg')
-
-        return (
-            'ControlButton {'
-            f'background: url("{url_icon}") center no-repeat;'
-            f'width: 42px;'
-            'height: 26px;'
-            'border-radius: 0px;'
-            'border: 0px;'
-            'margin: 0px;'
-            '}')
+        return {
+            'background-color': f'rgba({bg_r}, {bg_g}, {bg_b}, {bg_a})',
+            'border': f'1px solid rgba({bd_r}, {bd_g}, {bd_b}, {bd_a})',
+            'margin': '0px 0px 0px 0px',
+            'border-radius': '8px',
+            'border-top-left-radius': '8px',
+            'border-top-right-radius': '8px',
+            'border-bottom-right-radius': '0px',
+            'border-bottom-left-radius': '0px',
+        }
 
     @staticmethod
-    def controlbuttons_margin() -> tuple:
+    def window_icon() -> dict:
         """..."""
-        return 0, 0, 0, 0
-
-    @staticmethod
-    def controlbuttons_order() -> tuple:
-        """XAI M -> (2, 1, 0), (3,)
-
-        Close     Max       Min       Icon      Above all
-        X = 2     A = 1     I = 0     M = 3     F = 4
-
-        (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
-        """
-        return (3,), (0, 1, 2)
-
-    @staticmethod
-    def controlbuttons_spacing() -> int:
-        """..."""
-        return 0
-
-    @staticmethod
-    def headerbar_margin() -> tuple:
-        """..."""
-        return 0, 0, 0, 0
-
-    @staticmethod
-    def window_border() -> int:
-        """..."""
-        return 1
-
-    def window_border_color(self) -> QtGui.QColor:
-        """..."""
-        if self.window_is_dark():
-            return color.rgba_to_qcolor(
-                color.lighten_rgba(
-                    self.palette.color(QtGui.QPalette.Window).to_tuple(), 15))
-
-        return color.rgba_to_qcolor(color.darken_rgba(
-            self.palette.color(QtGui.QPalette.Window).to_tuple(), 50))
-
-    @staticmethod
-    def window_border_radius() -> tuple:
-        """..."""
-        return 8, 8, 0, 0
-
-    @staticmethod
-    def window_icon_margin() -> tuple:
-        """..."""
-        return 5, 5, 5, 5
+        return {
+            'margin': '5px 5px 5px 5px',
+        }

@@ -31,10 +31,6 @@ class EnvStyle(object):
                 self.context_menu_group(),
             'ContextMenuSeparator':
                 self.contex_menu_separator(),
-            'ControlButton':
-                self.control_button(),
-            'ControlButton:hover':
-                self.control_button_hover(),
             'ControlButtons':
                 self.control_buttons(),
             'HeaderBar':
@@ -115,23 +111,6 @@ class EnvStyle(object):
         return {
             'color': f'rgba({r}, {g}, {b}, {a})',
             'margin': '0px 4px 0px 4px',
-        }
-
-    @staticmethod
-    def control_button() -> dict:
-        """..."""
-        return {
-            'border': '0px',
-            'border-radius': '10px',
-            'padding': '1px',
-            'background-color': 'rgba(127, 127, 127, 0.2)',
-        }
-
-    @staticmethod
-    def control_button_hover() -> dict:
-        """..."""
-        return {
-            'background-color': 'rgba(200, 200, 200, 0.2)',
         }
 
     @staticmethod

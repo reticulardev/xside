@@ -4,3 +4,4 @@ from .settingsgnome import EnvSettingsGnome
 from .settingscinnamon import EnvSettingsCinnamon
 from .settingsxfce import EnvSettingsXFCE
 from .settingsmate import EnvSettingsMate
+from .settingswindows11 import EnvSettingsWindows11

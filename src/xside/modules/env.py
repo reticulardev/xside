@@ -55,7 +55,9 @@ class Env(object):
                 if self.__desktop_environment == 'windows-10':
                     return desktopstyles.EnvStyleWindows10()
 
-                return desktopstyles.EnvStyleWindows11()
+                if style_mode:
+                    return desktopstyles.EnvStyleWindows11()
+                return desktopsettings.EnvSettingsWindows11()
 
         if style_mode:
             return desktopstyles.EnvStyle()
