@@ -45,15 +45,21 @@ class Env(object):
                 return desktopsettings.EnvSettingsGnome()
 
             if self.__operational_system == 'mac':
-                return desktopstyles.EnvStyleMac()
+                if style_mode:
+                    return desktopstyles.EnvStyleMac()
+                return desktopsettings.EnvSettingsMac()
 
             if self.__operational_system == 'windows':
 
                 if self.__desktop_environment == 'windows-7':
-                    return desktopstyles.EnvStyleWindows7()
+                    if style_mode:
+                        return desktopstyles.EnvStyleWindows7()
+                    return desktopsettings.EnvSettingsWindows7()
 
                 if self.__desktop_environment == 'windows-10':
-                    return desktopstyles.EnvStyleWindows10()
+                    if style_mode:
+                        return desktopstyles.EnvStyleWindows10()
+                    return desktopsettings.EnvSettingsWindows10()
 
                 if style_mode:
                     return desktopstyles.EnvStyleWindows11()
