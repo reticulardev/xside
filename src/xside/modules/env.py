@@ -26,7 +26,9 @@ class Env(object):
                     return desktopsettings.EnvSettingsPlasma()
 
                 if self.__desktop_environment == 'cinnamon':
-                    return desktopstyles.EnvStyleCinnamon()
+                    if style_mode:
+                        return desktopstyles.EnvStyleCinnamon()
+                    return desktopsettings.EnvSettingsCinnamon()
 
                 if self.__desktop_environment == 'xfce':
                     return desktopstyles.EnvStyleXFCE()

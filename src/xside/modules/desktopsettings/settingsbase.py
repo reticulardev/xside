@@ -13,6 +13,8 @@ class EnvSettings(object):
     def __init__(self):
         """..."""
         self.palette = QtGui.QPalette()
+        self.accent_color = self.palette.color(
+            QtGui.QPalette.Active, QtGui.QPalette.Highlight)
 
     @staticmethod
     def is_using_global_menu():
@@ -21,18 +23,19 @@ class EnvSettings(object):
 
     @staticmethod
     def control_button_style(*args, **kwargs) -> str:
+        """..."""
         logging.info(args)
         logging.info(kwargs)
-        """..."""
         return (
             'ControlButton {'
             '  border: 0px;'
             '  border-radius: 10px;'
-            '  padding: 1px;'
             '  background-color: rgba(127, 127, 127, 0.2);'
+            '  margin: 5px 4px 5px 4px;'
+            '  padding: 2px 1px 1px 2px;'
             '}'
             'ControlButton:hover {'
-            '  background-color: rgba(200, 200, 200, 0.2);'
+            '  background-color: rgba(127, 127, 127, 0.3);'
             '}')
 
     @staticmethod
@@ -50,8 +53,3 @@ class EnvSettings(object):
     def icon_theme_name() -> str:
         """..."""
         return 'hicolor'
-
-    def accent_color(self) -> QtGui.QColor:
-        """..."""
-        return self.palette.color(
-            QtGui.QPalette.Active, QtGui.QPalette.Highlight)
