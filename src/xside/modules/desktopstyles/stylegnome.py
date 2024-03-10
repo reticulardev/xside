@@ -6,6 +6,7 @@ from __feature__ import snake_case
 
 import xside.modules.desktopstyles.stylebase as stylebase
 import xside.modules.cli as cli
+import xside.modules.color as color
 
 
 class EnvStyleGnome(stylebase.EnvStyle):
@@ -15,111 +16,72 @@ class EnvStyleGnome(stylebase.EnvStyle):
         """..."""
         super().__init__(*args, **kwargs)
 
-    @staticmethod
-    def border_radius() -> tuple:
+    def contex_menu(self) -> dict:
         """..."""
-        return 4, 4, 0, 0
+        rgb = ' '.join(self.main_window()['background-color'].split()[:-1])
+        return {
+            'background-color': rgb + ' 255)',
+            'border': self.main_window()['border'],
+            'border-radius': f'{self.main_window()["border-radius"]}',
+            'margin': '0px 0px 0px 0px',
+            'padding': '6px 6px 6px 6px',
+            'spacing': '0px',
+        }
 
-    @staticmethod
-    def contextmenu_bg_alpha() -> float:
+    def contex_menu_separator(self) -> dict:
         """..."""
-        return 1.0
+        bg_color = self.palette.color(QtGui.QPalette.Window).to_tuple()
+        step_tone = 15 if color.is_dark(bg_color) else 30
+        r, g, b, a = color.lighten_rgba(bg_color, step_tone)
 
-    @staticmethod
-    def contextmenu_padding() -> tuple:
+        return {
+            'color': f'rgba({r}, {g}, {b}, {a})',
+            'margin': '8px 6px 8px 6px',
+        }
+
+    def contex_menu_button(self) -> dict:
         """..."""
-        return 6, 6, 6, 6
+        r = self.contex_menu()['border-radius'].split('px')[0]
+        r = int(r) - 4 if int(r) > 6 else r
+        return {
+            'border-radius': f'{r}px',
+            'padding': '6px 12px 6px 12px',
+        }
 
-    @staticmethod
-    def contextmenu_separator_margin() -> tuple:
-        """Left, top, right and bottom margins tuple"""
-        return 8, 6, 8, 6
-
-    @staticmethod
-    def contextmenubutton_bg_hover_alpha() -> float:
+    def contex_menu_button_hover(self) -> dict:
         """..."""
-        return 1.0
-
-    def contextmenubutton_background_hover_color(self) -> QtGui.QColor:
-        """..."""
-        return self.palette.color(QtGui.QPalette.AlternateBase)
-
-    def contextmenubutton_border_hover_color(self) -> QtGui.QColor:
-        """..."""
-        return self.contextmenubutton_background_hover_color()
-
-    @staticmethod
-    def contextmenubutton_padding() -> tuple:
-        """..."""
-        return 6, 12, 6, 12
-
-    @staticmethod
-    def contextmenugroup_padding() -> tuple:
-        """..."""
-        return 6, 12, 6, 14
+        r, g, b, _ = self.palette.color(
+            QtGui.QPalette.AlternateBase).to_tuple()
+        return {
+            'background-color': f'rgba({r}, {g}, {b}, 255)',
+            'border': f'1px solid rgba({r}, {g}, {b}, 255)'
+        }
 
     @staticmethod
-    def controlbutton_style(*args, **kwargs) -> str:
+    def context_menu_group() -> dict:
         """..."""
-        logging.info(args)
-        logging.info(kwargs)
-        return (
-            'ControlButton {'
-            '  border: 0px;'
-            '  border-radius: 10px;'
-            '  background-color: rgba(127, 127, 127, 0.2);'
-            '  margin: 5px 4px 5px 4px;'
-            '  padding: 2px 1px 1px 2px;'
-            '}'
-            'ControlButton:hover {'
-            '  background-color: rgba(127, 127, 127, 0.3);'
-            '}')
+        return {
+            'padding': '6px 12px 6px 14px',
+        }
+
+    def main_window(self) -> dict:
+        """..."""
+        bg_color = self.palette.color(QtGui.QPalette.Window).to_tuple()
+        bg_r, bg_g, bg_b, bg_a = bg_color
+
+        step_tone = 15 if color.is_dark(bg_color) else 30
+        bd_r, bd_g, bd_b, bd_a = color.lighten_rgba(bg_color, step_tone)
+
+        return {
+            'background-color': f'rgba({bg_r}, {bg_g}, {bg_b}, {bg_a})',
+            'border': f'1px solid rgba({bd_r}, {bd_g}, {bd_b}, {bd_a})',
+            'border-radius': '10px',
+            'margin': '0px 0px 0px 0px',
+        }
 
     @staticmethod
-    def controlbuttons_order() -> tuple:
-        """XAI M -> (2, 1, 0), (3,)
-
-        Close     Max       Min       Icon      Above all
-        X = 2     A = 1     I = 0     M = 3     F = 4
-
-        (2, 1, 0), (3,) -> [Close Max Min ............. Icon]
-        """
-        button_layout = cli.output_by_args(
-            ["gsettings", "get", "org.gnome.desktop.wm.preferences",
-             "button-layout"]).split(':')
-
-        if not button_layout:
-            return (3,), (0, 1, 2)
-
-        d = {'close': 2, 'maximize': 1, 'minimize': 0}
-        left = []
-        for x in button_layout[0].split(','):
-            if x in d:
-                left.append(d[x])
-            else:
-                left.append(3)
-
-        right = []
-        for x in button_layout[1].split(','):
-            if x in d:
-                right.append(d[x])
-            else:
-                right.append(3)
-
-        return tuple(left), tuple(right)
-
-    def icon_theme_name(self) -> str | None:
+    def window_icon() -> dict:
         """..."""
-        icon_theme = self.cli.output_by_args(
-            ['gsettings', 'get', 'org.gnome.desktop.interface', 'icon-theme'])
-        return icon_theme if icon_theme else None
-
-    @staticmethod
-    def window_border_radius() -> tuple:
-        """..."""
-        return 10, 10, 10, 10
-
-    @staticmethod
-    def window_icon_margin() -> tuple:
-        """..."""
-        return 5, 7, 5, 7
+        return {
+            'margin': '5px 7px 5px 7px',
+        }

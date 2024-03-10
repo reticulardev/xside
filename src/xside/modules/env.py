@@ -34,7 +34,9 @@ class Env(object):
                 if self.__desktop_environment == 'mate':
                     return desktopstyles.EnvStyleMate()
 
-                return EnvStyleGnome()
+                if style_mode:
+                    return desktopstyles.EnvStyleGnome()
+                return desktopsettings.EnvSettingsGnome()
 
             if self.__operational_system == 'mac':
                 return desktopstyles.EnvStyleMac()

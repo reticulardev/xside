@@ -43,7 +43,7 @@ class EnvStylePlasma(stylebase.EnvStyle):
     def contex_menu_button(self) -> dict:
         """..."""
         r = self.contex_menu()['border-radius'][0]
-        r = int(r) - 2 if int(r) > 4 else r
+        r = int(r) - 4 if int(r) > 6 else r
         return {
             'border-radius': f'{r}px',
             'padding': '2px 6px 2px 6px',

@@ -116,7 +116,7 @@ class Texture(object):
 					out = imgdesk.crop((x, y, x + w, y + h)).convert('RGBA')
 					out = self.__composite_background_color(out)
 					if out[1]:
-						radius = 15 if self.__toplevel.is_dark() else 10
+						radius = 20 if self.__toplevel.is_dark() else 15
 						out = out[0].filter(
 							ImageFilter.GaussianBlur(radius=radius))
 						# out = ImageEnhance.Brightness(out).enhance(0.97)

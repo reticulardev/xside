@@ -69,7 +69,7 @@ class EnvStyle(object):
         return {
             'background-color': self.main_window()['background-color'],
             'border': self.main_window()['border'],
-            'border-radius': f'{self.main_window()["border-radius"][0]}px',
+            'border-radius': f'{self.main_window()["border-radius"]}',
             'margin': '0px 0px 0px 0px',
             'padding': '4px 4px 4px 4px',
             'spacing': '0px',
@@ -77,8 +77,8 @@ class EnvStyle(object):
 
     def contex_menu_button(self) -> dict:
         """..."""
-        r = self.contex_menu()['border-radius'][0]
-        r = int(r) - 2 if int(r) > 4 else r
+        r = self.contex_menu()['border-radius'].split('px')[0]
+        r = int(r) - 4 if int(r) > 6 else r
         return {
             'border-radius': f'{r}px',
             'padding': '4px 6px 4px 6px',
