@@ -5,7 +5,7 @@ import os
 from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
-from xside.modules.style import StyleParser
+from xside.modules.stylesheetops import StyleSheetOps
 from xside.widgets.contextlabel import ContextLabel
 from xside.widgets.topframe import TopFrame
 
@@ -39,7 +39,8 @@ class Tooltip(TopFrame):
 
         self.__is_dark = self.__toplevel.is_dark()
         self.__style_saved = self.__toplevel.style_sheet()
-        self.__style_parser = StyleParser(self.__style_saved)
+        self.__styleop = StyleSheetOps()
+        self.__styleop.set_stylesheet(self.__style_saved)
 
         # Main layout
         self.__main_box = QtWidgets.QHBoxLayout()
@@ -90,10 +91,10 @@ class Tooltip(TopFrame):
         """..."""
         self.central_widget().set_style_sheet(
             '#QTooltip {'
-            f'{self.__style_parser.widget_scope("ContextMenu")}'
+            f'{self.__styleop.widget_stylesheet("ContextMenu")}'
             '}'
             'ContextLabel {'
-            f'{self.__style_parser.widget_scope("ContextLabel")}'
+            f'{self.__styleop.widget_stylesheet("ContextLabel")}'
             '}')
 
         point = QtGui.QCursor.pos()
@@ -124,4 +125,4 @@ class Tooltip(TopFrame):
     def __set_style_signal(self) -> None:
         # ...
         self.__style_saved = self.__toplevel.style_sheet()
-        self.__style_parser.set_style_sheet(self.__style_saved)
+        self.__styleop.set_stylesheet(self.__style_saved)

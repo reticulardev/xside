@@ -10,7 +10,7 @@ from __feature__ import snake_case
 
 from xside.modules import color
 from xside.modules.env import Env
-from xside.modules.style import StyleParser
+from xside.modules.stylesheetops import StyleSheetOps
 from xside.widgets.applicationwindow import ApplicationWindow
 from xside.widgets.headerbar import HeaderBar
 
@@ -29,7 +29,7 @@ class OverlaySideView(QtWidgets.QFrame):
         # Properties
         self.__sideview_widget_box = self.__sideview_widget.parent().layout()
         self.__toplevel = self.__sideview_widget.parent().window()
-        self.__style_parser = StyleParser(self.__toplevel.style_sheet())
+        self.__styleop = StyleSheetOps()
 
         # Anim
         self.anim_open = QtCore.QPropertyAnimation(self, b"size")
@@ -133,8 +133,8 @@ class OverlaySideView(QtWidgets.QFrame):
 
     def __update_style(self) -> None:
         # ...
-        self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
-        base_style = self.__style_parser.widget_scope('MainWindow')
+        self.__styleop.set_stylesheet(self.__toplevel.style_sheet())
+        base_style = self.__styleop.widget_stylesheet('MainWindow')
 
         url = None
         for x in base_style.split(';'):
@@ -206,10 +206,6 @@ class ApplicationWindowSideView(ApplicationWindow):
         """
         super().__init__(*args, **kwargs)
         # Properties
-        self.__env = Env(
-            self.platform().operational_system(),
-            self.platform().desktop_environment())
-        self.__env = self.__env.settings()
         self.__minimum_width = 350
         self.__minimum_height = 200
         self.__border_size = 12
@@ -227,6 +223,12 @@ class ApplicationWindowSideView(ApplicationWindow):
         self.set_minimum_width(self.__minimum_width)
         self.set_minimum_height(self.__minimum_height)
         self.resize(self.__initial_width(), 500)
+
+        self.__env = Env(
+            self.platform().operational_system(),
+            self.platform().desktop_environment())
+        self.__env = self.__env.settings()
+        self.__styleop = StyleSheetOps()
 
         # Icon
         icon_path = os.path.join(
@@ -421,7 +423,8 @@ class ApplicationWindowSideView(ApplicationWindow):
 
     def __color_sideview(self) -> None:
         """..."""
-        basestyle = StyleParser(self.style_sheet()).widget_scope('MainWindow')
+        self.__styleop.set_stylesheet(self.style_sheet())
+        basestyle = self.__styleop.widget_stylesheet('MainWindow')
         sideview_style_sheet = (
             '#__panelwidthstyle {'
             f'{basestyle}'

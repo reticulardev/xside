@@ -7,7 +7,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from xside.modules import color
-from xside.modules.style import StyleParser
+from xside.modules.stylesheetops import StyleSheetOps
 from xside.widgets.applicationwindow import ApplicationWindow
 from xside.widgets.contextlabel import ContextLabel
 from xside.widgets.tooltip import Tooltip
@@ -79,7 +79,8 @@ class ContextMenuButton(QtWidgets.QFrame):
         self.__is_tooltip_open = False
         self.__tooltip_timer = QtCore.QTimer()
 
-        self.__style_parser = StyleParser(self.__toplevel.style_sheet())
+        self.__styleop = StyleSheetOps()
+        self.__styleop.set_stylesheet(self.__toplevel.style_sheet())
         self.__normal_style = self.__updated_normal_style()
         self.__hover_style = self.__updated_hover_style()
         self.__main_box = QtWidgets.QHBoxLayout()
@@ -143,7 +144,7 @@ class ContextMenuButton(QtWidgets.QFrame):
 
     def __set_style_signal(self) -> None:
         # ...
-        self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
+        self.__styleop.set_stylesheet(self.__toplevel.style_sheet())
         self.__normal_style = self.__updated_normal_style()
         self.__hover_style = self.__updated_hover_style()
         self.__text_label.set_style_sheet(self.__normal_style)
@@ -156,12 +157,12 @@ class ContextMenuButton(QtWidgets.QFrame):
 
     def __updated_hover_style(self) -> str:
         # ...
-        return self.__style_parser.widget_scope(
+        return self.__styleop.widget_stylesheet(
             'ContextMenuButtonLabel', 'hover')
 
     def __updated_normal_style(self) -> str:
         # ...
-        return self.__style_parser.widget_scope(
+        return self.__styleop.widget_stylesheet(
             'ContextMenuButtonLabel')
 
     def enter_event(self, event: QtGui.QEnterEvent) -> None:
@@ -267,7 +268,10 @@ class ContextMenu(TopFrame):
 
         self.__quick_mode = self.__is_quick_mode()
         self.__style_saved = self.__toplevel.style_sheet()
-        self.__style_parser = StyleParser(self.__style_saved)
+
+        self.__styleop = StyleSheetOps()
+        self.__styleop.set_stylesheet(self.__style_saved)
+
         self.__context_separators = []
         self.__action_buttons = []
         self.__quick_action_buttons = []
@@ -447,7 +451,7 @@ class ContextMenu(TopFrame):
     def __set_style_signal(self) -> None:
         # ...
         self.__style_saved = self.__toplevel.style_sheet()
-        self.__style_parser.set_style_sheet(self.__style_saved)
+        self.__styleop.set_stylesheet(self.__style_saved)
 
     def __set_style(self) -> str:
         # ...
@@ -455,7 +459,7 @@ class ContextMenu(TopFrame):
             self.__set_style_signal()
 
         return ('#ContextMenu {'
-                f'{self.__style_parser.widget_scope("ContextMenu")}' '}')
+                f'{self.__styleop.widget_stylesheet("ContextMenu")}' '}')
 
     def __toggle_quick_buttons_position(self):
         for btn in self.__quick_action_buttons:

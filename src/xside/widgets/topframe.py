@@ -3,7 +3,8 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from __feature__ import snake_case
 
 from xside.modules.platform import Platform
-from xside.modules.style import Style, StyleParser
+from xside.modules.env import Env
+from xside.modules.stylesheetops import StyleSheetOps
 from xside.widgets.core import BaseTopFrame
 
 
@@ -16,12 +17,12 @@ class TopFrame(BaseTopFrame):
         self.__follow_platform = follow_platform
         self.__platform = Platform()
 
-        self.__dynamic_style = Style(self)
-        self.__style_sheet = self.__dynamic_style.build_style()
-
-        self.__style_parser = StyleParser(self.__style_sheet)
-        self.__style_sheet = self.__style_parser.style_sheet()
-
+        self.__env = Env(
+            self.__platform.operational_system(),
+            self.__platform.desktop_environment(),
+            self.__follow_platform)
+        self.__style_sheet = self.__env.style().style_sheet()
+        self.__styleop = StyleSheetOps()
         self.central_widget().set_style_sheet(self.__style_sheet)
 
     def follow_platform(self) -> bool:
@@ -34,7 +35,7 @@ class TopFrame(BaseTopFrame):
 
     def set_style_sheet(self, style: str) -> None:
         """..."""
-        self.__style_parser.set_style_sheet(self.__style_sheet + style)
-        self.__style_sheet = self.__style_parser.style_sheet()
+        self.__styleop.set_stylesheet(self.__style_sheet + style)
+        self.__style_sheet = self.__styleop.stylesheet()
 
         self.central_widget().set_style_sheet(self.__style_sheet)

@@ -4,7 +4,8 @@ from __feature__ import snake_case
 
 from xside.modules import color
 from xside.modules.platform import Platform
-from xside.modules.style import Style, StyleParser
+from xside.modules.env import Env
+from xside.modules.stylesheetops import StyleSheetOps
 from xside.widgets.core import BaseWindow
 
 
@@ -47,15 +48,15 @@ class ApplicationWindow(BaseWindow):
         self.__timer = QtCore.QTimer()
 
         # Style
-        self.__dynamic_style = Style(self)
-        self.__style_sheet = self.__dynamic_style.build_style()
+        self.__env = Env(
+            self.__platform.operational_system(),
+            self.__platform.desktop_environment(),
+            self.__follow_platform)
+        self.__style_sheet = self.__env.style().style_sheet()
 
-        self.__style_parser = StyleParser(self.__style_sheet)
-        self.__style_sheet = self.__style_parser.style_sheet()
-
-        self.__style_sheet_fullscreen = (
-            self.__dynamic_style.fullscreen_adapted_style(
-                self.__style_sheet))
+        self.__styleop = StyleSheetOps()
+        self.__styleop.set_stylesheet(self.__style_sheet)
+        self.__style_sheet_fullscreen = self.__styleop.stylesheet_fullscreen()
 
         self.__set_window_decoration()
 
@@ -98,12 +99,9 @@ class ApplicationWindow(BaseWindow):
 
         :param style: string containing 'qss' style
         """
-        self.__style_parser.set_style_sheet(self.__style_sheet + style)
-        self.__style_sheet = self.__style_parser.style_sheet()
-
-        self.__style_sheet_fullscreen = (
-            self.__dynamic_style.fullscreen_adapted_style(
-                self.__style_sheet))
+        self.__styleop.set_stylesheet(self.__style_sheet + style)
+        self.__style_sheet = self.__styleop.stylesheet()
+        self.__style_sheet_fullscreen = self.__styleop.stylesheet_fullscreen()
 
         if self.__is_server_side_decorated:
             self.__style_sheet = self.__style_sheet_fullscreen
@@ -129,9 +127,8 @@ class ApplicationWindow(BaseWindow):
 
     def __reset_style_properties(self) -> None:
         # ...
-        self.__style_sheet = self.__dynamic_style.build_style()
-        self.__style_sheet_fullscreen = (
-            self.__dynamic_style.fullscreen_adapted_style(self.__style_sheet))
+        self.__style_sheet = self.__env.style().style_sheet()
+        self.__style_sheet_fullscreen = self.__styleop.stylesheet_fullscreen()
 
     def __set_window_decoration(self) -> None:
         self.set_attribute(QtCore.Qt.WA_TranslucentBackground)

@@ -54,7 +54,9 @@ class Texture(object):
 		self.__desktop_windows = []
 		self.__toplevel_id = hex(self.__toplevel.win_id()).replace('0x', '0x0')
 		self.__style_sheet = self.__toplevel.style_sheet()
-		self.__style_parser = modules.style.StyleParser(self.__style_sheet)
+		self.__styleop = modules.stylesheetops.StyleSheetOps()
+		self.__styleop.set_stylesheet(self.__style_sheet)
+
 		self.__textures_path = os.path.join(self.__path, 'tmp')
 		self.__texture_url = os.path.join(self.__textures_path, 'texture.png')
 		self.__texture_image = None
@@ -236,7 +238,7 @@ class Texture(object):
 						os.remove(os.path.join(self.__textures_path, texture))
 
 	def __get_background_color(self) -> str:
-		toplevel_style = self.__style_parser.widget_scope('MainWindow')
+		toplevel_style = self.__styleop.widget_stylesheet('MainWindow')
 		if toplevel_style:
 			bg_color = None
 			for x in toplevel_style.split(';'):
@@ -269,13 +271,13 @@ class Texture(object):
 		return 'background: url();'
 
 	def __get_normal_style(self) -> str:
-		toplevel_style = self.__style_parser.widget_scope('MainWindow')
+		toplevel_style = self.__styleop.widget_stylesheet('MainWindow')
 		if toplevel_style:
 			toplevel_style += self.__get_background_color()
 			style = self.__style_sheet + (
 				'MainWindow {' f'{toplevel_style}' '}')
-			self.__style_parser.set_style_sheet(style)
-		return self.__style_parser.style_sheet()
+			self.__styleop.set_stylesheet(style)
+		return self.__styleop.stylesheet()
 
 	def __get_windows(self):
 		# wmctrl_lg: marks windows that are not windows using an '-1'
@@ -311,15 +313,15 @@ class Texture(object):
 		if self.__enable_texture:
 			self.__desktop_windows = self.__get_windows()
 			if self.__build_texture():
-				scope = self.__style_parser.widget_scope("MainWindow")
+				scope = self.__styleop.widget_stylesheet('MainWindow')
 				if scope:
-					self.__style_parser.set_style_sheet(
+					self.__styleop.set_stylesheet(
 						'MainWindow {'
 						f'{scope}'
 						f'background: url({self.__texture_url}) no-repeat;'
 						'}')
 					self.__toplevel.set_style_sheet(
-						self.__style_parser.style_sheet())
+						self.__styleop.stylesheet())
 					self.__is_using_texture = True
 
 		self.__updating = False
@@ -380,8 +382,8 @@ class Texture(object):
 
 	def __set_style_signal(self) -> None:
 		# ...
-		self.__style_parser.set_style_sheet(self.__toplevel.style_sheet())
-		self.__style_sheet = self.__style_parser.style_sheet()
+		self.__styleop.set_stylesheet(self.__toplevel.style_sheet())
+		self.__style_sheet = self.__styleop.stylesheet()
 		self.__background_style = self.__get_normal_style()
 
 	def __toplevel_window(self) -> Window:
