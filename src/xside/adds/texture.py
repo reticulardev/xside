@@ -11,7 +11,10 @@ from PIL import Image, ImageFilter, ImageEnhance
 from PySide6 import QtCore
 from __feature__ import snake_case
 
-from xside import widgets, modules
+from xside import modules
+from xside.modules import color
+from xside.modules.reg import Reg
+from xside.modules.stylesheetops import StyleSheetOps
 
 
 class Window(object):
@@ -54,7 +57,7 @@ class Texture(object):
 		self.__desktop_windows = []
 		self.__toplevel_id = hex(self.__toplevel.win_id()).replace('0x', '0x0')
 		self.__style_sheet = self.__toplevel.style_sheet()
-		self.__styleop = modules.stylesheetops.StyleSheetOps()
+		self.__styleop = StyleSheetOps()
 		self.__styleop.set_stylesheet(self.__style_sheet)
 
 		self.__textures_path = os.path.join(self.__path, 'tmp')
@@ -62,6 +65,10 @@ class Texture(object):
 		self.__texture_image = None
 		self.__background_color = None
 		self.__background_style = self.__get_normal_style()
+
+		self.__reg = Reg()
+		self.__reg.add('add-texture-enable', False)
+
 		# Sigs
 		self.__toplevel.set_style_signal.connect(self.__set_style_signal)
 		self.__toplevel.reset_style_signal.connect(self.__set_style_signal)
@@ -86,6 +93,7 @@ class Texture(object):
 	def set_enable(self, enable: bool) -> None:
 		"""..."""
 		self.__enable_texture = enable
+		self.__reg.add('add-texture-enable', enable)
 
 	def texture_image(self) -> Image:
 		"""..."""
@@ -248,11 +256,11 @@ class Texture(object):
 
 			rgba = None
 			if bg_color and 'rgba' in bg_color:
-				rgba = modules.color.rgba_str_to_tuple(bg_color)
+				rgba = color.rgba_str_to_tuple(bg_color)
 			elif bg_color and '#' in bg_color:
 				hexa = bg_color.replace(' ', '').split(':')[-1].split(';')[0]
 				print('HEX:', hexa)
-				rgba = modules.color.hex_to_rgba(hexa)
+				rgba = color.hex_to_rgba(hexa)
 
 			if rgba:
 				self.__alpha = rgba[3]
