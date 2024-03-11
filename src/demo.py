@@ -23,8 +23,8 @@ class SideViewWindow(widgets.ApplicationWindowSideView):
         # self.set_close_window_button_visible(False)
         # self.set_right_control_buttons_visible(False)
 
-        self.texture = adds.Texture(self)
-        self.texture.set_enable(True)
+        # self.texture = adds.Texture(self)
+        # self.texture.set_enable(True)
 
         r, g, b, _ = self.sideview_color()
         self.set_sideview_color((r, g, b, 100))

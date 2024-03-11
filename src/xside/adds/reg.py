@@ -10,21 +10,27 @@ class Reg(object):
         """..."""
         self.__reg = os.path.join(
             pathlib.Path(__file__).resolve().parent, 'static', 'reg.json')
-        self.__reg_tmp = {}
+        self.__reg_memory = {}
+        self.__already_searched = {}
 
     def add(self, key: str, value: any) -> None:
         """..."""
-        self.__reg_tmp[key] = value
+        self.__reg_memory[key] = value
         with open(self.__reg, 'w') as registration_file:
-            json.dump(self.__reg_tmp, registration_file)
+            json.dump(self.__reg_memory, registration_file)
 
     def get(self, key: str) -> any:
         """..."""
-        if key not in self.__reg_tmp:
-            with open(self.__reg, 'r') as registration_file:
-                self.__reg_tmp = json.load(registration_file)
+        if key in self.__reg_memory:
+            return self.__reg_memory[key]
 
-            if key not in self.__reg_tmp:
+        if key in self.__already_searched:
+            return self.__already_searched[key]
+
+        with open(self.__reg, 'r') as registration_file:
+            self.__reg_memory = json.load(registration_file)
+            if key in self.__reg_memory:
+                return self.__reg_memory[key]
+            else:
+                self.__already_searched[key] = None
                 return None
-
-        return self.__reg_tmp[key]

@@ -10,6 +10,7 @@ from __feature__ import snake_case
 
 from xside.modules import color
 from xside.modules.env import Env
+from xside.modules.reg import Reg
 from xside.modules.stylesheetops import StyleSheetOps
 from xside.widgets.applicationwindow import ApplicationWindow
 from xside.widgets.headerbar import HeaderBar
@@ -30,6 +31,7 @@ class OverlaySideView(QtWidgets.QFrame):
         self.__sideview_widget_box = self.__sideview_widget.parent().layout()
         self.__toplevel = self.__sideview_widget.parent().window()
         self.__styleop = StyleSheetOps()
+        self.__reg = Reg()
 
         # Anim
         self.anim_open = QtCore.QPropertyAnimation(self, b"size")
@@ -136,19 +138,23 @@ class OverlaySideView(QtWidgets.QFrame):
         self.__styleop.set_stylesheet(self.__toplevel.style_sheet())
         base_style = self.__styleop.widget_stylesheet('MainWindow')
 
-        url = None
-        for x in base_style.split(';'):
-            if x.replace(' ', '').startswith('background:url('):
-                url = x.strip().split('(')[1].split(')')[0]
+        if not self.__reg.get('add-texture-enable'):
+            background = ''
+        else:
+            url = None
+            for x in base_style.split(';'):
+                if x.replace(' ', '').startswith('background:url('):
+                    url = x.strip().split('(')[1].split(')')[0]
+                if url:
+                    break
             if url:
-                break
-        if url:
-            sideview_texture = Image.open(url)
-            sideview_texture.putalpha(245)
-            url = url.replace('.png', 'sideview.png')
-            sideview_texture.save(url)
+                sideview_texture = Image.open(url)
+                sideview_texture.putalpha(245)
+                url = url.replace('.png', 'sideview.png')
+                sideview_texture.save(url)
 
-        background = f'background: url({url});'
+            background = f'background: url({url});'
+
         self.__sideview_background.set_style_sheet(
             f'{self.__toplevel.style_sheet()}'
             '#__sideviewbgstyle {'
