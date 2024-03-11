@@ -1,36 +1,53 @@
 #!/usr/bin/env python3
-import json
 import os
 import pathlib
 
+from xside.modules.platform import Platform
+import xside.modules.reg as reg
 
-class Reg(object):
+
+class Reg(reg.Reg):
     """Additions registration"""
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """..."""
+        super().__init__(*args, **kwargs)
         self.__reg = os.path.join(
             pathlib.Path(__file__).resolve().parent, 'static', 'reg.json')
-        self.__reg_memory = {}
-        self.__already_searched = {}
 
-    def add(self, key: str, value: any) -> None:
+
+class RegUser(reg.Reg):
+    """Additions registration"""
+    def __init__(self, *args, **kwargs):
         """..."""
-        self.__reg_memory[key] = value
-        with open(self.__reg, 'w') as registration_file:
-            json.dump(self.__reg_memory, registration_file)
+        super().__init__(*args, **kwargs)
 
-    def get(self, key: str) -> any:
-        """..."""
-        if key in self.__reg_memory:
-            return self.__reg_memory[key]
+        platform = Platform()
+        if platform.operational_system() == 'windows':
+            self.__path = os.path.join(
+                pathlib.Path.home(), 'AppData', 'Roaming', 'xside', 'reg')
+        else:
+            self.__path = os.path.join(
+                pathlib.Path.home(), '.config', 'xside', 'reg')
 
-        if key in self.__already_searched:
-            return self.__already_searched[key]
+            self.__reg = path
 
-        with open(self.__reg, 'r') as registration_file:
-            self.__reg_memory = json.load(registration_file)
-            if key in self.__reg_memory:
-                return self.__reg_memory[key]
-            else:
-                self.__already_searched[key] = None
-                return None
+        pathlib.Path(self.__path).mkdir(parents=True, exist_ok=True)
+        self.__reg = os.path.join(self.__path, 'reg.json')
+
+    def path(self) -> str:
+        """Registration path
+
+        json db file path
+        Default for Unix: <pathlib.Path.home()>/.config/xside/reg
+        Default for Windows: <pathlib.Path.home()>/AppData/Roaming/xside/reg/
+        """
+        return self.__path
+
+    def set_path(self, path: str) -> None:
+        """Set the registration path
+
+        json db file path
+        Default for Unix: <pathlib.Path.home()>/.config/xside/reg
+        Default for Windows: <pathlib.Path.home()>/AppData/Roaming/xside/reg/
+        """
+        self.__path = path

@@ -8,8 +8,9 @@ class Reg(object):
     """Additions registration"""
     def __init__(self):
         """..."""
-        self.__reg = os.path.join(
-            pathlib.Path(__file__).resolve().parent, 'static', 'reg.json')
+        self.__path = os.path.join(
+            pathlib.Path(__file__).resolve().parent, 'static')
+        self.__reg = os.path.join(self.__path, 'reg.json')
         self.__reg_memory = {}
         self.__already_searched = {}
 
@@ -34,3 +35,17 @@ class Reg(object):
             else:
                 self.__already_searched[key] = None
                 return None
+
+    def path(self) -> str:
+        """Registration path
+
+        json db file path
+        """
+        return self.__path
+
+    def set_path(self, path: str) -> None:
+        """Set the registration path
+
+        json db file path
+        """
+        self.__path = path

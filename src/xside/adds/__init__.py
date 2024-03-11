@@ -1,2 +1,2 @@
 from .texture import Texture
-from .reg import Reg
+from .reg import Reg, RegUser
