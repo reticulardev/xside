@@ -23,8 +23,8 @@ class SideViewWindow(widgets.ApplicationWindowSideView):
         # self.set_close_window_button_visible(False)
         # self.set_right_control_buttons_visible(False)
 
-        # self.texture = adds.Texture(self)
-        # self.texture.set_enable(True)
+        self.texture = adds.Texture(self)
+        self.texture.set_enable(True)
 
         r, g, b, _ = self.sideview_color()
         self.set_sideview_color((r, g, b, 100))
@@ -135,8 +135,13 @@ class SideViewWindow(widgets.ApplicationWindowSideView):
         # self.set_sideview_fixed_width(500)
         # self.qcontext_menu.set_contents_paddings(1, 6, 1, 6)
 
-        self.reg = adds.Reg()
-        self.reg.add('texture', 22)
+        # self.reg = adds.Reg(is_user_reg=True)
+        # self.reg.add('user', 'username')
+        # self.reg.add('url', '.config')
+        #
+        # self.regdev = adds.Reg()
+        # self.regdev.add('dev', 'dev username')
+        # self.regdev.add('url', 'adds/static')
 
     def context_menu_event(self, event):
         self.qcontext_menu.exec(event.global_pos())
@@ -148,8 +153,6 @@ class SideViewWindow(widgets.ApplicationWindowSideView):
         self.context_menu_label.set_text(text)
 
     def on_set_style_button(self) -> None:
-        print(self.reg.get('texture'))
-        print(self.reg.get('textures'))
         if self.set_style_button.text() == 'Set style':
             self.set_style_sheet(
                 'MainWindow {'

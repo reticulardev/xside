@@ -13,7 +13,7 @@ from __feature__ import snake_case
 
 from xside import modules
 from xside.modules import color
-from xside.modules.reg import Reg
+from xside.adds.reg import Reg
 from xside.modules.stylesheetops import StyleSheetOps
 
 
@@ -67,6 +67,8 @@ class Texture(object):
 		self.__background_style = self.__get_normal_style()
 
 		self.__reg = Reg()
+		self.__reg.set_path(os.path.join(pathlib.Path(__file__).resolve(
+			).parent.parent, 'modules', 'static'))
 		self.__reg.add('add-texture-enable', False)
 
 		# Sigs

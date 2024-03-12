@@ -10,7 +10,7 @@ from __feature__ import snake_case
 
 from xside.modules import color
 from xside.modules.env import Env
-from xside.modules.reg import Reg
+from xside.adds.reg import Reg
 from xside.modules.stylesheetops import StyleSheetOps
 from xside.widgets.applicationwindow import ApplicationWindow
 from xside.widgets.headerbar import HeaderBar
